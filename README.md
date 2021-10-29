@@ -5,6 +5,8 @@
         <img align="right" src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/boostcampwm-2021/web20-PingPingsFriends&count_bg=%23FF7777&title_bg=%23784242&icon=&icon_color=%23E7E7E7&title=&edge_flat=false" />
 </a>
 
+<br/><br/>
+
 ![translate](https://user-images.githubusercontent.com/63776725/139362324-8a7141b1-4612-4ff1-a6f1-437ea3fcf76c.gif)
 ## 🐶 소개 
 - 내가 키우는 반려동물이 SNS을 한다면?
