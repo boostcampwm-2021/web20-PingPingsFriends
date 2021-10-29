@@ -1,11 +1,9 @@
 
 # 🧽핑핑이 친구들 - 과몰입 반려일상 SNS
 
-<div style="text-align:right">
-    <a href="https://hits.seeyoufarm.com">
-        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/boostcampwm-2021/web20-PingPingsFriends&count_bg=%23FF7777&title_bg=%23784242&icon=&icon_color=%23E7E7E7&title=&edge_flat=false" />
-    </a>
-</div>
+<a href="https://hits.seeyoufarm.com">
+        <img align="right" src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/boostcampwm-2021/web20-PingPingsFriends&count_bg=%23FF7777&title_bg=%23784242&icon=&icon_color=%23E7E7E7&title=&edge_flat=false" />
+</a>
 
 ![translate](https://user-images.githubusercontent.com/63776725/139362324-8a7141b1-4612-4ff1-a6f1-437ea3fcf76c.gif)
 ## 🐶 소개 
