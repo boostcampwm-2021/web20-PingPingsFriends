@@ -36,7 +36,7 @@
 
 ## 🛠️ 기술스택
 
-![stacks](https://i.imgur.com/la2Rvxe.png)
+![핑핑이 친구들 기술 스택](https://user-images.githubusercontent.com/58130501/139615472-99829689-95e4-43c8-8c78-c3feaa1ab7dc.png)
 
     
     
