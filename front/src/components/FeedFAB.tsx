@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ReactComponent as ZoomBtn } from '../assets/icons/zoom_out.svg';
 import { ReactComponent as WriteBtn } from '../assets/icons/add_circle.svg';
 
-const FloatingContainer = styled.div<any>`
+const FloatingContainer = styled.div`
   position: fixed;
   left: 0;
   bottom: 0;
