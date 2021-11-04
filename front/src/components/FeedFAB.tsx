@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ReactComponent as ZoomBtn } from '../assets/icons/zoom_out.svg';
 import { ReactComponent as WriteBtn } from '../assets/icons/add_circle.svg';
 
-const FloatingContainer = styled.div<{ ref: any }>`
+const FloatingContainer = styled.div<any>`
   position: fixed;
   left: 0;
   bottom: 0;
@@ -20,13 +20,13 @@ const FloatingContainer = styled.div<{ ref: any }>`
 `;
 
 const FeedFAB = () => {
-  const floatingEl = useRef<null | HTMLElement>(null);
+  const floatingEl = useRef<HTMLDivElement>(null);
   const FEED_SECTION_WIDTH: number = 500;
   const FAB_OFFSET: number = 10;
   useEffect(() => {
     const fabPos: number = (window.innerWidth + FEED_SECTION_WIDTH) / 2;
     if (floatingEl.current !== null) floatingEl.current.style.left = fabPos + FAB_OFFSET + 'px';
-  }, [floatingEl]);
+  }, []);
 
   return (
     <FloatingContainer ref={floatingEl}>

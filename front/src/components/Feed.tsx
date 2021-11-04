@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-// import {} from 'styled-components/cssprop';
 import { ReactComponent as VertBtnSvg } from '../assets/icons/more_vert_btn.svg';
 import { ReactComponent as HeartBtnSvg } from '../assets/icons/empty_heart_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '../assets/icons/comment_btn.svg';
@@ -41,7 +40,7 @@ const Avatar = styled.div`
   background-color: black;
 `;
 
-const FeedContents = styled.div<{ imageURL: string }>`
+const FeedContents = styled.div<Pick<t_FeedJson, 'imageURL'>>`
   width: 100%;
   position: relative;
   background-color: aliceblue;
