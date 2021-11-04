@@ -5,4 +5,6 @@ export enum Palette {
   PINK = '#FFB1B9',
   APRICOT = '#FACBBA',
   ORANGE = '#F0CC96',
+  BACKGROUND_GRAY = '#EEEEEE',
+  WHITE = '#FFFFFF',
 }
