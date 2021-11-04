@@ -4,11 +4,15 @@ import MainPage from './pages/MainPage';
 import UserPage from './pages/UserPage';
 import RegisterPage from './pages/RegisterPage';
 import ExplorePage from './pages/ExplorePage';
+import TestPage from './pages/TestPage';
 
 function App() {
   return (
     <>
       <Switch>
+        <Route path="/test">
+          <TestPage />
+        </Route>
         <Route path="/register">
           <RegisterPage />
         </Route>
