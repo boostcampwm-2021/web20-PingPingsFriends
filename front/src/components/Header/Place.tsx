@@ -7,7 +7,7 @@ const PlaceBlock = styled.div`
   ${flexBox()}
 
   border-radius: 10px;
-  border: 1px solid ${Palette.gray};
+  border: 1px solid ${Palette.GRAY};
   width: 200px;
   padding: 12px;
   &:hover {

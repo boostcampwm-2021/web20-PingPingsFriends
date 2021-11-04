@@ -12,8 +12,7 @@ const HeaderBlock = styled.div`
   width: 100%;
   height: 54px;
   padding: 0 12px;
-  border-bottom: solid ${Palette.gray} 1px;
-  ${flexBox('space-between', 'center')}
+  border-bottom: solid ${Palette.GRAY} 1px;
 `;
 
 const Header = () => {
