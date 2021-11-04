@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Avatar from '../_common/Avatar/Avatar';
 import { flexBox } from '../../lib/styles/mixin';
+import { ReactComponent as BottomArrow } from '../../assets/icons/bottom_arrow.svg';
 
 const UserInfoBlock = styled.div`
   ${flexBox('center', 'flex-end')}
@@ -19,9 +20,7 @@ const UserInfo = ({ username = '핑핑이' }: UserInfoProps) => {
     <UserInfoBlock>
       <div className={'username'}>{username}</div>
       <Avatar />
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7 10L12 15L17 10H7Z" fill="black" />
-      </svg>
+      <BottomArrow />
     </UserInfoBlock>
   );
 };
