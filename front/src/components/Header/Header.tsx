@@ -9,10 +9,12 @@ const LOGO: string = '핑핑이 친구들';
 
 const HeaderBlock = styled.div`
   ${flexBox('space-between', 'center')};
+  flex-shrink: 0;
   width: 100%;
   height: 54px;
   padding: 0 12px;
   border-bottom: solid ${Palette.GRAY} 1px;
+  background: ${Palette.WHITE};
 `;
 
 const Header = () => {

@@ -1,17 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as VertBtnSvg } from '../assets/icons/more_vert_btn.svg';
-import { ReactComponent as HeartBtnSvg } from '../assets/icons/empty_heart_btn.svg';
-import { ReactComponent as CommentBtnSvg } from '../assets/icons/comment_btn.svg';
+import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.svg';
+import { ReactComponent as HeartBtnSvg } from '../../assets/icons/empty_heart_btn.svg';
+import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
+import Avatar from '../_common/Avatar/Avatar';
+import { flexBox } from '../../lib/styles/mixin';
 
-export type t_FeedJson = {
+export interface FeedJson {
   id: number;
   nickname: string;
   imageURL: string;
   text: string;
-};
+}
 
-const FeedContainer = styled.div`
+const FeedContainerDiv = styled.div`
   background-color: white;
   width: 100%;
   height: 650px;
@@ -20,10 +22,9 @@ const FeedContainer = styled.div`
   position: relative;
 `;
 
-const FeedHeader = styled.div`
+const FeedHeaderDiv = styled.div`
+  ${flexBox(null, 'center')};
   height: 50px;
-  display: flex;
-  align-items: center;
   padding-left: 10px;
   gap: 2px;
 
@@ -33,14 +34,7 @@ const FeedHeader = styled.div`
   }
 `;
 
-const Avatar = styled.div`
-  width: 30px;
-  height: 30px;
-  border-radius: 100%;
-  background-color: black;
-`;
-
-const FeedContents = styled.div<Pick<t_FeedJson, 'imageURL'>>`
+const FeedContents = styled.div<Pick<FeedJson, 'imageURL'>>`
   width: 100%;
   position: relative;
   background-color: aliceblue;
@@ -55,7 +49,7 @@ const FeedContents = styled.div<Pick<t_FeedJson, 'imageURL'>>`
   }
 `;
 
-const FeedInfo = styled.div`
+const FeedInfoDiv = styled.div`
   display: flex;
   position: relative;
   gap: 5px;
@@ -67,27 +61,27 @@ const FeedInfo = styled.div`
   }
 `;
 
-const FeedText = styled.div`
+const FeedTextDiv = styled.div`
   padding: 0 10px;
 `;
 
-const Feed = ({ json }: { json: t_FeedJson }) => {
+const Feed = ({ json }: { json: FeedJson }) => {
   return (
-    <FeedContainer>
-      <FeedHeader>
+    <FeedContainerDiv>
+      <FeedHeaderDiv>
         <Avatar />
         <span>{json.nickname}</span>
         <VertBtnSvg className="vert_btn" />
-      </FeedHeader>
+      </FeedHeaderDiv>
       <FeedContents imageURL={json.imageURL} />
-      <FeedInfo>
+      <FeedInfoDiv>
         <HeartBtnSvg />
         <CommentBtnSvg />
         <span>13</span>
         <span className="time">2시간 전</span>
-      </FeedInfo>
-      <FeedText>{json.text}</FeedText>
-    </FeedContainer>
+      </FeedInfoDiv>
+      <FeedTextDiv>{json.text}</FeedTextDiv>
+    </FeedContainerDiv>
   );
 };
 

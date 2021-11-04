@@ -1,18 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ReactComponent as ZoomBtn } from '../assets/icons/zoom_out.svg';
-import { ReactComponent as WriteBtn } from '../assets/icons/add_circle.svg';
+import { ReactComponent as ZoomBtnSvg } from '../../assets/icons/zoom_out.svg';
+import { ReactComponent as WriteBtnSvg } from '../../assets/icons/add_circle.svg';
+import { flexBox } from '../../lib/styles/mixin';
 
-const FloatingContainer = styled.div`
+const FloatingDiv = styled.div`
+  ${flexBox(null, 'center', 'column')};
   position: fixed;
   left: 0;
   bottom: 0;
   width: 60px;
   font-size: 12px;
   color: #545454;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   svg {
     width: 50px;
     height: 50px;
@@ -29,12 +28,12 @@ const FeedFAB = () => {
   }, []);
 
   return (
-    <FloatingContainer ref={floatingEl}>
+    <FloatingDiv ref={floatingEl}>
       <div>탐험하기</div>
-      <ZoomBtn />
+      <ZoomBtnSvg />
       <div>글쓰기</div>
-      <WriteBtn />
-    </FloatingContainer>
+      <WriteBtnSvg />
+    </FloatingDiv>
   );
 };
 
