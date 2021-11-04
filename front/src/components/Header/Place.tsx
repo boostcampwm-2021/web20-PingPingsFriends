@@ -4,6 +4,8 @@ import { Palette } from '../../lib/styles/palette';
 import { flexBox } from '../../lib/styles/mixin';
 
 const PlaceBlock = styled.div`
+  ${flexBox()}
+
   border-radius: 10px;
   border: 1px solid ${Palette.gray};
   width: 200px;
@@ -11,7 +13,6 @@ const PlaceBlock = styled.div`
   &:hover {
     cursor: pointer;
   }
-  ${flexBox()}
 `;
 
 interface PlaceProps {

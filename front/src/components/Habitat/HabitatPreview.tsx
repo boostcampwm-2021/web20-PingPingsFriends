@@ -3,27 +3,27 @@ import styled from 'styled-components';
 import { flexBox } from '../../lib/styles/mixin';
 
 const HabitatPreviewBlock = styled.div<HabitatPreviewProps>`
+  ${flexBox('center', null, 'column')}
+
   position: absolute;
   width: 500px;
   height: 500px;
   border-radius: 50%;
   top: 25vh;
   background: ${({ color }) => color};
-
-  ${flexBox('center', null, 'column')}
+  padding: 100px;
 
   ${({ side }) => {
-    return side === 'right'
-      ? `
-    right: -250px;
-    align-items: flex-start;
-    `
-      : `
-      left:-250px;
+    const leftTemplate = `
+      left: -250px;
       align-items: flex-end;
-      `;
+    `;
+    const rightTemplate = `
+      right: -250px;
+      align-items: flex-start;
+    `;
+    return side === 'right' ? rightTemplate : leftTemplate;
   }};
-  padding: 100px;
 `;
 
 interface HabitatPreviewProps {

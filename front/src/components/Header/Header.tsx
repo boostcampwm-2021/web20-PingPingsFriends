@@ -8,7 +8,7 @@ import { flexBox } from '../../lib/styles/mixin';
 const LOGO: string = '핑핑이 친구들';
 
 const HeaderBlock = styled.div`
-  display: flex;
+  ${flexBox('space-between', 'center')};
   width: 100%;
   height: 54px;
   padding: 0 12px;
