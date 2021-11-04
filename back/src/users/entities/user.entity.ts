@@ -7,4 +7,7 @@ export class User {
 
   @Column({ length: 30 })
   name: string;
+
+  @Column({ length: 255 })
+  url: string;
 }
