@@ -1,6 +1,6 @@
 import React from 'react';
 
-const RegisterPage: React.FC = () => {
+const RegisterPage = () => {
   return <div>register page</div>;
 };
 

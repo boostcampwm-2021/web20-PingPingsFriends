@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ExplorePage: React.FC = () => {
+const ExplorePage = () => {
   return <div>explore page</div>;
 };
 
