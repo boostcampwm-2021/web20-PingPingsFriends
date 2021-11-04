@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Palette } from '../../lib/styles/palette';
+import { Palette } from '../../lib/styles/Palette';
 import { flexBox } from '../../lib/styles/mixin';
 
 const PlaceBlock = styled.div`
