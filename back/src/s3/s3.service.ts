@@ -1,10 +1,12 @@
-import { Injectable, Req, Res } from '@nestjs/common';
+import { Inject, Injectable, Req, Res } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import * as multer from 'multer';
 import * as multerS3 from 'multer-s3';
 import { CreateS3Dto } from './dto/create-s3.dto';
 import { UpdateS3Dto } from './dto/update-s3.dto';
 import * as dotenv from 'dotenv';
+import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 dotenv.config();
 
@@ -19,19 +21,33 @@ const s3 = new AWS.S3({
 
 @Injectable()
 export class S3Service {
+  constructor(
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>
+  ) {}
+
   async uploadS3(@Req() req, @Res() res) {
     try {
-      this.upload(req, res, function (err) {
+      this.upload(req, res, (err: any) => {
         if (err) {
           console.log(err);
           return res.status(404).json(`Failed to upload image file: ${err}`);
         }
-        return res.status(201).json(req.files[0].location);
+        const imageUrl = req.files[0].location;
+        this.updateProfile(imageUrl);
+        return res.status(201).json(imageUrl);
       });
     } catch (err) {
       console.log(err);
       return res.status(500).json(`Failed to upload image file: ${err}`);
     }
+  }
+
+  async updateProfile(url: string) {
+    const user = await this.userRepository.findOne(1);
+    user.url = url;
+    await this.userRepository.save(user);
+    return url;
   }
 
   upload = multer({
@@ -44,24 +60,4 @@ export class S3Service {
       },
     }),
   }).array('upload', 1);
-
-  create(createS3Dto: CreateS3Dto) {
-    return 'This action adds a new s3';
-  }
-
-  findAll() {
-    return `This action returns all s3`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} s3`;
-  }
-
-  update(id: number, updateS3Dto: UpdateS3Dto) {
-    return `This action updates a #${id} s3`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} s3`;
-  }
 }
