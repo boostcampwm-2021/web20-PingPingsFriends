@@ -7,6 +7,7 @@ import { UpdateS3Dto } from './dto/update-s3.dto';
 import * as dotenv from 'dotenv';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ const s3 = new AWS.S3({
 @Injectable()
 export class S3Service {
   constructor(
-    @Inject('USER_REPOSITORY')
+    @InjectRepository(User)
     private userRepository: Repository<User>
   ) {}
 
@@ -44,9 +45,9 @@ export class S3Service {
   }
 
   async updateProfile(url: string) {
-    const user = await this.userRepository.findOne(1);
-    user.url = url;
-    await this.userRepository.save(user);
+    // const user = await this.userRepository.findOne(1);
+    // user.url = url;
+    // await this.userRepository.save(user);
     return url;
   }
 
