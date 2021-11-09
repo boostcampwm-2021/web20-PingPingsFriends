@@ -23,7 +23,7 @@ const DropBoxDiv = styled.div<any>`
   top: ${(props) => props.top}px;
   z-index: 10;
   border-radius: ${DROPBOX_BORDER_RADIUS};
-  box-shadow: 0px 4px 10px rgba(51, 51, 51, 1), 0px 0px 4px rgba(51, 51, 51, 0.5);
+  box-shadow: 0 4px 10px rgba(51, 51, 51, 1), 0 0 4px rgba(51, 51, 51, 0.5);
   p {
     font-size: 12px;
     height: ${DROPBOX_ITEM_HEIGHT};
@@ -55,11 +55,11 @@ const DropBoxDiv = styled.div<any>`
 `;
 
 const DropBox = ({ start, offset, top, width, items, children }: DropBoxProps) => {
-  const [isDroped, setDrop] = useState(false);
+  const [isDropped, setDrop] = useState(false);
   return (
     <>
-      {React.cloneElement(children, { onClick: () => setDrop(!isDroped) })}
-      {isDroped ? (
+      {React.cloneElement(children, { onClick: () => setDrop(!isDropped) })}
+      {isDropped ? (
         <DropBoxDiv start={start} offset={offset} top={top} width={width}>
           {items.map((str, idx) => (
             <p key={idx}>{str}</p>

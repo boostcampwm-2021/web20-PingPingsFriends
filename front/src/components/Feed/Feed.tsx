@@ -5,9 +5,9 @@ import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.
 import Avatar from '../_common/Avatar/Avatar';
 import DropBox from '../_common/DropBox/DropBox';
 import Carousel from '../Carousel/Carousel';
-import HeartButton from './HeartButton';
+import HeartButton from '../HeartButton/HeartButton';
 import { flexBox } from '../../lib/styles/mixin';
-import { useLike } from './useLike';
+import { useLike } from '../HeartButton/useLike';
 
 const FeedContainerDiv = styled.div`
   background-color: white;

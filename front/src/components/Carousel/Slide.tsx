@@ -5,10 +5,12 @@ import { rectType } from './useClientRect';
 const SlideBlock = styled.img<Pick<SlideProps, 'rect'>>`
   width: ${({ rect }) => rect.width}px;
   height: ${({ rect }) => rect.height}px;
+  object-fit: cover;
 `;
 const Video = styled.video<Pick<SlideProps, 'rect'>>`
   width: ${({ rect }) => rect.width}px;
   height: ${({ rect }) => rect.height}px;
+  object-fit: cover;
 `;
 
 interface SlideProps {
