@@ -1,16 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Content } from 'src/contents/entities/content.entity';
+import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 
+interface contentDto {
+  location: string;
+  mimetype: string;
+}
+
 @Injectable()
 export class PostService {
-  constructor(@InjectRepository(Post) private postRepository: Repository<Post>) {}
+  constructor(
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>,
+    @InjectRepository(Content)
+    private contentRepository: Repository<Content>,
+    @InjectRepository(PostContent)
+    private postContentRepository: Repository<PostContent>
+  ) {}
 
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  create(createPostDto: CreatePostDto, contentsInfos: contentDto[]) {
+    const newPost = this.postRepository.create(createPostDto);
+    const newContents = contentsInfos.map((contentsInfo, i) => {
+      return this.contentRepository.create({
+        url: contentsInfo.location,
+        mimeType: contentsInfo.mimetype,
+      });
+    });
+    newContents.forEach((newContent, i) => {
+      this.postContentRepository.create({
+        postId: newPost.id,
+        contentsId: newContent.id,
+      });
+    });
+    return newPost;
   }
 
   findAll(habitatId: number, skip: number, take: number) {
