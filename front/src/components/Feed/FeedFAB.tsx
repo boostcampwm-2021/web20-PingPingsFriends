@@ -22,9 +22,17 @@ const FeedFAB = () => {
   const floatingEl = useRef<HTMLDivElement>(null);
   const FEED_SECTION_WIDTH: number = 500;
   const FAB_OFFSET: number = 10;
+  const changeResponsivePosition = () => {
+    const newPos: number = (window.innerWidth + FEED_SECTION_WIDTH) / 2;
+    if (floatingEl.current !== null) floatingEl.current.style.left = newPos + FAB_OFFSET + 'px';
+  };
+
   useEffect(() => {
-    const fabPos: number = (window.innerWidth + FEED_SECTION_WIDTH) / 2;
-    if (floatingEl.current !== null) floatingEl.current.style.left = fabPos + FAB_OFFSET + 'px';
+    changeResponsivePosition();
+    window.addEventListener('resize', changeResponsivePosition);
+    return () => {
+      window.removeEventListener('resize', changeResponsivePosition);
+    };
   }, []);
 
   return (

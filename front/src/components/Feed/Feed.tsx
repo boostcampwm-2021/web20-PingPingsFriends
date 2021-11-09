@@ -4,6 +4,7 @@ import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.s
 import { ReactComponent as HeartBtnSvg } from '../../assets/icons/empty_heart_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
 import Avatar from '../_common/Avatar/Avatar';
+import DropBox from '../_common/DropBox/DropBox';
 import { flexBox } from '../../lib/styles/mixin';
 
 export interface FeedJson {
@@ -66,12 +67,15 @@ const FeedTextDiv = styled.div`
 `;
 
 const Feed = ({ json }: { json: FeedJson }) => {
+  const dropboxItems = ['글 삭제', '글 수정'];
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
         <Avatar />
         <span>{json.nickname}</span>
-        <VertBtnSvg className="vert_btn" />
+        <DropBox start="right" offset={10} top={55} width={150} items={dropboxItems}>
+          <VertBtnSvg className="vert_btn button" />
+        </DropBox>
       </FeedHeaderDiv>
       <FeedContents imageURL={json.imageURL} />
       <FeedInfoDiv>
