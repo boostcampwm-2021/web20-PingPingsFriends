@@ -28,7 +28,7 @@ export class PostService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    return this.postRepository.findOne(id, { relations: ['user', 'user.content', 'comments', 'comments.user', 'comments.user.content', 'postContents', 'postContents.content', 'likingUser'] });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
