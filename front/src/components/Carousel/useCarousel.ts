@@ -1,0 +1,34 @@
+import { useState } from 'react';
+import { rectType } from './useClientRect';
+
+type useCarouselType = [number, number, () => void, () => void];
+
+interface useCarouselProps {
+  slideCount: number;
+  rect: rectType;
+}
+
+export const useCarousel = ({ slideCount, rect }: useCarouselProps): useCarouselType => {
+  const [state, setState] = useState({
+    slideIndex: 0,
+    translateStyle: 0,
+  });
+
+  const { translateStyle, slideIndex } = state;
+
+  const nextSlide = () => {
+    if (slideIndex === slideCount - 1) {
+      return;
+    }
+    setState({ ...state, slideIndex: slideIndex + 1, translateStyle: (slideIndex + 1) * rect.width });
+  };
+
+  const prevSlide = () => {
+    if (slideIndex === 0) {
+      return;
+    }
+    setState({ ...state, slideIndex: slideIndex - 1, translateStyle: (slideIndex - 1) * rect.width });
+  };
+
+  return [translateStyle, slideIndex, nextSlide, prevSlide];
+};
