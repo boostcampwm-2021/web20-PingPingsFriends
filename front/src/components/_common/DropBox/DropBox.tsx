@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef } from 'react';
+import React, { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '../../../lib/styles/Palette';
 
@@ -8,13 +8,13 @@ export interface DropBoxProps {
   top: number;
   width: number;
   items: string[];
+  children: ReactElement;
 }
 
 const DROPBOX_ITEM_HEIGHT = '40px';
 const DROPBOX_BORDER_RADIUS = '7px';
 
 const DropBoxDiv = styled.div<any>`
-  display: none;
   width: ${(props) => props.width}px;
   height: max-content;
   background-color: ${Palette.WHITE};
@@ -54,27 +54,20 @@ const DropBoxDiv = styled.div<any>`
   }
 `;
 
-export interface dropboxRefHandler {
-  toggle: () => void;
-}
-
-const DropBox = React.forwardRef(({ start, offset, top, width, items }: DropBoxProps, ref: any) => {
-  const dropboxEl = useRef<HTMLDivElement>();
-  useImperativeHandle(ref, () => ({
-    toggle: () => {
-      if (dropboxEl.current) {
-        if (dropboxEl.current.style.display === 'block') dropboxEl.current.style.display = 'none';
-        else dropboxEl.current.style.display = 'block';
-      }
-    },
-  }));
+const DropBox = ({ start, offset, top, width, items, children }: DropBoxProps) => {
+  const [isDroped, setDrop] = useState(false);
   return (
-    <DropBoxDiv ref={dropboxEl} start={start} offset={offset} top={top} width={width}>
-      {items.map((str, idx) => (
-        <p key={idx}>{str}</p>
-      ))}
-    </DropBoxDiv>
+    <>
+      {React.cloneElement(children, { onClick: () => setDrop(!isDroped) })}
+      {isDroped ? (
+        <DropBoxDiv start={start} offset={offset} top={top} width={width}>
+          {items.map((str, idx) => (
+            <p key={idx}>{str}</p>
+          ))}
+        </DropBoxDiv>
+      ) : null}
+    </>
   );
-});
+};
 
 export default DropBox;
