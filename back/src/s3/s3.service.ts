@@ -1,13 +1,9 @@
-import { Inject, Injectable, Req, Res } from '@nestjs/common';
+import { Injectable, Req, Res } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import * as multer from 'multer';
 import * as multerS3 from 'multer-s3';
-import { CreateS3Dto } from './dto/create-s3.dto';
-import { UpdateS3Dto } from './dto/update-s3.dto';
 import * as dotenv from 'dotenv';
-import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Request, Response } from 'express';
 
 dotenv.config();
 
@@ -20,35 +16,31 @@ const s3 = new AWS.S3({
   },
 });
 
+interface fileDto extends Express.Multer.File {
+  location: string;
+  mimetype: string;
+}
+
 @Injectable()
 export class S3Service {
-  constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>
-  ) {}
-
-  async uploadS3(@Req() req, @Res() res) {
-    try {
+  uploadS3(@Req() req: Request, @Res() res: Response) {
+    return new Promise((resolve, reject) => {
       this.upload(req, res, (err: any) => {
-        if (err) {
-          console.log(err);
-          return res.status(404).json(`Failed to upload image file: ${err}`);
-        }
-        const imageUrl = req.files[0].location;
-        this.updateProfile(imageUrl);
-        return res.status(201).json(imageUrl);
-      });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json(`Failed to upload image file: ${err}`);
-    }
-  }
+        if (err) reject();
 
-  async updateProfile(url: string) {
-    // const user = await this.userRepository.findOne(1);
-    // user.url = url;
-    // await this.userRepository.save(user);
-    return url;
+        const files = req.files;
+
+        if (Array.isArray(files)) {
+          const contentsInfos = files.map((v: fileDto, i: number) => {
+            return {
+              location: v.location,
+              mimetype: v.mimetype,
+            };
+          });
+          resolve(contentsInfos);
+        }
+      });
+    });
   }
 
   upload = multer({
@@ -60,5 +52,5 @@ export class S3Service {
         cb(null, `${Date.now().toString()}-${file.originalname}`);
       },
     }),
-  }).array('upload', 1);
+  }).array('upload', 10);
 }
