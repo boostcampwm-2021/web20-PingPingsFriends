@@ -7,28 +7,18 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Post()
+  @Post() //댓글 추가
   create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
+    return this.commentsService.createComment(createCommentDto);
   }
 
-  @Get()
-  findAll() {
-    return this.commentsService.findAll();
-  }
+  // @Patch(':id')//댓글 수정
+  // update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
+  //   return this.commentsService.update(+id, updateCommentDto);
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
-  }
+  // @Delete(':id')//댓글 삭제
+  // remove(@Param('id') id: string) {
+  //   return this.commentsService.remove(+id);
+  // }
 }
