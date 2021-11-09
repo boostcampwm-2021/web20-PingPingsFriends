@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -12,12 +12,12 @@ export class PostController {
     return this.postService.create(createPostDto);
   }
 
-  @Get()
-  findAll() {
-    return this.postService.findAll();
+  @Get(':habitatId')
+  findAll(@Param('habitatId') habitatId: string, @Query('skip') skip: string, @Query('take') take: string) {
+    return this.postService.findAll(+habitatId, +skip, +take);
   }
 
-  @Get(':id')
+  @Get(':habitatId/:id')
   findOne(@Param('id') id: string) {
     return this.postService.findOne(+id);
   }
