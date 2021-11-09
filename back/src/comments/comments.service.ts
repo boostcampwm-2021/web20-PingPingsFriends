@@ -14,6 +14,9 @@ export class CommentsService {
     return this.commentRepository.createComment(createCommentDto);
   }
 
+  updateComment(id: number, updateCommentDto: UpdateCommentDto) {
+    return this.commentRepository.updateComment(id, updateCommentDto);
+  }
   // findAll() {
   //   return `This action returns all comments`;
   // }
@@ -22,9 +25,7 @@ export class CommentsService {
   //   return `This action returns a #${id} comment`;
   // }
 
-  // update(id: number, updateCommentDto: UpdateCommentDto) {
-  //   return `This action updates a #${id} comment`;
-  // }
+
 
   // remove(id: number) {
   //   return `This action removes a #${id} comment`;
