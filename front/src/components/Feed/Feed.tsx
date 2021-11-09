@@ -6,13 +6,7 @@ import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.
 import Avatar from '../_common/Avatar/Avatar';
 import DropBox from '../_common/DropBox/DropBox';
 import { flexBox } from '../../lib/styles/mixin';
-
-export interface FeedJson {
-  id: number;
-  nickname: string;
-  imageURL: string;
-  text: string;
-}
+import Carousel from '../Carousel/Carousel';
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -35,19 +29,10 @@ const FeedHeaderDiv = styled.div`
   }
 `;
 
-const FeedContents = styled.div<Pick<FeedJson, 'imageURL'>>`
+const FeedContents = styled.div`
   width: 100%;
+  height: 500px;
   position: relative;
-  background-color: aliceblue;
-
-  &::after {
-    padding-bottom: 100%;
-    content: '';
-    background-image: ${(props) => `url(${props.imageURL})`};
-    background-position: center;
-    background-size: cover;
-    display: block;
-  }
 `;
 
 const FeedInfoDiv = styled.div`
@@ -66,25 +51,37 @@ const FeedTextDiv = styled.div`
   padding: 0 10px;
 `;
 
+export interface FeedJson {
+  id: number;
+  nickname: string;
+  imageURLs: string[];
+  text: string;
+}
+
 const Feed = ({ json }: { json: FeedJson }) => {
   const dropboxItems = ['글 삭제', '글 수정'];
+
+  const { nickname, imageURLs, text } = json;
+
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
         <Avatar />
-        <span>{json.nickname}</span>
+        <span>{nickname}</span>
         <DropBox start="right" offset={10} top={55} width={150} items={dropboxItems}>
           <VertBtnSvg className="vert_btn button" />
         </DropBox>
       </FeedHeaderDiv>
-      <FeedContents imageURL={json.imageURL} />
+      <FeedContents>
+        <Carousel imageURLs={imageURLs} />
+      </FeedContents>
       <FeedInfoDiv>
         <HeartBtnSvg />
         <CommentBtnSvg />
         <span>13</span>
         <span className="time">2시간 전</span>
       </FeedInfoDiv>
-      <FeedTextDiv>{json.text}</FeedTextDiv>
+      <FeedTextDiv>{text}</FeedTextDiv>
     </FeedContainerDiv>
   );
 };
