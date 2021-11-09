@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-export type ModalEvent = React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>;
+export type ModalEvent = React.MouseEvent<Element> | React.KeyboardEvent<Element>;
 
 const useModal = ($elem = '#modal') => {
   const [isShowing, setIsShowing] = useState(false);
