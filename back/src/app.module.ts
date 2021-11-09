@@ -14,8 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './database/database.config';
 
 @Module({
-  // imports: [TypeOrmModule.forRoot(databaseConfig), UsersModule, S3Module, ContentsModule, PostContentsModule, PostModule, CommentModule, LikedModule, HabitatModule, FollowModule, SpeciesModule],
-  imports: [UsersModule],
+  imports: [TypeOrmModule.forRoot(databaseConfig), UsersModule, S3Module, ContentsModule, PostContentsModule, PostModule, CommentModule, HabitatModule, FollowModule, SpeciesModule],
   controllers: [AppController],
   providers: [AppService],
 })

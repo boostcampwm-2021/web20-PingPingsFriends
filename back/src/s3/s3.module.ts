@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { S3Service } from './s3.service';
 import { S3Controller } from './s3.controller';
-import { userProviders } from 'src/users/users.providers';
 import { S3 } from './entities/s3.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
