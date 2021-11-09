@@ -7,7 +7,7 @@ export interface DropBoxProps {
   offset: number;
   top: number;
   width: number;
-  items: string[];
+  items: JSX.Element[];
   children: ReactElement;
 }
 
@@ -21,7 +21,7 @@ const DropBoxDiv = styled.div<any>`
   position: absolute;
   ${(props) => `${props.start}:${props.offset}px`};
   top: ${(props) => props.top}px;
-  z-index: 10;
+  z-index: 1;
   border-radius: ${DROPBOX_BORDER_RADIUS};
   box-shadow: 0 4px 10px rgba(51, 51, 51, 1), 0 0 4px rgba(51, 51, 51, 0.5);
   p {
@@ -61,9 +61,7 @@ const DropBox = ({ start, offset, top, width, items, children }: DropBoxProps) =
       {React.cloneElement(children, { onClick: () => setDrop(!isDropped) })}
       {isDropped ? (
         <DropBoxDiv start={start} offset={offset} top={top} width={width}>
-          {items.map((str, idx) => (
-            <p key={idx}>{str}</p>
-          ))}
+          {items}
         </DropBoxDiv>
       ) : null}
     </>

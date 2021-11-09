@@ -64,12 +64,14 @@ const Feed = ({ json }: { json: FeedJson }) => {
   const { nickname, imageURLs, text } = json;
   const [like, toggleLike] = useLike();
 
+  const test = useDropBox([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
+
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
         <Avatar />
         <span>{nickname}</span>
-        <DropBox start="right" offset={10} top={55} width={150} items={dropboxItems}>
+        <DropBox start="right" offset={10} top={55} width={150} items={test}>
           <VertBtnSvg className="vert_btn button" />
         </DropBox>
       </FeedHeaderDiv>
