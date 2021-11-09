@@ -7,7 +7,8 @@ const useModal = ($elem = '#modal') => {
   const contentRef = useRef<HTMLDivElement>(null);
   const $portal = document.querySelector($elem) as Element;
 
-  const toggle = (event: ModalEvent): void => {
+  const toggle = (event: ModalEvent, force = false): void => {
+    if (force) setIsShowing(!isShowing);
     if ('key' in event && event.key === 'Escape') {
       setIsShowing(!isShowing);
       return;
