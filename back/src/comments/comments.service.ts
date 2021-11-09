@@ -3,13 +3,13 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
-export class CommentService {
+export class CommentsService {
   create(createCommentDto: CreateCommentDto) {
     return 'This action adds a new comment';
   }
 
   findAll() {
-    return `This action returns all comment`;
+    return `This action returns all comments`;
   }
 
   findOne(id: number) {
