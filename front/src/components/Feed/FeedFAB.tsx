@@ -4,6 +4,7 @@ import { ReactComponent as ZoomBtnSvg } from '../../assets/icons/zoom_out.svg';
 import { ReactComponent as WriteBtnSvg } from '../../assets/icons/add_circle.svg';
 import Modal from '../Modal/Modal';
 import useModal from '../Modal/useModal';
+import WriteModal from '../Write/WriteModal';
 import { flexBox } from '../../lib/styles/mixin';
 
 const FloatingDiv = styled.div<{ pos: number }>`
@@ -44,7 +45,7 @@ const FeedFAB = () => {
       <div>글쓰기</div>
       <WriteBtnSvg onClick={toggle} />
       <Modal isShowing={isShowing} hide={toggle}>
-        <div>adfafd</div>
+        <WriteModal hide={toggle} />
       </Modal>
     </FloatingDiv>
   );
