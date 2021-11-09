@@ -8,6 +8,10 @@ import Carousel from '../Carousel/Carousel';
 import HeartButton from '../HeartButton/HeartButton';
 import { flexBox } from '../../lib/styles/mixin';
 import { useLike } from '../HeartButton/useLike';
+import { useDropBox } from '../_common/DropBox/useDropBox';
+import Modal from '../Modal/Modal';
+import DeleteModal from '../DeleteModal/DeleteModal';
+import useModal from '../Modal/useModal';
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -60,8 +64,8 @@ export interface FeedJson {
 }
 
 const Feed = ({ json }: { json: FeedJson }) => {
-  const dropboxItems = ['글 삭제', '글 수정'];
   const { nickname, imageURLs, text } = json;
+  const { isShowing, toggle } = useModal();
   const [like, toggleLike] = useLike();
 
   const test = useDropBox([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
@@ -85,6 +89,9 @@ const Feed = ({ json }: { json: FeedJson }) => {
         <span className="time">2시간 전</span>
       </FeedInfoDiv>
       <FeedTextDiv>{text}</FeedTextDiv>
+      <Modal isShowing={isShowing} hide={toggle}>
+        <DeleteModal hide={toggle} />
+      </Modal>
     </FeedContainerDiv>
   );
 };
