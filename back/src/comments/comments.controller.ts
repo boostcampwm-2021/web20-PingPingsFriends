@@ -17,8 +17,8 @@ export class CommentsController {
     return this.commentsService.updateComment(id, updateCommentDto);
   }
 
-  // @Delete(':id')//댓글 삭제
-  // remove(@Param('id') id: string) {
-  //   return this.commentsService.remove(+id);
-  // }
+  @Delete(':id')//댓글 삭제
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.commentsService.removeComment(id);
+  }
 }
