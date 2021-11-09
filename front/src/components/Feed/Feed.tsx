@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.svg';
-import { ReactComponent as HeartBtnSvg } from '../../assets/icons/empty_heart_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
 import Avatar from '../_common/Avatar/Avatar';
 import DropBox from '../_common/DropBox/DropBox';
-import { flexBox } from '../../lib/styles/mixin';
 import Carousel from '../Carousel/Carousel';
+import HeartButton from './HeartButton';
+import { flexBox } from '../../lib/styles/mixin';
+import { useLike } from './useLike';
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -60,8 +61,8 @@ export interface FeedJson {
 
 const Feed = ({ json }: { json: FeedJson }) => {
   const dropboxItems = ['글 삭제', '글 수정'];
-
   const { nickname, imageURLs, text } = json;
+  const [like, toggleLike] = useLike();
 
   return (
     <FeedContainerDiv>
@@ -76,7 +77,7 @@ const Feed = ({ json }: { json: FeedJson }) => {
         <Carousel imageURLs={imageURLs} />
       </FeedContents>
       <FeedInfoDiv>
-        <HeartBtnSvg />
+        <HeartButton like={like} toggleLike={toggleLike} />
         <CommentBtnSvg />
         <span>13</span>
         <span className="time">2시간 전</span>
