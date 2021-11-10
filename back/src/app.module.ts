@@ -11,10 +11,11 @@ import { HabitatModule } from './habitat/habitat.module';
 import { FollowModule } from './follow/follow.module';
 import { SpeciesModule } from './species/species.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HeartsModule } from './hearts/hearts.module';
 import databaseConfig from './database/database.config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(databaseConfig), UsersModule, S3Module, ContentsModule, PostContentsModule, PostModule, CommentModule, HabitatModule, FollowModule, SpeciesModule],
+  imports: [TypeOrmModule.forRoot(databaseConfig), UsersModule, S3Module, ContentsModule, PostContentsModule, PostModule, CommentModule, HabitatModule, FollowModule, SpeciesModule, HeartsModule],
   controllers: [AppController],
   providers: [AppService],
 })
