@@ -5,7 +5,6 @@ import { useClientRect } from '../../../lib/hooks/useClientRect';
 import Slide from './Slide';
 import Arrow from './Arrow';
 import Dots from './Dots';
-import { FeedJson } from '../../Feed/Feed';
 import { useMoveSlide } from './useMoveSlide';
 
 const CarouselDiv = styled.div`
@@ -16,7 +15,12 @@ const CarouselDiv = styled.div`
   overflow: hidden;
 `;
 
-const Carousel = ({ imageURLs }: Pick<FeedJson, 'imageURLs'>) => {
+interface CarouselProps {
+  imageURLs: string[];
+  scrollRef: React.MutableRefObject<HTMLDivElement>;
+}
+
+const Carousel = ({ imageURLs, scrollRef }: CarouselProps) => {
   const [rect, ref] = useClientRect();
   const [translateStyle, slideIndex, nextSlide, prevSlide] = useMoveSlide({ slideCount: imageURLs.length, rect });
 
@@ -24,12 +28,17 @@ const Carousel = ({ imageURLs }: Pick<FeedJson, 'imageURLs'>) => {
     <CarouselDiv ref={ref}>
       <CarouselContents trans={translateStyle} width={rect.width * imageURLs.length}>
         {imageURLs.map((src, index) => (
-          <Slide key={index} rect={rect} src={src} />
+          <Slide key={index} rect={rect} src={src} scrollRef={scrollRef} />
         ))}
       </CarouselContents>
-      <Arrow direction={'right'} handleClick={nextSlide} />
-      <Arrow direction={'left'} handleClick={prevSlide} />
-      <Dots slides={imageURLs} slideIndex={slideIndex} />
+
+      {imageURLs.length > 1 ? (
+        <>
+          <Arrow direction={'right'} handleClick={nextSlide} />
+          <Arrow direction={'left'} handleClick={prevSlide} />
+          <Dots slides={imageURLs} slideIndex={slideIndex} />
+        </>
+      ) : null}
     </CarouselDiv>
   );
 };

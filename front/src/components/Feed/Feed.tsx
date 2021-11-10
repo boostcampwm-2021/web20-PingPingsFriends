@@ -56,22 +56,23 @@ const FeedTextDiv = styled.div`
   padding: 0 10px;
 `;
 
-export interface FeedJson {
-  id: number;
+export interface FeedProps {
+  id?: string;
   nickname: string;
   imageURLs: string[];
   text: string;
+  lastFeed?: (node: HTMLDivElement) => void;
+  scrollRef?: any;
 }
 
-const Feed = ({ json }: { json: FeedJson }) => {
-  const { nickname, imageURLs, text } = json;
+const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => {
   const { isShowing, toggle } = useModal();
   const [like, toggleLike] = useLike();
 
   const test = makeDropBoxMenu([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
 
   return (
-    <FeedContainerDiv>
+    <FeedContainerDiv ref={lastFeed}>
       <FeedHeaderDiv>
         <Avatar />
         <span>{nickname}</span>
@@ -80,7 +81,7 @@ const Feed = ({ json }: { json: FeedJson }) => {
         </DropBox>
       </FeedHeaderDiv>
       <FeedContents>
-        <Carousel imageURLs={imageURLs} />
+        <Carousel imageURLs={imageURLs} scrollRef={scrollRef} />
       </FeedContents>
       <FeedInfoDiv>
         <HeartButton like={like} toggleLike={toggleLike} />
