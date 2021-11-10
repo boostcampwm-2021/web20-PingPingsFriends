@@ -1,18 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.svg';
-import { ReactComponent as HeartBtnSvg } from '../../assets/icons/empty_heart_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
 import Avatar from '../_common/Avatar/Avatar';
 import DropBox from '../_common/DropBox/DropBox';
+import Carousel from '../Carousel/Carousel';
+import HeartButton from '../HeartButton/HeartButton';
 import { flexBox } from '../../lib/styles/mixin';
-
-export interface FeedJson {
-  id: number;
-  nickname: string;
-  imageURL: string;
-  text: string;
-}
+import { useLike } from '../HeartButton/useLike';
+import { useDropBox } from '../_common/DropBox/useDropBox';
+import Modal from '../Modal/Modal';
+import DeleteModal from '../DeleteModal/DeleteModal';
+import useModal from '../Modal/useModal';
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -35,19 +34,10 @@ const FeedHeaderDiv = styled.div`
   }
 `;
 
-const FeedContents = styled.div<Pick<FeedJson, 'imageURL'>>`
+const FeedContents = styled.div`
   width: 100%;
+  height: 500px;
   position: relative;
-  background-color: aliceblue;
-
-  &::after {
-    padding-bottom: 100%;
-    content: '';
-    background-image: ${(props) => `url(${props.imageURL})`};
-    background-position: center;
-    background-size: cover;
-    display: block;
-  }
 `;
 
 const FeedInfoDiv = styled.div`
@@ -66,25 +56,42 @@ const FeedTextDiv = styled.div`
   padding: 0 10px;
 `;
 
+export interface FeedJson {
+  id: number;
+  nickname: string;
+  imageURLs: string[];
+  text: string;
+}
+
 const Feed = ({ json }: { json: FeedJson }) => {
-  const dropboxItems = ['글 삭제', '글 수정'];
+  const { nickname, imageURLs, text } = json;
+  const { isShowing, toggle } = useModal();
+  const [like, toggleLike] = useLike();
+
+  const test = useDropBox([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
+
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
         <Avatar />
-        <span>{json.nickname}</span>
-        <DropBox start="right" offset={10} top={55} width={150} items={dropboxItems}>
+        <span>{nickname}</span>
+        <DropBox start="right" offset={10} top={55} width={150} items={test}>
           <VertBtnSvg className="vert_btn button" />
         </DropBox>
       </FeedHeaderDiv>
-      <FeedContents imageURL={json.imageURL} />
+      <FeedContents>
+        <Carousel imageURLs={imageURLs} />
+      </FeedContents>
       <FeedInfoDiv>
-        <HeartBtnSvg />
+        <HeartButton like={like} toggleLike={toggleLike} />
         <CommentBtnSvg />
         <span>13</span>
         <span className="time">2시간 전</span>
       </FeedInfoDiv>
-      <FeedTextDiv>{json.text}</FeedTextDiv>
+      <FeedTextDiv>{text}</FeedTextDiv>
+      <Modal isShowing={isShowing} hide={toggle}>
+        <DeleteModal hide={toggle} />
+      </Modal>
     </FeedContainerDiv>
   );
 };
