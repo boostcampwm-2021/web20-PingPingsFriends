@@ -1,9 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateHeartDto } from './dto/create-heart.dto';
 import { UpdateHeartDto } from './dto/update-heart.dto';
+import { Heart } from './entities/heart.entity';
 
 @Injectable()
 export class HeartsService {
+  constructor(
+    @InjectRepository(Heart)
+    private heartRepository: Repository<Heart>
+  ) {}
+
   create(createHeartDto: CreateHeartDto) {
     return 'This action adds a new heart';
   }
@@ -12,8 +20,8 @@ export class HeartsService {
     return `This action returns all hearts`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} heart`;
+  async findOne(userId: number, postId: number) {
+    return await this.heartRepository.createQueryBuilder('heart').where('heart.postId = :postId AND heart.userId = :userId', { postId: postId, userId: userId }).getCount();
   }
 
   update(id: number, updateHeartDto: UpdateHeartDto) {

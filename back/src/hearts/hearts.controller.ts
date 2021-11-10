@@ -17,9 +17,9 @@ export class HeartsController {
     return this.heartsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.heartsService.findOne(+id);
+  @Get(':userId/:postId')
+  async findOne(@Param('userId') userId: string, @Param('postId') postId: string) {
+    return await this.heartsService.findOne(+userId, +postId);
   }
 
   @Patch(':id')
