@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as LeftArrowSvg } from '../../assets/icons/left_arrow.svg';
-import { ReactComponent as RightArrowSvg } from '../../assets/icons/right_arrow.svg';
+import { ReactComponent as LeftArrowSvg } from '../../../assets/icons/left_arrow.svg';
+import { ReactComponent as RightArrowSvg } from '../../../assets/icons/right_arrow.svg';
 
 const ArrowDiv = styled.div<Partial<ArrowProps>>`
   position: absolute;

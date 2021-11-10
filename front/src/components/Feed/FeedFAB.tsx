@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as ZoomBtnSvg } from '../../assets/icons/zoom_out.svg';
 import { ReactComponent as WriteBtnSvg } from '../../assets/icons/add_circle.svg';
-import Modal from '../Modal/Modal';
-import useModal from '../Modal/useModal';
+import Modal from '../_common/Modal/Modal';
+import useModal from '../_common/Modal/useModal';
 import WriteModal from '../Write/WriteModal';
 import { flexBox } from '../../lib/styles/mixin';
 

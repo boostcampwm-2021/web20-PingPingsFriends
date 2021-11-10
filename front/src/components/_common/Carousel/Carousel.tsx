@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import CarouselContents from './CarouselContents';
-import { useClientRect } from './useClientRect';
+import { useClientRect } from '../../../lib/hooks/useClientRect';
 import Slide from './Slide';
 import Arrow from './Arrow';
 import Dots from './Dots';
-import { FeedJson } from '../Feed/Feed';
-import { useCarousel } from './useCarousel';
+import { FeedJson } from '../../Feed/Feed';
+import { useMoveSlide } from './useMoveSlide';
 
 const CarouselDiv = styled.div`
   position: relative;
@@ -18,7 +18,7 @@ const CarouselDiv = styled.div`
 
 const Carousel = ({ imageURLs }: Pick<FeedJson, 'imageURLs'>) => {
   const [rect, ref] = useClientRect();
-  const [translateStyle, slideIndex, nextSlide, prevSlide] = useCarousel({ slideCount: imageURLs.length, rect });
+  const [translateStyle, slideIndex, nextSlide, prevSlide] = useMoveSlide({ slideCount: imageURLs.length, rect });
 
   return (
     <CarouselDiv ref={ref}>

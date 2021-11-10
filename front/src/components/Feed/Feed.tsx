@@ -4,14 +4,14 @@ import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.s
 import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
 import Avatar from '../_common/Avatar/Avatar';
 import DropBox from '../_common/DropBox/DropBox';
-import Carousel from '../Carousel/Carousel';
+import Carousel from '../_common/Carousel/Carousel';
 import HeartButton from '../HeartButton/HeartButton';
 import { flexBox } from '../../lib/styles/mixin';
 import { useLike } from '../HeartButton/useLike';
-import { useDropBox } from '../_common/DropBox/useDropBox';
-import Modal from '../Modal/Modal';
+import { makeDropBoxMenu } from '../_common/DropBox/makeDropBoxMenu';
+import Modal from '../_common/Modal/Modal';
 import DeleteModal from '../DeleteModal/DeleteModal';
-import useModal from '../Modal/useModal';
+import useModal from '../_common/Modal/useModal';
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -68,7 +68,7 @@ const Feed = ({ json }: { json: FeedJson }) => {
   const { isShowing, toggle } = useModal();
   const [like, toggleLike] = useLike();
 
-  const test = useDropBox([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
+  const test = makeDropBoxMenu([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
 
   return (
     <FeedContainerDiv>

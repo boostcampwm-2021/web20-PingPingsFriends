@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { rectType } from './useClientRect';
+import { rectType } from '../../../lib/hooks/useClientRect';
 
 const SlideImg = styled.img<Pick<SlideProps, 'rect'>>`
   width: ${({ rect }) => rect.width}px;
