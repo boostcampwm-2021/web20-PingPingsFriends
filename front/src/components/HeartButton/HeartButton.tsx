@@ -20,7 +20,7 @@ const animation = () =>
     ${ButtonScale} 0.45s ease-in-out;
   `;
 
-const HeartButtonBlock = styled.div<Partial<LikeProps>>`
+const HeartButtonDiv = styled.div<Partial<LikeProps>>`
   position: relative;
   animation: ${({ like }) => like && animation};
   &:hover {
@@ -30,9 +30,9 @@ const HeartButtonBlock = styled.div<Partial<LikeProps>>`
 
 const HeartButton = ({ like, toggleLike }: LikeProps) => {
   return (
-    <HeartButtonBlock onClick={toggleLike} like={like}>
+    <HeartButtonDiv onClick={toggleLike} like={like}>
       {like ? <FillHeartSvg /> : <EmptyHeartSvg />}
-    </HeartButtonBlock>
+    </HeartButtonDiv>
   );
 };
 

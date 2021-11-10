@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ReactComponent as LeftArrowSvg } from '../../assets/icons/left_arrow.svg';
 import { ReactComponent as RightArrowSvg } from '../../assets/icons/right_arrow.svg';
 
-const ArrowBlock = styled.div<Partial<ArrowProps>>`
+const ArrowDiv = styled.div<Partial<ArrowProps>>`
   position: absolute;
   top: calc(50% - 24px);
   width: 24px;
@@ -21,9 +21,9 @@ interface ArrowProps {
 
 const Arrow = ({ direction, handleClick }: ArrowProps) => {
   return (
-    <ArrowBlock direction={direction} onClick={handleClick}>
+    <ArrowDiv direction={direction} onClick={handleClick}>
       {direction === 'right' ? <RightArrowSvg /> : <LeftArrowSvg />}
-    </ArrowBlock>
+    </ArrowDiv>
   );
 };
 

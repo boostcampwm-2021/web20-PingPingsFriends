@@ -15,7 +15,7 @@ const useModal = ($elem = '#modal') => {
     }
 
     const target = event.target as Element;
-    if (target.closest('.close')) {
+    if (target.closest('.modal-close-button')) {
       setIsShowing(!isShowing);
       return;
     }

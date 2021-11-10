@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const CarouselContentsBlock = styled.div<Partial<CarouselContentsProps>>`
+const CarouselContentsDiv = styled.div<Partial<CarouselContentsProps>>`
   display: flex;
   transform: translateX(-${(props) => props.trans}px);
   transition: 0.45s;
@@ -17,9 +17,9 @@ interface CarouselContentsProps {
 
 const CarouselContents = ({ children, trans, width }: CarouselContentsProps) => {
   return (
-    <CarouselContentsBlock trans={trans} width={width}>
+    <CarouselContentsDiv trans={trans} width={width}>
       {children}
-    </CarouselContentsBlock>
+    </CarouselContentsDiv>
   );
 };
 

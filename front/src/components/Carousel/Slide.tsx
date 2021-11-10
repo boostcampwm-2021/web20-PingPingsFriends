@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { rectType } from './useClientRect';
 
-const SlideBlock = styled.img<Pick<SlideProps, 'rect'>>`
+const SlideImg = styled.img<Pick<SlideProps, 'rect'>>`
   width: ${({ rect }) => rect.width}px;
   height: ${({ rect }) => rect.height}px;
   object-fit: cover;
@@ -24,7 +24,7 @@ const Slide = ({ src, rect }: SlideProps) => {
       <source src={src} type={'video/mp4'} />
     </Video>
   ) : (
-    <SlideBlock src={src} rect={rect} alt="피드 이미지" />
+    <SlideImg src={src} rect={rect} alt="피드 이미지" />
   );
 };
 

@@ -4,7 +4,7 @@ import { Palette } from '../../lib/styles/Palette';
 import { flexBox } from '../../lib/styles/mixin';
 import { ToggleModal } from '../Modal/useModal';
 
-const DeleteModalBlock = styled.div`
+const DeleteModalDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
   width: 340px;
   height: 180px;
@@ -13,7 +13,7 @@ const DeleteModalBlock = styled.div`
   border-radius: 10px;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainerDiv = styled.div`
   ${flexBox('space-around', 'center')};
   width: 100%;
   margin-top: 40px;
@@ -22,7 +22,7 @@ const ButtonContainer = styled.div`
     width: 70px;
     height: 25px;
     border-radius: 8px;
-    &.close {
+    &.cancel {
       background: ${Palette.RED};
     }
     &.confirm {
@@ -37,15 +37,15 @@ interface DeleteModalProps {
 
 const DeleteModal = ({ hide }: DeleteModalProps) => {
   return (
-    <DeleteModalBlock>
+    <DeleteModalDiv>
       <span>삭제하시겠습니까?</span>
-      <ButtonContainer>
-        <button className={'close'} onClick={hide}>
+      <ButtonContainerDiv>
+        <button className={'cancel modal-close-button'} onClick={hide}>
           취소
         </button>
-        <button className={'confirm'}>확인</button>
-      </ButtonContainer>
-    </DeleteModalBlock>
+        <button className={'confirm modal-close-button'}>확인</button>
+      </ButtonContainerDiv>
+    </DeleteModalDiv>
   );
 };
 

@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { Palette } from '../../lib/styles/Palette';
 import { flexBox } from '../../lib/styles/mixin';
 
-const DotsContainer = styled.div`
+const DotsDiv = styled.div`
   ${flexBox('center', 'center')};
   position: absolute;
   width: 100%;
 `;
-const DotsBlock = styled.ul`
+const DotsUl = styled.ul`
   ${flexBox('space-evenly', 'center')};
   width: 30%;
   height: 10px;
@@ -20,7 +20,7 @@ interface DotStyledProps {
   active: boolean;
 }
 
-const Dot = styled.li<DotStyledProps>`
+const DotLi = styled.li<DotStyledProps>`
   border-radius: 50%;
   width: 6px;
   height: 6px;
@@ -33,13 +33,13 @@ interface DotsProps {
 
 const Dots = ({ slides, slideIndex }: DotsProps) => {
   return (
-    <DotsContainer>
-      <DotsBlock>
+    <DotsDiv>
+      <DotsUl>
         {slides.map((v, index) => (
-          <Dot key={v} active={slideIndex === index} />
+          <DotLi key={v} active={slideIndex === index} />
         ))}
-      </DotsBlock>
-    </DotsContainer>
+      </DotsUl>
+    </DotsDiv>
   );
 };
 
