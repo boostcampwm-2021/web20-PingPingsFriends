@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
+import { Heart } from 'src/hearts/entities/heart.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -42,7 +43,7 @@ export class PostService {
 
   async getFirstPage(habitatId: number) {
     const queryBuilder = this.getPostWithHabitatQueryBuilder(habitatId);
-    const posts = await queryBuilder.orderBy('post.id', 'DESC').limit(LIMIT_NUMBER).getMany();
+    const posts = await queryBuilder.orderBy('post.id', 'DESC').take(LIMIT_NUMBER).getMany();
     const lastPostId = posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].id : null;
 
     if (lastPostId) return { posts, lastPostId };
@@ -51,7 +52,7 @@ export class PostService {
 
   async getNextPage(habitatId: number, oldLastPostId: string) {
     const queryBuilder = this.getPostWithHabitatQueryBuilder(habitatId);
-    const posts = await queryBuilder.andWhere('post.id < :lastPostId', { lastPostId: oldLastPostId }).orderBy('post.id', 'DESC').limit(LIMIT_NUMBER).getMany();
+    const posts = await queryBuilder.andWhere('post.id < :lastPostId', { lastPostId: oldLastPostId }).orderBy('post.id', 'DESC').take(LIMIT_NUMBER).getMany();
     const currentLastPostId = posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].id : null;
 
     if (currentLastPostId) return { posts, lastPostId: currentLastPostId };
@@ -61,9 +62,13 @@ export class PostService {
   private getPostWithHabitatQueryBuilder(habitatId: number) {
     return this.postRepository
       .createQueryBuilder('post')
-      .innerJoinAndSelect('post.user', 'user', 'post.userId = user.id')
+      .addSelect((qb) => qb.select('true').from(Heart, 'heart').where('heart.userId = :userId', { userId: 1 }).andWhere('heart.postId = post.id'), 'post.isHeart')
+      .innerJoinAndSelect('post.user', 'user')
+      .select(['post.id', 'post.habitatId', 'post.humanContent', 'post.animalContent', 'post.createdAt', 'user.id', 'user.username', 'user.nickname'])
       .innerJoinAndSelect('user.content', 'content')
-      .loadRelationCountAndMap('post.numOfLikes', 'post.likingUser', 'user')
+      .leftJoinAndSelect('post.postContents', 'postContents')
+      .leftJoinAndSelect('postContents.content', 'postContent')
+      .loadRelationCountAndMap('post.numOfHearts', 'post.likingUsers', 'user')
       .loadRelationCountAndMap('post.numOfComments', 'post.comments', 'comments')
       .where('post.habitatId = :habitatId ', { habitatId: habitatId });
   }
@@ -77,7 +82,9 @@ export class PostService {
   }
 
   findOne(id: number) {
-    return this.postRepository.findOne(id, { relations: ['user', 'user.content', 'comments', 'comments.user', 'comments.user.content', 'postContents', 'postContents.content', 'likingUser'] });
+    return this.postRepository.findOne(id, {
+      relations: ['user', 'user.content', 'comments', 'comments.user', 'comments.user.content', 'postContents', 'postContents.content', 'hearts', 'hearts.user'],
+    });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
