@@ -33,11 +33,11 @@ const useHistory = (userHabitatId: number) => {
   }, [curHabitatId]);
 
   const handleNextHabitat = () => {
-    setCurHabitatId(++historyIdx.current);
+    setCurHabitatId(habitatList.current[++historyIdx.current]);
   };
 
   const handlePrevHabitat = () => {
-    setCurHabitatId(--historyIdx.current);
+    setCurHabitatId(habitatList.current[--historyIdx.current]);
   };
 
   return {
