@@ -10,11 +10,11 @@ export class Heart {
   @PrimaryColumn({ name: 'post_id' })
   postId: number;
 
-  @ManyToOne(() => User, (user) => user.hearts)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
-  @ManyToOne(() => Post, (post) => post.hearts)
+  @ManyToOne(() => Post)
   @JoinColumn({ name: 'post_id', referencedColumnName: 'id' })
   post: Post;
 }

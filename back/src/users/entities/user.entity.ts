@@ -41,6 +41,6 @@ export class User {
   @JoinColumn({ name: 'habitat_id', referencedColumnName: 'id' })
   habitat: Habitat;
 
-  @OneToMany(() => Heart, (heart) => heart.user)
-  hearts: Heart[];
+  @ManyToMany(() => Post, (post) => post.likingUsers)
+  likedPosts: Post[];
 }

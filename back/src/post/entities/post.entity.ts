@@ -33,8 +33,13 @@ export class Post {
   @JoinColumn({ name: 'habitat_id', referencedColumnName: 'id' })
   habitat: Habitat;
 
-  @OneToMany(() => Heart, (heart) => heart.post)
-  hearts: Heart[];
+  @ManyToMany(() => User, (user) => user.likedPosts)
+  @JoinTable({
+    name: 'heart',
+    joinColumn: { name: 'post_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  likingUsers: User[];
 
   @OneToMany(() => PostContent, (postContent) => postContent.post)
   postContents: PostContent[];
