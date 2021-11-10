@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import Avatar from '../_common/Avatar/Avatar';
+import useHabitatInfo from '../_common/Hooks/useHabitatInfo';
 import { flexBox } from '../../lib/styles/mixin';
 import MagicNumber from '../../lib/styles/magic';
 import { Palette } from '../../lib/styles/Palette';
@@ -13,7 +14,7 @@ const HabitatPreviewBlock = styled.div<Pick<HabitatPreviewProps, 'side'> & { rad
   transform: translateY(50vh) ${(props) => `translateY(-${props.radius - parseInt(MagicNumber.HEADER_HEIGHT) / 2}px)`};
   background: ${({ color }) => color ?? Palette.GRAY};
   cursor: pointer;
-  transition: background-color 1s ease-out 0s;
+  transition: background-color 0.5s ease-out 0s;
   font-size: min(1.5vw, 18px);
 
   ${({ side, radius }) => {
@@ -86,16 +87,6 @@ interface HabitatPreviewProps {
   onClick: () => void;
 }
 
-interface HabitatInfo {
-  recentUser: string[];
-  totalUser: number;
-  totalPost: number;
-  recentUpload: string;
-  king: string;
-  name: string;
-  color: string;
-}
-
 const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
   const HABITAT_OFFSET = 50;
   const getResponsiveRadius = () => Math.min((window.innerWidth - parseInt(MagicNumber.FEED_SECTION_WIDTH) - HABITAT_OFFSET) / 2, parseInt(MagicNumber.MAX_PREVIEW_RADIUS));
@@ -103,7 +94,7 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
   const changeResponsiveRadius = () => {
     setRadius(getResponsiveRadius());
   };
-  const [habitatInfo, setHabitatInfo] = useState<HabitatInfo | undefined>(undefined);
+  const { habitatInfo } = useHabitatInfo(habitat);
 
   useEffect(() => {
     window.addEventListener('resize', changeResponsiveRadius);
@@ -111,17 +102,6 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
       window.removeEventListener('resize', changeResponsiveRadius);
     };
   }, []);
-
-  useEffect(() => {
-    if (habitat === undefined) return;
-    fetch(`/habitat/${habitat}.json`, { headers: { Accept: 'application/json' } })
-      .then((res) => res.json())
-      .then((json) => setHabitatInfo(json))
-      .catch((err) => {
-        console.log(err);
-        setHabitatInfo(undefined);
-      });
-  }, [habitat]);
 
   return (
     <>
