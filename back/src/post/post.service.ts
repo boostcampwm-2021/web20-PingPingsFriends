@@ -1,16 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
-
-interface contentDto {
-  location: string;
-  mimetype: string;
-}
 
 @Injectable()
 export class PostService {
@@ -23,21 +19,23 @@ export class PostService {
     private postContentRepository: Repository<PostContent>
   ) {}
 
-  create(createPostDto: CreatePostDto, contentsInfos: contentDto[]) {
+  async create(createPostDto: CreatePostDto, contentsInfos: CreateContentDto[]) {
     const newPost = this.postRepository.create(createPostDto);
+    const newPostEntity = await this.postRepository.save(newPost);
+
     const newContents = contentsInfos.map((contentsInfo, i) => {
-      return this.contentRepository.create({
-        url: contentsInfo.location,
-        mimeType: contentsInfo.mimetype,
-      });
+      return this.contentRepository.create(contentsInfo);
     });
-    newContents.forEach((newContent, i) => {
-      this.postContentRepository.create({
-        postId: newPost.id,
-        contentsId: newContent.id,
+    const newContentsEntities = await this.contentRepository.save(newContents);
+
+    newContentsEntities.forEach((newContentsEntity, i) => {
+      const newPostContent = this.postContentRepository.create({
+        postId: newPostEntity.id,
+        contentsId: newContentsEntity.id,
       });
+      this.postContentRepository.save(newPostContent);
     });
-    return newPost;
+    return newPostEntity;
   }
 
   findAll(habitatId: number, skip: number, take: number) {
