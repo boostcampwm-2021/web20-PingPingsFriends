@@ -17,8 +17,8 @@ export class PostController {
   }
 
   @Get(':habitatId')
-  findAll(@Param('habitatId') habitatId: string, @Query('skip') skip: string, @Query('take') take: string) {
-    return this.postService.findAll(+habitatId, +skip, +take);
+  async findAll(@Param('habitatId') habitatId: string, @Query('lastPostId') lastPostId?: string) {
+    return await this.postService.findAll(+habitatId, lastPostId);
   }
 
   @Get(':habitatId/:id')

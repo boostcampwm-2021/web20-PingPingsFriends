@@ -8,6 +8,8 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 
+const LIMIT_NUMBER = 10;
+
 @Injectable()
 export class PostService {
   constructor(
@@ -38,18 +40,40 @@ export class PostService {
     return newPostEntity;
   }
 
-  findAll(habitatId: number, skip: number, take: number) {
+  async getFirstPage(habitatId: number) {
+    const queryBuilder = this.getPostWithHabitatQueryBuilder(habitatId);
+    const posts = await queryBuilder.orderBy('post.id', 'DESC').limit(LIMIT_NUMBER).getMany();
+    const lastPostId = posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].id : null;
+
+    if (lastPostId) return { posts, lastPostId };
+    else return { posts };
+  }
+
+  async getNextPage(habitatId: number, oldLastPostId: string) {
+    const queryBuilder = this.getPostWithHabitatQueryBuilder(habitatId);
+    const posts = await queryBuilder.andWhere('post.id < :lastPostId', { lastPostId: oldLastPostId }).orderBy('post.id', 'DESC').limit(LIMIT_NUMBER).getMany();
+    const currentLastPostId = posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].id : null;
+
+    if (currentLastPostId) return { posts, lastPostId: currentLastPostId };
+    else return { posts };
+  }
+
+  private getPostWithHabitatQueryBuilder(habitatId: number) {
     return this.postRepository
       .createQueryBuilder('post')
       .innerJoinAndSelect('post.user', 'user', 'post.userId = user.id')
       .innerJoinAndSelect('user.content', 'content')
       .loadRelationCountAndMap('post.numOfLikes', 'post.likingUser', 'user')
       .loadRelationCountAndMap('post.numOfComments', 'post.comments', 'comments')
-      .where('post.habitatId = :habitatId ', { habitatId: habitatId })
-      .orderBy('post.id', 'DESC')
-      .skip(skip)
-      .take(take)
-      .getMany();
+      .where('post.habitatId = :habitatId ', { habitatId: habitatId });
+  }
+
+  async findAll(habitatId: number, lastPostId?: string) {
+    if (!lastPostId) {
+      return await this.getFirstPage(habitatId);
+    } else {
+      return await this.getNextPage(habitatId, lastPostId);
+    }
   }
 
   findOne(id: number) {
