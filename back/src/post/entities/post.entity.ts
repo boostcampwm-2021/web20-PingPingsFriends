@@ -15,6 +15,12 @@ export class Post {
   @Column({ length: 500, name: 'animal_content' })
   animalContent: string;
 
+  @Column({ name: 'user_id' })
+  userId: number;
+
+  @Column({ name: 'habitat_id' })
+  habitatId: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
