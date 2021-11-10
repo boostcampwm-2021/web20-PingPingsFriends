@@ -7,7 +7,7 @@ import { ReactComponent as AddContentsSvg } from '../../assets/icons/add_content
 import { ReactComponent as PetBtnSvg } from '../../assets/icons/pet_btn.svg';
 import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.svg';
 import { flexBox } from '../../lib/styles/mixin';
-import { ModalEvent } from '../Modal/useModal';
+import { ToggleModal } from '../Modal/useModal';
 
 const WriteForm = styled.form`
   background-color: ${Palette.WHITE};
@@ -87,7 +87,7 @@ const ContentsDiv = styled.div`
   margin-bottom: 10px;
 `;
 
-const WriteModal = ({ hide }: { hide: (e: ModalEvent, force: boolean) => void }) => {
+const WriteModal = ({ hide }: { hide: ToggleModal }) => {
   const MAX_CONTENTS = 8;
   const MAX_TEXT = 500;
   const [contents, setContents] = useState<File[]>([]);
@@ -157,12 +157,7 @@ const WriteModal = ({ hide }: { hide: (e: ModalEvent, force: boolean) => void })
         <PetBtnSvg />
         <p>Done</p>
       </SubmitBtn>
-      <CancelBtn
-        type="button"
-        onClick={(e) => {
-          hide(e, true);
-        }}
-      >
+      <CancelBtn className="modal-close-button" type="button" onClick={hide}>
         <CancelBtnSvg />
         <p>Back</p>
       </CancelBtn>

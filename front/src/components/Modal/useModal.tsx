@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-export type ModalEvent = React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>;
+export type ModalEvent = React.MouseEvent<Element> | React.KeyboardEvent<Element>;
 export type ToggleModal = (event: ModalEvent) => void;
 
 const useModal = ($elem = '#modal') => {
