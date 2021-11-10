@@ -20,7 +20,7 @@ const ScrollableDiv = styled.div`
   }
 `;
 
-const FeedScrollBox = () => {
+const FeedScrollBox = ({ habitat }: { habitat: number }) => {
   const [feedList, setFeedList] = useState<FeedJson[] | null>(null);
   useEffect(() => {
     fetch('dummy_feed.json')
