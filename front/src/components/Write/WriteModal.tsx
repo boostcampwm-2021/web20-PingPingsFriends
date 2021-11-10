@@ -94,20 +94,20 @@ const WriteModal = ({ hide }: { hide: (e: ModalEvent, force: boolean) => void })
   const [text, setText] = useState('');
   const [isValid, setValid] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const insertContents = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputContents = e.target.files as FileList;
     setContents([...contents, ...inputContents].slice(0, 8));
   };
 
-  const removeHandler = (targetIdx: number) => {
+  const removeContents = (targetIdx: number) => {
     const newContents = contents.filter((file, idx) => idx !== targetIdx);
     setContents(newContents);
   };
-  const textInputHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > 500) return;
     setText(e.target.value);
   };
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isValid) return;
     const data = new FormData();
@@ -116,7 +116,7 @@ const WriteModal = ({ hide }: { hide: (e: ModalEvent, force: boolean) => void })
     const form = e.target as HTMLFormElement;
     fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'multipart/form-data' }, body: data }).then((res) => {
       console.log(res);
-      window.location.href = '/';
+      // window.location.href = '/';
     });
   };
 
@@ -129,7 +129,7 @@ const WriteModal = ({ hide }: { hide: (e: ModalEvent, force: boolean) => void })
   }, [contents, text]);
 
   return (
-    <WriteForm method="post" action="/test" id="write" onSubmit={submitHandler}>
+    <WriteForm method="post" action="/test" id="write" onSubmit={handleFormSubmit}>
       <ContentsDiv>
         <FileInsertLabel htmlFor="input-contents">
           <AddContentsSvg />
@@ -137,18 +137,18 @@ const WriteModal = ({ hide }: { hide: (e: ModalEvent, force: boolean) => void })
             {contents.length}/{MAX_CONTENTS}
           </p>
         </FileInsertLabel>
-        <FileInput ref={fileInputRef} onChange={insertContents} id="input-contents" type="file" accept="image/*, video/*" name="contents" form="write" multiple />
+        <FileInput ref={fileInputRef} onChange={handleFileInputChange} id="input-contents" type="file" accept="image/*, video/*" name="contents" form="write" multiple />
         {contents.length ? (
           <SwipeBox width="80%" height="100%" gap="10px">
             <>
               {contents.map((file, idx) => (
-                <Preview key={file.lastModified} file={file} idx={idx} removeHandler={removeHandler} />
+                <Preview key={file.lastModified} file={file} idx={idx} removeContents={removeContents} />
               ))}
             </>
           </SwipeBox>
         ) : null}
       </ContentsDiv>
-      <TextInput value={text} onChange={textInputHandler} name="text" form="write" placeholder="내용을 입력하세요" />
+      <TextInput value={text} onChange={handleTextInputChange} name="text" form="write" placeholder="내용을 입력하세요" />
       <TextIndicatorP>
         ({text.length}/{MAX_TEXT})
       </TextIndicatorP>

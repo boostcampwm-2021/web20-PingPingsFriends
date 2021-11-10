@@ -19,7 +19,7 @@ const PreviewDiv = styled.div<Omit<SwipeBoxProps, 'children'>>`
 `;
 
 export interface SwipeBoxProps {
-  children: ReactElement;
+  children: React.ReactNode;
   width: string;
   height: string;
   gap: string;

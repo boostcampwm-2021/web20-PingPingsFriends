@@ -34,14 +34,14 @@ const CellDiv = styled.div`
   }
 `;
 
-const Preview = ({ file, idx, removeHandler }: { file: File; idx: number; removeHandler: (targetIdx: number) => void }) => {
+const Preview = ({ file, idx, removeContents }: { file: File; idx: number; removeContents: (targetIdx: number) => void }) => {
   const [isLoading, setLoading] = useState(false);
   const contentsURL = useRef('');
-  const removeFile = (e: React.MouseEvent) => {
+  const handleRemoveClick = (e: React.MouseEvent) => {
     const target = e.target as Element;
     if (target.closest('.remove_btn')) {
       const selectedFile = (target.closest('.preview_cell') as HTMLElement).dataset.id;
-      removeHandler(Number(selectedFile));
+      removeContents(Number(selectedFile));
     }
   };
   useEffect(() => {
@@ -54,18 +54,16 @@ const Preview = ({ file, idx, removeHandler }: { file: File; idx: number; remove
   }, [file]);
 
   return (
-    <>
-      <CellDiv className={'preview_cell'} data-id={idx} onClick={removeFile}>
-        {isLoading ? (
-          <>
-            <CancelBtnSvg className={'button remove_btn'} />
-            {file.type.includes('image') ? <img src={contentsURL.current} alt={file.name} /> : <video src={contentsURL.current} controls></video>}
-          </>
-        ) : (
-          'loading'
-        )}
-      </CellDiv>
-    </>
+    <CellDiv className={'preview_cell'} data-id={idx} onClick={handleRemoveClick}>
+      {isLoading ? (
+        <>
+          <CancelBtnSvg className={'button remove_btn'} />
+          {file.type.includes('image') ? <img src={contentsURL.current} alt={file.name} /> : <video src={contentsURL.current} controls></video>}
+        </>
+      ) : (
+        'loading'
+      )}
+    </CellDiv>
   );
 };
 export default Preview;
