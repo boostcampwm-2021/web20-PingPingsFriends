@@ -21,12 +21,19 @@ const HeaderBlock = styled.div`
   background: ${Palette.WHITE};
 `;
 
-const Header = () => {
+interface HeaderProps {
+  habitatInfo: HabitatInfo | undefined;
+}
+
+const Header = ({ habitatInfo }: HeaderProps) => {
+  const { isShowing, toggle } = useModal();
+
   return (
     <HeaderBlock>
       <div className={'Logo'}>{LOGO}</div>
       <Place habitat={habitatInfo?.name} toggle={toggle} />
       <UserInfo />
+      <Modal children={<HabitatModal />} isShowing={isShowing} hide={toggle} />
     </HeaderBlock>
   );
 };
