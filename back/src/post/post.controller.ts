@@ -18,8 +18,8 @@ export class PostController {
   }
 
   @Get(':habitatId')
-  async findAll(@Param('habitatId') habitatId: string, @Query('lastPostId') lastPostId?: string) {
-    return await this.postService.findAll(+habitatId, lastPostId);
+  async findAll(@Param('habitatId') habitatId: string, @Query('userId') userId: string, @Query('lastPostId') lastPostId?: string) {
+    return await this.postService.findAll(+habitatId, +userId, +lastPostId);
   }
 
   @Get(':habitatId/:id')
