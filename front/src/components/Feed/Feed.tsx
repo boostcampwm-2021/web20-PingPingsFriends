@@ -11,6 +11,7 @@ import { useLike } from '../HeartButton/useLike';
 import { makeDropBoxMenu } from '../_common/DropBox/makeDropBoxMenu';
 import Modal from '../_common/Modal/Modal';
 import DeleteModal from '../DeleteModal/DeleteModal';
+import DetailModal from '../DetailModal/DetailModal';
 import useModal from '../_common/Modal/useModal';
 
 const FeedContainerDiv = styled.div`
@@ -66,10 +67,11 @@ export interface FeedProps {
 }
 
 const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => {
-  const { isShowing, toggle } = useModal();
+  const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
+  const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
   const [like, toggleLike] = useLike();
 
-  const test = makeDropBoxMenu([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
+  const test = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
 
   return (
     <FeedContainerDiv ref={lastFeed}>
@@ -85,13 +87,16 @@ const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => 
       </FeedContents>
       <FeedInfoDiv>
         <HeartButton like={like} toggleLike={toggleLike} />
-        <CommentBtnSvg />
+        <CommentBtnSvg className={'button'} onClick={toggleDetailModal} />
         <span>13</span>
         <span className="time">2시간 전</span>
       </FeedInfoDiv>
       <FeedTextDiv>{text}</FeedTextDiv>
-      <Modal isShowing={isShowing} hide={toggle}>
-        <DeleteModal hide={toggle} />
+      <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
+        <DeleteModal hide={toggleDeleteModal} />
+      </Modal>
+      <Modal isShowing={isDetailShowing} hide={toggleDetailModal}>
+        <DetailModal imageURLs={imageURLs} hide={toggleDetailModal} />
       </Modal>
     </FeedContainerDiv>
   );
