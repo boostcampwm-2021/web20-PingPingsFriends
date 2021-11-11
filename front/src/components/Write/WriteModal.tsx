@@ -7,7 +7,7 @@ import { ReactComponent as AddContentsSvg } from '../../assets/icons/add_content
 import { ReactComponent as PetBtnSvg } from '../../assets/icons/pet_btn.svg';
 import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.svg';
 import { flexBox } from '../../lib/styles/mixin';
-import { ToggleModal } from '../_common/Modal/useModal';
+import { ToggleHandler } from '../_common/Modal/useModal';
 
 const WriteForm = styled.form`
   background-color: ${Palette.WHITE};
@@ -88,7 +88,7 @@ const ContentsDiv = styled.div`
 `;
 
 interface WriteModalProps {
-  hide: ToggleModal;
+  hide: ToggleHandler;
 }
 
 const WriteModal = ({ hide }: WriteModalProps) => {

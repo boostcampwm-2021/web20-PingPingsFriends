@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Feed, { FeedProps } from './Feed';
 import { flexBox } from '../../lib/styles/mixin';
-import { useGetDiv } from '../../lib/hooks/useGetDiv';
+import { useGetDiv } from '../../hooks/useGetDiv';
 
 const ScrollableDiv = styled.div`
   ${flexBox(null, null, 'column')};
