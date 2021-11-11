@@ -11,11 +11,22 @@ import { FollowModule } from './follow/follow.module';
 import { SpeciesModule } from './species/species.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentsModule } from './comments/comments.module';
-import { LikedsModule } from './likeds/likeds.module';
 import { HeartsModule } from './hearts/hearts.module';
 import databaseConfig from './database/database.config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(databaseConfig), UsersModule, S3Module, ContentsModule, PostContentsModule, PostModule, HabitatModule, FollowModule, SpeciesModule, HeartsModule,  CommentsModule, LikedsModule],
+  imports: [
+    TypeOrmModule.forRoot(databaseConfig),
+    UsersModule,
+    S3Module,
+    ContentsModule,
+    PostContentsModule,
+    PostModule,
+    HabitatModule,
+    FollowModule,
+    SpeciesModule,
+    HeartsModule,
+    CommentsModule,
+  ],
 })
 export class AppModule {}
