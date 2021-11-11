@@ -1,6 +1,7 @@
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Content } from 'src/contents/entities/content.entity';
 import { Habitat } from 'src/habitat/entities/habitat.entity';
+import { Heart } from 'src/hearts/entities/heart.entity';
 import { Post } from 'src/post/entities/post.entity';
 import { Species } from 'src/species/entities/species.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
@@ -40,6 +41,6 @@ export class User {
   @JoinColumn({ name: 'habitat_id', referencedColumnName: 'id' })
   habitat: Habitat;
 
-  @ManyToMany(() => Post, (post) => post.likingUser)
-  likedPost: Post[];
+  @ManyToMany(() => Post, (post) => post.likingUsers)
+  likedPosts: Post[];
 }

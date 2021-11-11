@@ -74,7 +74,7 @@ const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => 
   return (
     <FeedContainerDiv ref={lastFeed}>
       <FeedHeaderDiv>
-        <Avatar />
+        <Avatar size={'30px'} />
         <span>{nickname}</span>
         <DropBox start="right" offset={10} top={55} width={150} items={test}>
           <VertBtnSvg className="vert_btn button" />

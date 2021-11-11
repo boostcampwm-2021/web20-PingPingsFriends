@@ -161,7 +161,7 @@ const WriteModal = ({ hide }: WriteModalProps) => {
         <PetBtnSvg />
         <p>Done</p>
       </SubmitBtn>
-      <CancelBtn className={'modal-close-button'} onClick={hide}>
+      <CancelBtn className="modal-close-button" type="button" onClick={hide}>
         <CancelBtnSvg />
         <p>Back</p>
       </CancelBtn>

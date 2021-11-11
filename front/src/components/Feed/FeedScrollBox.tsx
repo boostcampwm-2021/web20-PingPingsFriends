@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Feed, { FeedProps } from './Feed';
+import useHabitatInfo from '../../hooks/useHabitatInfo';
 import { flexBox } from '../../lib/styles/mixin';
+import { Palette } from '../../lib/styles/Palette';
 import { useGetDiv } from '../../hooks/useGetDiv';
 
-const ScrollableDiv = styled.div`
+const ScrollableDiv = styled.div<{ color: string | undefined }>`
   ${flexBox(null, null, 'column')};
   width: 500px;
-  background-color: #ffb1b9;
+  background-color: ${(props) => (props.color !== undefined ? props.color : Palette.PINK)};
+  transition: background-color 0.5s ease-out 0s;
   height: 100%;
   margin: auto;
   padding: 10px 10px 10px 10px;
@@ -41,9 +44,10 @@ export interface Unsplash {
     };
   };
 }
-const FeedScrollBox = () => {
+const FeedScrollBox = ({ habitat }: { habitat: number }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [lastFeed, ref] = useGetDiv();
+  const { habitatInfo } = useHabitatInfo(habitat);
 
   const [feeds, setFeeds] = useState<FeedProps[]>([] as FeedProps[]);
 
@@ -85,7 +89,7 @@ const FeedScrollBox = () => {
   }, [lastFeed]);
 
   return (
-    <ScrollableDiv ref={scrollRef}>
+    <ScrollableDiv color={habitatInfo?.color} ref={scrollRef}>
       {feeds
         ? feeds.map((feed, index) => {
             return feeds.length - 1 === index ? (

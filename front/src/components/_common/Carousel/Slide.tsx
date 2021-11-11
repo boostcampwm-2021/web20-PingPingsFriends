@@ -30,8 +30,9 @@ const Slide = ({ src, rect, scrollRef }: SlideProps) => {
           if (entries[0].isIntersecting) {
             const target = entries[0].target.firstChild as HTMLImageElement;
             target.src = target.dataset.lazy as string;
+
+            observer.unobserve(feedContent);
           }
-          observer.unobserve(feedContent);
         },
         {
           root: scrollRef.current,

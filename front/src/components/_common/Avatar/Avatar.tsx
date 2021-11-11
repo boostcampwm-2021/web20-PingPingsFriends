@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 export const DEFAULT_AVATAR = `default_avatar.png`;
 
-const AvatarBlock = styled.div`
-  width: 30px;
-  height: 30px;
+const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
+  width: ${(props) => props.size};
+  height: ${(props) => props.size};
   border-radius: 50%;
   img {
     width: 100%;
@@ -15,11 +15,12 @@ const AvatarBlock = styled.div`
 
 interface AvatarProps {
   imgSrc?: string;
+  size: string;
 }
 
-const Avatar = ({ imgSrc = DEFAULT_AVATAR }: AvatarProps) => {
+const Avatar = ({ imgSrc = DEFAULT_AVATAR, size }: AvatarProps) => {
   return (
-    <AvatarBlock>
+    <AvatarBlock size={size}>
       <img src={imgSrc} alt="아바타 이미지" />
     </AvatarBlock>
   );
