@@ -17,14 +17,14 @@ const Video = styled.video<Pick<SlideProps, 'rect'>>`
 interface SlideProps {
   src: string;
   rect: rectType;
-  scrollRef: React.MutableRefObject<HTMLDivElement>;
+  scrollRef?: React.MutableRefObject<HTMLDivElement>;
 }
 
 const Slide = ({ src, rect, scrollRef }: SlideProps) => {
   const [feedContent, ref] = useGetDiv();
 
   useEffect(() => {
-    if ('id' in feedContent) {
+    if ('id' in feedContent && scrollRef) {
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
@@ -50,7 +50,7 @@ const Slide = ({ src, rect, scrollRef }: SlideProps) => {
           <source src={src} type={'video/mp4'} />
         </Video>
       ) : (
-        <SlideImg src={`default_avatar.png`} data-lazy={src} rect={rect} alt="피드 이미지" />
+        <SlideImg src={scrollRef ? `default_avatar.png` : src} data-lazy={src} rect={rect} alt="피드 이미지" />
       )}
     </div>
   );

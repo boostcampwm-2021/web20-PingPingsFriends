@@ -36,7 +36,7 @@ const Dots = ({ slides, slideIndex }: DotsProps) => {
     <DotsDiv>
       <DotsUl>
         {slides.map((v, index) => (
-          <DotLi key={v} active={slideIndex === index} />
+          <DotLi key={index.toString() + 'dot' + v} active={slideIndex === index} />
         ))}
       </DotsUl>
     </DotsDiv>
