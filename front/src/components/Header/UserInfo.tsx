@@ -19,7 +19,7 @@ const UserInfo = ({ username = '핑핑이' }: UserInfoProps) => {
   return (
     <UserInfoBlock>
       <div className={'username'}>{username}</div>
-      <Avatar />
+      <Avatar size={'30px'} />
       <HamburgerMenuSvg />
     </UserInfoBlock>
   );

@@ -1,5 +1,6 @@
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Habitat } from 'src/habitat/entities/habitat.entity';
+import { Heart } from 'src/hearts/entities/heart.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -15,6 +16,12 @@ export class Post {
   @Column({ length: 500, name: 'animal_content' })
   animalContent: string;
 
+  @Column({ name: 'user_id' })
+  userId: number;
+
+  @Column({ name: 'habitat_id' })
+  habitatId: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
@@ -26,13 +33,13 @@ export class Post {
   @JoinColumn({ name: 'habitat_id', referencedColumnName: 'id' })
   habitat: Habitat;
 
-  @ManyToMany(() => User, (user) => user.likedPost)
+  @ManyToMany(() => User, (user) => user.likedPosts)
   @JoinTable({
-    name: 'liked',
+    name: 'heart',
     joinColumn: { name: 'post_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
   })
-  likingUser: User[];
+  likingUsers: User[];
 
   @OneToMany(() => PostContent, (postContent) => postContent.post)
   postContents: PostContent[];

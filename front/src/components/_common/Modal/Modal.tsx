@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { flexBox } from '../../lib/styles/mixin';
+import { flexBox } from '../../../lib/styles/mixin';
 import useModal, { ModalEvent } from './useModal';
 
 const ModalDiv = styled.div`
@@ -12,6 +12,7 @@ const ModalDiv = styled.div`
   left: 0;
   top: 0;
   background: rgba(0, 0, 0, 0.4);
+  z-index: 2;
 `;
 
 const ContentsDiv = styled.div`
@@ -29,7 +30,7 @@ const Modal = ({ children, isShowing, hide }: ModalProps) => {
 
   return isShowing
     ? ReactDOM.createPortal(
-        <ModalDiv className={'modal-container'}>
+        <ModalDiv className={'modal-container'} onClick={hide}>
           <ContentsDiv className={'contents'} tabIndex={1} onKeyDown={hide} ref={contentRef}>
             {children}
           </ContentsDiv>

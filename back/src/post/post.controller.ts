@@ -1,23 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { multerOption, S3Service } from 'src/s3/s3.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostService, private readonly s3Servise: S3Service) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
+  async uploadFile(@Body() createPostDto: CreatePostDto, @UploadedFiles() files: Express.Multer.File[]) {
+    const contentsInfos = this.s3Servise.getPartialFilesInfo(files);
+    return await this.postService.create(createPostDto, contentsInfos);
   }
 
-  @Get()
-  findAll() {
-    return this.postService.findAll();
+  @Get(':habitatId')
+  async findAll(@Param('habitatId') habitatId: string, @Query('lastPostId') lastPostId?: string) {
+    return await this.postService.findAll(+habitatId, lastPostId);
   }
 
-  @Get(':id')
+  @Get(':habitatId/:id')
   findOne(@Param('id') id: string) {
     return this.postService.findOne(+id);
   }

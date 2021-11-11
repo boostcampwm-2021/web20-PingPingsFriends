@@ -1,18 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.svg';
-import { ReactComponent as HeartBtnSvg } from '../../assets/icons/empty_heart_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
 import Avatar from '../_common/Avatar/Avatar';
 import DropBox from '../_common/DropBox/DropBox';
+import Carousel from '../_common/Carousel/Carousel';
+import HeartButton from '../HeartButton/HeartButton';
 import { flexBox } from '../../lib/styles/mixin';
-
-export interface FeedJson {
-  id: number;
-  nickname: string;
-  imageURL: string;
-  text: string;
-}
+import { useLike } from '../HeartButton/useLike';
+import { makeDropBoxMenu } from '../_common/DropBox/makeDropBoxMenu';
+import Modal from '../_common/Modal/Modal';
+import DeleteModal from '../DeleteModal/DeleteModal';
+import useModal from '../_common/Modal/useModal';
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -35,19 +34,10 @@ const FeedHeaderDiv = styled.div`
   }
 `;
 
-const FeedContents = styled.div<Pick<FeedJson, 'imageURL'>>`
+const FeedContents = styled.div`
   width: 100%;
+  height: 500px;
   position: relative;
-  background-color: aliceblue;
-
-  &::after {
-    padding-bottom: 100%;
-    content: '';
-    background-image: ${(props) => `url(${props.imageURL})`};
-    background-position: center;
-    background-size: cover;
-    display: block;
-  }
 `;
 
 const FeedInfoDiv = styled.div`
@@ -66,25 +56,43 @@ const FeedTextDiv = styled.div`
   padding: 0 10px;
 `;
 
-const Feed = ({ json }: { json: FeedJson }) => {
-  const dropboxItems = ['글 삭제', '글 수정'];
+export interface FeedProps {
+  id?: string;
+  nickname: string;
+  imageURLs: string[];
+  text: string;
+  lastFeed?: (node: HTMLDivElement) => void;
+  scrollRef?: any;
+}
+
+const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => {
+  const { isShowing, toggle } = useModal();
+  const [like, toggleLike] = useLike();
+
+  const test = makeDropBoxMenu([{ text: '글 삭제' }, { text: '글 수정', handler: toggle }]);
+
   return (
-    <FeedContainerDiv>
+    <FeedContainerDiv ref={lastFeed}>
       <FeedHeaderDiv>
-        <Avatar />
-        <span>{json.nickname}</span>
-        <DropBox start="right" offset={10} top={55} width={150} items={dropboxItems}>
+        <Avatar size={'30px'} />
+        <span>{nickname}</span>
+        <DropBox start="right" offset={10} top={55} width={150} items={test}>
           <VertBtnSvg className="vert_btn button" />
         </DropBox>
       </FeedHeaderDiv>
-      <FeedContents imageURL={json.imageURL} />
+      <FeedContents>
+        <Carousel imageURLs={imageURLs} scrollRef={scrollRef} />
+      </FeedContents>
       <FeedInfoDiv>
-        <HeartBtnSvg />
+        <HeartButton like={like} toggleLike={toggleLike} />
         <CommentBtnSvg />
         <span>13</span>
         <span className="time">2시간 전</span>
       </FeedInfoDiv>
-      <FeedTextDiv>{json.text}</FeedTextDiv>
+      <FeedTextDiv>{text}</FeedTextDiv>
+      <Modal isShowing={isShowing} hide={toggle}>
+        <DeleteModal hide={toggle} />
+      </Modal>
     </FeedContainerDiv>
   );
 };
