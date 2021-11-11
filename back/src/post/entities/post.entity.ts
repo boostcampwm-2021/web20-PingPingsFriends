@@ -1,4 +1,4 @@
-import { Comment } from 'src/comment/entities/comment.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { Habitat } from 'src/habitat/entities/habitat.entity';
 import { Heart } from 'src/hearts/entities/heart.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
