@@ -73,7 +73,7 @@ const Feed = ({ json }: { json: FeedJson }) => {
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
-        <Avatar />
+        <Avatar size={'30px'} />
         <span>{nickname}</span>
         <DropBox start="right" offset={10} top={55} width={150} items={test}>
           <VertBtnSvg className="vert_btn button" />

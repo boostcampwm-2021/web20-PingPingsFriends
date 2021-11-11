@@ -1,5 +1,11 @@
+@font-face {
+  font-family: 'Nanum Pen Script', cursive;
+  src: url('./assets/font/NanumPenScript-Regular.ttf');
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: 'Nanum Pen Script';
 }
