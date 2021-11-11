@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Feed, { FeedJson } from './Feed';
-import useHabitatInfo from '../_common/Hooks/useHabitatInfo';
+import useHabitatInfo from '../../hooks/useHabitatInfo';
 import { flexBox } from '../../lib/styles/mixin';
 import { Palette } from '../../lib/styles/Palette';
 

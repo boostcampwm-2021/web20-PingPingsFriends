@@ -4,7 +4,7 @@ import FeedScrollBox from '../components/Feed/FeedScrollBox';
 import FeedFAB from '../components/Feed/FeedFAB';
 import styled from 'styled-components';
 import HabitatPreview from '../components/Habitat/HabitatPreview';
-import useHistory from './useHistory';
+import useHistory from '../hooks/useHistory';
 import { Palette } from '../lib/styles/Palette';
 import { flexBox } from '../lib/styles/mixin';
 
