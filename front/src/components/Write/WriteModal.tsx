@@ -7,7 +7,7 @@ import { ReactComponent as AddContentsSvg } from '../../assets/icons/add_content
 import { ReactComponent as PetBtnSvg } from '../../assets/icons/pet_btn.svg';
 import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.svg';
 import { flexBox } from '../../lib/styles/mixin';
-import { ToggleModal } from '../Modal/useModal';
+import { ToggleHandler } from '../_common/Modal/useModal';
 
 const WriteForm = styled.form`
   background-color: ${Palette.WHITE};
@@ -16,7 +16,7 @@ const WriteForm = styled.form`
   border-radius: 20px;
   position: relative;
   padding: 30px;
-  box-shadow: 0px 4px 10px rgba(51, 51, 51, 1), 0px 0px 4px rgba(51, 51, 51, 0.5);
+  box-shadow: 0 4px 10px rgba(51, 51, 51, 1), 0 0 4px rgba(51, 51, 51, 0.5);
 `;
 
 const DefaultBtn = styled.button`
@@ -87,7 +87,11 @@ const ContentsDiv = styled.div`
   margin-bottom: 10px;
 `;
 
-const WriteModal = ({ hide }: { hide: ToggleModal }) => {
+interface WriteModalProps {
+  hide: ToggleHandler;
+}
+
+const WriteModal = ({ hide }: WriteModalProps) => {
   const MAX_CONTENTS = 8;
   const MAX_TEXT = 500;
   const [contents, setContents] = useState<File[]>([]);
@@ -153,7 +157,7 @@ const WriteModal = ({ hide }: { hide: ToggleModal }) => {
         ({text.length}/{MAX_TEXT})
       </TextIndicatorP>
       <ValidInfoP>{isValid ? '' : '사진과 글은 필수입니다!'}</ValidInfoP>
-      <SubmitBtn type="submit" valid={isValid}>
+      <SubmitBtn type="submit" valid={isValid} className={'modal-close-button'} onClick={hide}>
         <PetBtnSvg />
         <p>Done</p>
       </SubmitBtn>

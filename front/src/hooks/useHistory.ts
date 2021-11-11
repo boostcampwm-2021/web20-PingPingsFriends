@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const useHistory = (userHabitatId: number) => {
   const [curHabitatId, setCurHabitatId] = useState(userHabitatId);

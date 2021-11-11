@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header/Header';
 import FeedScrollBox from '../components/Feed/FeedScrollBox';
 import FeedFAB from '../components/Feed/FeedFAB';

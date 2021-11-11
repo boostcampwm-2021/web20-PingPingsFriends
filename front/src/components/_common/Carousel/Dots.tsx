@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Palette } from '../../lib/styles/Palette';
-import { flexBox } from '../../lib/styles/mixin';
+import { Palette } from '../../../lib/styles/Palette';
+import { flexBox } from '../../../lib/styles/mixin';
 
 const DotsDiv = styled.div`
   ${flexBox('center', 'center')};
