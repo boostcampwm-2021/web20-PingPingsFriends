@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { S3Module } from './s3/s3.module';
 import { ContentsModule } from './contents/contents.module';
@@ -11,11 +9,22 @@ import { FollowModule } from './follow/follow.module';
 import { SpeciesModule } from './species/species.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentsModule } from './comments/comments.module';
-import { LikedsModule } from './likeds/likeds.module';
 import { HeartsModule } from './hearts/hearts.module';
 import databaseConfig from './database/database.config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(databaseConfig), UsersModule, S3Module, ContentsModule, PostContentsModule, PostModule, HabitatModule, FollowModule, SpeciesModule, HeartsModule,  CommentsModule, LikedsModule],
+  imports: [
+    TypeOrmModule.forRoot(databaseConfig),
+    UsersModule,
+    S3Module,
+    ContentsModule,
+    PostContentsModule,
+    PostModule,
+    HabitatModule,
+    FollowModule,
+    SpeciesModule,
+    HeartsModule,
+    CommentsModule,
+  ],
 })
 export class AppModule {}
