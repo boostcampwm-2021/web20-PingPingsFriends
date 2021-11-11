@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import Place from './Place';
 import UserInfo from './UserInfo';
 import { flexBox } from '../../lib/styles/mixin';
+import useModal from '../_common/Modal/useModal';
+import Modal from '../_common/Modal/Modal';
+import HabitatModal from '../HabitatModal/HabitatModal';
+import { HabitatInfo } from '../../hooks/useHabitatInfo';
 
 const LOGO: string = '핑핑이 친구들';
 
@@ -21,7 +25,7 @@ const Header = () => {
   return (
     <HeaderBlock>
       <div className={'Logo'}>{LOGO}</div>
-      <Place />
+      <Place habitat={habitatInfo?.name} toggle={toggle} />
       <UserInfo />
     </HeaderBlock>
   );

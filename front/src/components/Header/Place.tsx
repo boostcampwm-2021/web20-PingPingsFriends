@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Palette } from '../../lib/styles/Palette';
 import { flexBox } from '../../lib/styles/mixin';
+import { ToggleHandler } from '../_common/Modal/useModal';
 
 const PlaceBlock = styled.div`
   ${flexBox()}
@@ -16,11 +17,12 @@ const PlaceBlock = styled.div`
 `;
 
 interface PlaceProps {
-  habitat?: string;
+  habitat: string | undefined;
+  toggle: ToggleHandler;
 }
 
-const Place = ({ habitat = '서식지' }: PlaceProps) => {
-  return <PlaceBlock> {habitat} </PlaceBlock>;
+const Place = ({ habitat, toggle }: PlaceProps) => {
+  return <PlaceBlock onClick={toggle}> {habitat} </PlaceBlock>;
 };
 
 export default Place;
