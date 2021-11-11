@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Feed, { FeedProps } from './Feed';
-import useHabitatInfo from '../../hooks/useHabitatInfo';
+import { HabitatInfo } from '../../hooks/useHabitatInfo';
 import { flexBox } from '../../lib/styles/mixin';
 import { Palette } from '../../lib/styles/Palette';
 import { useGetDiv } from '../../hooks/useGetDiv';
 
-const ScrollableDiv = styled.div<{ color: string | undefined }>`
+const ScrollableDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
   width: 500px;
   background-color: ${(props) => (props.color !== undefined ? props.color : Palette.PINK)};
@@ -44,10 +44,14 @@ export interface Unsplash {
     };
   };
 }
-const FeedScrollBox = ({ habitat }: { habitat: number }) => {
+
+interface FeedScrollBoxProps {
+  habitatInfo: HabitatInfo | undefined;
+}
+
+const FeedScrollBox = ({ habitatInfo }: FeedScrollBoxProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [lastFeed, ref] = useGetDiv();
-  const { habitatInfo } = useHabitatInfo(habitat);
 
   const [feeds, setFeeds] = useState<FeedProps[]>([] as FeedProps[]);
 

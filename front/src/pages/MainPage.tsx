@@ -7,6 +7,7 @@ import HabitatPreview from '../components/Habitat/HabitatPreview';
 import useHistory from '../hooks/useHistory';
 import { Palette } from '../lib/styles/Palette';
 import { flexBox } from '../lib/styles/mixin';
+import useHabitatInfo from '../hooks/useHabitatInfo';
 
 const MainPageBlock = styled.div`
   ${flexBox(null, null, 'column')};
@@ -22,10 +23,12 @@ const MainPage = () => {
   const [userHabitatId, setUserHabitatId] = useState(-1);
   const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useHistory(userHabitatId);
 
+  const { habitatInfo } = useHabitatInfo(curHabitatId);
+
   return (
     <MainPageBlock>
-      <Header />
-      <FeedScrollBox habitat={curHabitatId} />
+      <Header habitatInfo={habitatInfo} />
+      <FeedScrollBox habitatInfo={habitatInfo} />
       <FeedFAB />
       <HabitatPreview habitat={habitatList.current[historyIdx.current + 1]} onClick={handleNextHabitat} side={'right'} />
       <HabitatPreview habitat={habitatList.current[historyIdx.current - 1]} onClick={handlePrevHabitat} side={'left'} />

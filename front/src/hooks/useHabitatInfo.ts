@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-interface HabitatInfo {
+export interface HabitatInfo {
   recentUser: string[];
   totalUser: number;
   totalPost: number;
