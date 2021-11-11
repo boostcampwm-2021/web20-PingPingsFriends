@@ -60,7 +60,7 @@ const FeedScrollBox = ({ habitat }: { habitat: number }) => {
     const nextFeeds: FeedProps[] = data.map((data) => ({
       id: data.id,
       nickname: data.user.username,
-      imageURLs: [data.urls.raw],
+      imageURLs: [data.urls.raw, data.urls.raw, data.urls.raw, data.urls.raw],
       text: data.description,
     }));
 
