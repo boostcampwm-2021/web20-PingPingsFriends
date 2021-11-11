@@ -6,6 +6,7 @@ import { Heart } from 'src/hearts/entities/heart.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
+import { PatchPostRequestDto } from './dto/patchPostRequestDto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 
@@ -87,8 +88,31 @@ export class PostService {
     });
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, patchPostRequestDto: PatchPostRequestDto, contentsInfos: CreateContentDto[]) {
+    const post = await this.postRepository.findOne(id, { relations: ['postContents'] });
+    const updateIds = JSON.parse(patchPostRequestDto.contentInfos).map((info: Content, i: number) => info.id);
+    const excludedPost = post.postContents.filter((postContent, i) => !updateIds.includes('' + postContent.contentsId));
+
+    if (post.postContents.length - excludedPost.length + contentsInfos.length > 10) return false;
+
+    this.postContentRepository.remove(excludedPost);
+
+    const newContents = contentsInfos.map((contentsInfo, i) => {
+      return this.contentRepository.create(contentsInfo);
+    });
+    const newContentsEntities = await this.contentRepository.save(newContents);
+
+    newContentsEntities.forEach((newContentsEntity, i) => {
+      const newPostContent = this.postContentRepository.create({
+        postId: post.id,
+        contentsId: newContentsEntity.id,
+      });
+      this.postContentRepository.save(newPostContent);
+    });
+
+    this.postRepository.update(id, { humanContent: patchPostRequestDto.humanContent, animalContent: patchPostRequestDto.animalContent });
+
+    return true;
   }
 
   remove(id: number) {
