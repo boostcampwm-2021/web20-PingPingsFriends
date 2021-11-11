@@ -46,4 +46,7 @@ export class Post {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  @OneToMany(() => Heart, (heart) => heart.post)
+  hearts: Heart[];
 }
