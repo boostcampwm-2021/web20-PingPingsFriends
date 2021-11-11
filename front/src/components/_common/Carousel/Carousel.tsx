@@ -17,29 +17,41 @@ const CarouselDiv = styled.div`
 
 interface CarouselProps {
   imageURLs: string[];
-  scrollRef: React.MutableRefObject<HTMLDivElement>;
+  scrollRef?: React.MutableRefObject<HTMLDivElement>;
+  children?: React.ReactElement;
 }
 
-const Carousel = ({ imageURLs, scrollRef }: CarouselProps) => {
+export interface CarouselControl {
+  translateStyle: number;
+  slideIndex: number;
+  nextSlide: () => void;
+  prevSlide: () => void;
+  certainSlide: (idx: number) => void;
+}
+
+const Carousel = ({ imageURLs, scrollRef, children }: CarouselProps) => {
   const [rect, ref] = useClientRect();
-  const [translateStyle, slideIndex, nextSlide, prevSlide] = useMoveSlide({ slideCount: imageURLs.length, rect });
+  const [translateStyle, slideIndex, nextSlide, prevSlide, certainSlide] = useMoveSlide({ slideCount: imageURLs.length, rect });
 
   return (
-    <CarouselDiv ref={ref}>
-      <CarouselContents trans={translateStyle} width={rect.width * imageURLs.length}>
-        {imageURLs.map((src, index) => (
-          <Slide key={index} rect={rect} src={src} scrollRef={scrollRef} />
-        ))}
-      </CarouselContents>
+    <>
+      <CarouselDiv ref={ref}>
+        <CarouselContents trans={translateStyle} width={rect.width * imageURLs.length}>
+          {imageURLs.map((src, index) => (
+            <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} scrollRef={scrollRef} />
+          ))}
+        </CarouselContents>
 
-      {imageURLs.length > 1 ? (
-        <>
-          <Arrow direction={'right'} handleClick={nextSlide} />
-          <Arrow direction={'left'} handleClick={prevSlide} />
-          <Dots slides={imageURLs} slideIndex={slideIndex} />
-        </>
-      ) : null}
-    </CarouselDiv>
+        {imageURLs.length > 1 ? (
+          <>
+            <Arrow direction={'right'} handleClick={nextSlide} />
+            <Arrow direction={'left'} handleClick={prevSlide} />
+            <Dots slides={imageURLs} slideIndex={slideIndex} />
+          </>
+        ) : null}
+      </CarouselDiv>
+      {children !== undefined ? React.cloneElement(children, { controller: { translateStyle, slideIndex, nextSlide, prevSlide, certainSlide }, imageURLs: imageURLs }) : null}
+    </>
   );
 };
 

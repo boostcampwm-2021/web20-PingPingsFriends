@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { rectType } from '../../../hooks/useClientRect';
 
-type useCarouselType = [number, number, () => void, () => void];
+type useCarouselType = [number, number, () => void, () => void, (idx: number) => void];
 
 interface useCarouselProps {
   slideCount: number;
@@ -30,5 +30,9 @@ export const useMoveSlide = ({ slideCount, rect }: useCarouselProps): useCarouse
     setState({ ...state, slideIndex: slideIndex - 1, translateStyle: (slideIndex - 1) * rect.width });
   };
 
-  return [translateStyle, slideIndex, nextSlide, prevSlide];
+  const certainSlide = (idx: number) => {
+    setState({ ...state, slideIndex: idx, translateStyle: idx * rect.width });
+  };
+
+  return [translateStyle, slideIndex, nextSlide, prevSlide, certainSlide];
 };
