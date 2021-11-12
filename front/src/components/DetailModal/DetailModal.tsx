@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { flexBox } from '../../lib/styles/mixin';
-import { Palette } from '../../lib/styles/Palette';
+import { flexBox } from '@lib/styles/mixin';
+import { Palette } from '@lib/styles/Palette';
 import Carousel from '../_common/Carousel/Carousel';
 import PreviewBox from './PreviewBox';
-import { ToggleHandler } from '../_common/Modal/useModal';
+import { ToggleHandler } from '@common/Modal/useModal';
 
 interface DetailModalProps {
   hide: ToggleHandler;

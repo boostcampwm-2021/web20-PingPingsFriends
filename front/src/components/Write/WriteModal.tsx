@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Palette } from '../../lib/styles/Palette';
-import SwipeBox from '../_common/SwipeBox/SwipeBox';
+import { Palette } from '@lib/styles/Palette';
+import SwipeBox from '@common/SwipeBox/SwipeBox';
 import Preview from './Preview';
 import { ReactComponent as AddContentsSvg } from '../../assets/icons/add_contents.svg';
 import { ReactComponent as PetBtnSvg } from '../../assets/icons/pet_btn.svg';
 import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.svg';
-import { flexBox } from '../../lib/styles/mixin';
-import { ToggleHandler } from '../_common/Modal/useModal';
+import { flexBox } from '@lib/styles/mixin';
+import { ToggleHandler } from '@common/Modal/useModal';
 
 const WriteForm = styled.form`
   background-color: ${Palette.WHITE};

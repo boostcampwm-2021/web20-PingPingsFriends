@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { flexBox } from '../../../lib/styles/mixin';
+import { flexBox } from '@lib/styles/mixin';
 import useModal, { ModalEvent } from './useModal';
 
 const ModalDiv = styled.div`

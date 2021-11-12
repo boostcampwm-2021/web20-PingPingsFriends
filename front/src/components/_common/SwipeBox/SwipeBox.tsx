@@ -1,6 +1,6 @@
-import React, { ReactElement, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { flexBox } from '../../../lib/styles/mixin';
+import { flexBox } from '@lib/styles/mixin';
 
 const PreviewDiv = styled.div<Omit<SwipeBoxProps, 'children'>>`
   ${flexBox('flex-start')};

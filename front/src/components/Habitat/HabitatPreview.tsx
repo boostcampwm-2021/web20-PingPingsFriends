@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import Avatar from '../_common/Avatar/Avatar';
-import useHabitatInfo from '../../hooks/useHabitatInfo';
-import { flexBox } from '../../lib/styles/mixin';
-import MagicNumber from '../../lib/styles/magic';
-import { Palette } from '../../lib/styles/Palette';
-import { compareTime } from '../../lib/utils/time';
+import Avatar from '@common/Avatar/Avatar';
+import useHabitatInfo from '@hooks/useHabitatInfo';
+import { flexBox } from '@lib/styles/mixin';
+import MagicNumber from '@lib/styles/magic';
+import { Palette } from '@lib/styles/Palette';
+import { compareTime } from '@lib/utils/time';
 
 const HabitatPreviewBlock = styled.div<Pick<HabitatPreviewProps, 'side'> & { radius: number }>`
   ${flexBox('center', null, 'column')}

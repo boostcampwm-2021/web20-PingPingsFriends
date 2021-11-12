@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Feed, { FeedProps } from './Feed';
-import { HabitatInfo } from '../../hooks/useHabitatInfo';
-import { flexBox } from '../../lib/styles/mixin';
-import { Palette } from '../../lib/styles/Palette';
-import { useGetDiv } from '../../hooks/useGetDiv';
+import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { flexBox } from '@lib/styles/mixin';
+import { Palette } from '@lib/styles/Palette';
+import { useGetDiv } from '@hooks/useGetDiv';
 
 const ScrollableDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import CarouselContents from './CarouselContents';
-import { useClientRect } from '../../../hooks/useClientRect';
+import { useClientRect } from '@hooks/useClientRect';
 import Slide from './Slide';
 import Arrow from './Arrow';
 import Dots from './Dots';

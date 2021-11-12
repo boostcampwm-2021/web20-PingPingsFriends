@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { ReactComponent as EmptyHeartSvg } from '../../assets/icons/empty_heart_btn.svg';
-import { ReactComponent as FillHeartSvg } from '../../assets/icons/fill_heart_btn.svg';
+import { ReactComponent as EmptyHeartSvg } from '@assets/icons/empty_heart_btn.svg';
+import { ReactComponent as FillHeartSvg } from '@assets/icons/fill_heart_btn.svg';
 import { LikeProps } from './useLike';
 
 const ButtonScale = keyframes`

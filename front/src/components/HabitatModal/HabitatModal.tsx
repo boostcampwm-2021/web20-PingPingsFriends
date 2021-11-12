@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Palette } from '../../lib/styles/Palette';
+import { Palette } from '@lib/styles/Palette';
 import HabitatsContainer from './HabitatsContainer';
-import { flexBox } from '../../lib/styles/mixin';
-import { HabitatInfo } from '../../hooks/useHabitatInfo';
+import { flexBox } from '@lib/styles/mixin';
+import { HabitatInfo } from '@hooks/useHabitatInfo';
 
 const HabitatModalDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
