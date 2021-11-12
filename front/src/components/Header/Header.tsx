@@ -1,13 +1,13 @@
-import { Palette } from '../../lib/styles/Palette';
 import React from 'react';
 import styled from 'styled-components';
+import HabitatModal from '@components/HabitatModal/HabitatModal';
 import Place from './Place';
 import UserInfo from './UserInfo';
-import { flexBox } from '../../lib/styles/mixin';
-import useModal from '../_common/Modal/useModal';
-import Modal from '../_common/Modal/Modal';
-import HabitatModal from '../HabitatModal/HabitatModal';
-import { HabitatInfo } from '../../hooks/useHabitatInfo';
+import { flexBox } from '@lib/styles/mixin';
+import { Palette } from '@lib/styles/Palette';
+import Modal from '@common/Modal/Modal';
+import useModal from '@common/Modal/useModal';
+import { HabitatInfo } from '@hooks/useHabitatInfo';
 
 const LOGO: string = '핑핑이 친구들';
 

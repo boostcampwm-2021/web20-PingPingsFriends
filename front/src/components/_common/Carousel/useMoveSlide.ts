@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { rectType } from '../../../hooks/useClientRect';
+import { rectType } from '@hooks/useClientRect';
 
 type useCarouselType = [number, number, () => void, () => void, (idx: number) => void];
 

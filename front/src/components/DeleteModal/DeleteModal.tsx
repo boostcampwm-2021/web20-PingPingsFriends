@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Palette } from '../../lib/styles/Palette';
-import { flexBox } from '../../lib/styles/mixin';
-import { ToggleHandler } from '../_common/Modal/useModal';
+import { Palette } from '@lib/styles/Palette';
+import { flexBox } from '@lib/styles/mixin';
+import { ToggleHandler } from '@common/Modal/useModal';
 
 const DeleteModalDiv = styled.div`
   ${flexBox('center', 'center', 'column')};

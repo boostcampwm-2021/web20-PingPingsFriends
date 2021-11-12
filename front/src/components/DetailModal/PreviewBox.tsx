@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CarouselControl } from '../_common/Carousel/Carousel';
-import SwipeBox from '../_common/SwipeBox/SwipeBox';
+import { CarouselControl } from '@common/Carousel/Carousel';
+import SwipeBox from '@common/SwipeBox/SwipeBox';
 
 const PreviewDiv = styled.div`
   width: 100%;

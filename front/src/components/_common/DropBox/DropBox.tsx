@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import styled from 'styled-components';
-import { Palette } from '../../../lib/styles/Palette';
+import { Palette } from '@lib/styles/Palette';
 
 export interface DropBoxProps {
   start: 'left' | 'right';

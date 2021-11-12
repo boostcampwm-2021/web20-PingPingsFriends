@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.svg';
-import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
-import Avatar from '../_common/Avatar/Avatar';
-import DropBox from '../_common/DropBox/DropBox';
-import Carousel from '../_common/Carousel/Carousel';
-import HeartButton from '../HeartButton/HeartButton';
-import { flexBox } from '../../lib/styles/mixin';
-import { useLike } from '../HeartButton/useLike';
-import { makeDropBoxMenu } from '../_common/DropBox/makeDropBoxMenu';
-import Modal from '../_common/Modal/Modal';
-import DeleteModal from '../DeleteModal/DeleteModal';
-import DetailModal from '../DetailModal/DetailModal';
-import useModal from '../_common/Modal/useModal';
+import { ReactComponent as VertBtnSvg } from '@assets/icons/more_vert_btn.svg';
+import { ReactComponent as CommentBtnSvg } from '@assets/icons/comment_btn.svg';
+import Avatar from '@common/Avatar/Avatar';
+import DropBox from '@common/DropBox/DropBox';
+import Carousel from '@common/Carousel/Carousel';
+import HeartButton from '@components/HeartButton/HeartButton';
+import { flexBox } from '@lib/styles/mixin';
+import { useLike } from '@components/HeartButton/useLike';
+import { makeDropBoxMenu } from '@common/DropBox/makeDropBoxMenu';
+import Modal from '@common/Modal/Modal';
+import DeleteModal from '@components/DeleteModal/DeleteModal';
+import DetailModal from '@components/DetailModal/DetailModal';
+import useModal from '@common/Modal/useModal';
 
 const FeedContainerDiv = styled.div`
   background-color: white;

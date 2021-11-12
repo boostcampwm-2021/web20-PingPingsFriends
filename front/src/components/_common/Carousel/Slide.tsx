@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { rectType } from '../../../hooks/useClientRect';
-import { useGetDiv } from '../../../hooks/useGetDiv';
+import { rectType } from '@hooks/useClientRect';
+import { useGetDiv } from '@hooks/useGetDiv';
 
 const SlideImg = styled.img<Pick<SlideProps, 'rect'>>`
   width: ${({ rect }) => rect.width}px;

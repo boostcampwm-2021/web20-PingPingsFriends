@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { flexBox } from '../../lib/styles/mixin';
-import { HabitatInfo } from '../../hooks/useHabitatInfo';
+import { flexBox } from '@lib/styles/mixin';
+import { HabitatInfo } from '@hooks/useHabitatInfo';
 
 const HabitatsContainerDiv = styled.div`
   display: grid;

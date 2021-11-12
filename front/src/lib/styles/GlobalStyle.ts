@@ -1,0 +1,35 @@
+import { createGlobalStyle } from 'styled-components';
+import NanumPenScriptFont from '@assets/fonts/NanumPenScript-Regular.ttf';
+
+const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'Nanum Pen Script';
+    src: url(${NanumPenScriptFont});
+  }
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Nanum Pen Script';
+  }
+  .button {
+    cursor: pointer;
+  }
+  .ul,li{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  button{
+    background: inherit;
+    border:none;
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+    overflow:visible;
+    cursor:pointer
+  }
+`;
+
+export default GlobalStyle;

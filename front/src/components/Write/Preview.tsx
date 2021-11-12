@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Palette } from '../../lib/styles/Palette';
-import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn.svg';
+import { Palette } from '@lib/styles/Palette';
+import { ReactComponent as CancelBtnSvg } from '@assets/icons/cancel_btn.svg';
 
 const CELL_BORDER_RADIUS = '10px';
 const CELL_WIDTH = '180px';

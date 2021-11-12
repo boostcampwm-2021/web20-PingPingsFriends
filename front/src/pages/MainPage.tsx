@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import Header from '../components/Header/Header';
-import FeedScrollBox from '../components/Feed/FeedScrollBox';
-import FeedFAB from '../components/Feed/FeedFAB';
+import Header from '@components/Header/Header';
+import FeedScrollBox from '@components/Feed/FeedScrollBox';
+import FeedFAB from '@components/Feed/FeedFAB';
 import styled from 'styled-components';
-import HabitatPreview from '../components/Habitat/HabitatPreview';
-import useHistory from '../hooks/useHistory';
-import { Palette } from '../lib/styles/Palette';
-import { flexBox } from '../lib/styles/mixin';
-import useHabitatInfo from '../hooks/useHabitatInfo';
+import HabitatPreview from '@components/Habitat/HabitatPreview';
+import useHistory from '@hooks/useHistory';
+import { Palette } from '@lib/styles/Palette';
+import { flexBox } from '@lib/styles/mixin';
+import useHabitatInfo from '@hooks/useHabitatInfo';
 
 const MainPageBlock = styled.div`
   ${flexBox(null, null, 'column')};
