@@ -12,16 +12,18 @@ export class HeartsService {
     private heartRepository: Repository<Heart>
   ) {}
 
-  create(createHeartDto: CreateHeartDto) {
-    return 'This action adds a new heart';
-  }
-
   findAll() {
     return `This action returns all hearts`;
   }
 
   async findOne(userId: number, postId: number) {
-    return await this.heartRepository.createQueryBuilder('heart').where('heart.postId = :postId AND heart.userId = :userId', { postId: postId, userId: userId }).getCount();
+    return await this.heartRepository
+      .createQueryBuilder('heart')
+      .where('heart.postId = :postId AND heart.userId = :userId', {
+        postId: postId,
+        userId: userId,
+      })
+      .getCount();
   }
 
   update(id: number, updateHeartDto: UpdateHeartDto) {

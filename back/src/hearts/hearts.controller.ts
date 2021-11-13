@@ -1,34 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { HeartsService } from './hearts.service';
-import { CreateHeartDto } from './dto/create-heart.dto';
-import { UpdateHeartDto } from './dto/update-heart.dto';
-
 @Controller('hearts')
 export class HeartsController {
   constructor(private readonly heartsService: HeartsService) {}
 
-  @Post()
-  create(@Body() createHeartDto: CreateHeartDto) {
-    return this.heartsService.create(createHeartDto);
+  @Get(':postId') //좋아요 추가
+  setHeart(@Param('postId', ParseIntPipe) id: number) {
+    return this.heartsService.setHeart();
   }
 
-  @Get()
-  findAll() {
-    return this.heartsService.findAll();
+  @Delete(':postId') //좋아요 삭제
+  deleteHeart(@Param('postId', ParseIntPipe) id: number) {
+    return this.heartsService.deleteHeart();
+  }
+
+  @Get(':postId') // 좋아요 카운트
+  getHeartCount(@Param('postId', ParseIntPipe) id: number) {
+    return this.heartsService.getHeartCount();
+  }
+
+  @Get(':postId') // 좋아요한 유저 목록
+  getAllLikedUser(@Param('postId', ParseIntPipe) id: number) {
+    return this.heartsService.getAllLikedUser();
   }
 
   @Get(':userId/:postId')
-  async findOne(@Param('userId') userId: string, @Param('postId') postId: string) {
+  async findOne(
+    @Param('userId') userId: string,
+    @Param('postId') postId: string
+  ) {
     return await this.heartsService.findOne(+userId, +postId);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHeartDto: UpdateHeartDto) {
-    return this.heartsService.update(+id, updateHeartDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.heartsService.remove(+id);
   }
 }
