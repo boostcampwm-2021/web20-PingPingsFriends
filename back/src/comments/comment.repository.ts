@@ -1,5 +1,3 @@
-import { Post } from "src/post/entities/post.entity";
-import { User } from "src/users/entities/user.entity";
 import { DeleteResult, EntityRepository, Repository, UpdateResult } from "typeorm";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
@@ -12,18 +10,12 @@ export class CommentRepository extends Repository<Comment> {
     const { post_id, content} = createCommentDto;
 
     const comment = new Comment();
-    const post = new Post();
-    const user = new User();
-
-    post.id = post_id;
-    user.id = 1;
-
-    comment.post = post;
+    comment.postId = post_id;
+    comment.userId = 1;
     comment.content = content;
-    comment.user = user;
     const result = await this.save(comment);
     console.log(result)
-    return comment
+    return result
   }
 
   async updateComment(id:number, updateCommentDto: UpdateCommentDto): Promise <UpdateResult>{

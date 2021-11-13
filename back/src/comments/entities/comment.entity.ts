@@ -13,6 +13,12 @@ export class Comment {
   @Column({ length: 500 })
   content: string;
 
+  @Column({name:'post_id'})
+  postId: number;
+
+  @Column({name:'user_id'})
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
