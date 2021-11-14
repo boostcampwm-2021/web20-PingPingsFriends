@@ -17,6 +17,21 @@ export class HeartsService {
     return this.heartRepository.createLiked(heart);
   }
 
+  async deleteHeart(postId: number, userId: number) {
+    const heart = new Heart();
+    heart.postId = postId;
+    heart.userId = userId;
+    return this.heartRepository.deleteLiked(heart);
+  }
+
+  async getHeartCount(postId: number) {
+    return this.heartRepository.countPostLiked(postId);
+  }
+
+  async getAllLikedUser(postId: number, skip: number, take: number) {
+    return this.heartRepository.getLikedList(postId, skip, take);
+  }
+
   async findOne(userId: number, postId: number) {
     return await this.heartRepository
       .createQueryBuilder('heart')
