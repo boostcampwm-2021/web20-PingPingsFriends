@@ -15,12 +15,6 @@ const CarouselDiv = styled.div`
   overflow: hidden;
 `;
 
-interface CarouselProps {
-  imageURLs: string[];
-  scrollRef?: React.MutableRefObject<HTMLDivElement>;
-  children?: React.ReactElement;
-}
-
 export interface CarouselControl {
   translateStyle: number;
   slideIndex: number;
@@ -29,7 +23,13 @@ export interface CarouselControl {
   certainSlide: (idx: number) => void;
 }
 
-const Carousel = ({ imageURLs, children }: CarouselProps) => {
+interface CarouselProps {
+  imageURLs: string[];
+  children?: React.ReactElement;
+  lazy?: (node: HTMLDivElement) => void;
+}
+
+const Carousel = ({ imageURLs, children, lazy }: CarouselProps) => {
   const [rect, ref] = useClientRect();
   const [translateStyle, slideIndex, nextSlide, prevSlide, certainSlide] = useMoveSlide({ slideCount: imageURLs.length, rect });
 
@@ -38,7 +38,7 @@ const Carousel = ({ imageURLs, children }: CarouselProps) => {
       <CarouselDiv ref={ref}>
         <CarouselContents trans={translateStyle} width={rect.width * imageURLs.length}>
           {imageURLs.map((src, index) => (
-            <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} />
+            <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} lazy={lazy} />
           ))}
         </CarouselContents>
 

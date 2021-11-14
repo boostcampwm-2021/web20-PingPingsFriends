@@ -63,9 +63,10 @@ export interface FeedProps {
   nickname: string;
   imageURLs: string[];
   text: string;
+  lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ nickname, imageURLs, text }: FeedProps) => {
+const Feed = ({ nickname, imageURLs, text, lazy }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
   const [like, toggleLike] = useLike();
@@ -81,7 +82,7 @@ const Feed = ({ nickname, imageURLs, text }: FeedProps) => {
         </DropBox>
       </FeedHeaderDiv>
       <FeedContents>
-        <Carousel imageURLs={imageURLs} />
+        <Carousel imageURLs={imageURLs} lazy={lazy} />
       </FeedContents>
       <FeedInfoDiv>
         <HeartButton like={like} toggleLike={toggleLike} />

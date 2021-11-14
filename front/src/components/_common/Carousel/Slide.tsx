@@ -16,17 +16,18 @@ const Video = styled.video<Pick<SlideProps, 'rect'>>`
 interface SlideProps {
   src: string;
   rect: rectType;
+  lazy?: (node: HTMLDivElement) => void;
 }
 
-const Slide = ({ src, rect }: SlideProps) => {
+const Slide = ({ src, rect, lazy }: SlideProps) => {
   return (
-    <div>
+    <div ref={lazy}>
       {src.includes('mp4') ? (
         <Video rect={rect} controls autoPlay>
           <source src={src} type={'video/mp4'} />
         </Video>
       ) : (
-        <SlideImg src={src} rect={rect} alt="피드 이미지" />
+        <SlideImg src={'default_avatar.png'} data-src={src} rect={rect} alt="피드 이미지" />
       )}
     </div>
   );

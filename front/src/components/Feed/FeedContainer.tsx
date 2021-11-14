@@ -7,6 +7,8 @@ import { Palette } from '@lib/styles/Palette';
 import useScroll from '@hooks/useScroll';
 import ScrollContainer from '@components/Feed/ScrollBoxContainer';
 import ViewPort from '@components/Feed/ViewPort';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useGetDiv } from '@hooks/useGetDiv';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
@@ -44,15 +46,30 @@ interface FeedScrollBoxProps {
   habitatInfo: HabitatInfo | undefined;
 }
 
+const callback: IntersectionObserverCallback = (entries, observer) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const target = entry.target.firstChild as HTMLImageElement;
+      target.src = target.dataset.src as string;
+      observer.unobserve(target);
+    }
+  });
+};
+
 const FeedContainer = ({ habitatInfo }: FeedScrollBoxProps) => {
   const { feeds, offset, height, handleScroll } = useScroll();
+  const [root, rootRef] = useGetDiv();
+  const lazy = useIntersectionObserver(callback, {
+    root: root,
+    rootMargin: '300px 0px',
+  });
 
   return (
-    <FeedContainerDiv color={habitatInfo?.color} onScroll={handleScroll}>
+    <FeedContainerDiv color={habitatInfo?.color} onScroll={handleScroll} ref={rootRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
           {feeds.map((feed) => (
-            <Feed key={feed.id} nickname={feed.nickname} imageURLs={feed.imageURLs} text={feed.text} />
+            <Feed key={feed.id} nickname={feed.nickname} imageURLs={feed.imageURLs} text={feed.text} lazy={lazy} />
           ))}
         </ViewPort>
       </ScrollContainer>

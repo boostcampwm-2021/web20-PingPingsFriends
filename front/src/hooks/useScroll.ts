@@ -21,7 +21,7 @@ const useScroll: UseScrollType = () => {
     const target = e.target as Element;
     setScroll({ ...scroll, top: target.scrollTop });
   };
-
+  const [startIndex, setStartIndex] = useState(0);
   const [feeds, setFeeds] = useState<FeedProps[]>([]);
   const [scroll, setScroll] = useState({
     top: 0,
@@ -41,7 +41,7 @@ const useScroll: UseScrollType = () => {
     const nextFeeds: FeedProps[] = data.slice(startIndex, startIndex + FIX_FEED).map((data) => ({
       id: data.id,
       nickname: data.user.username,
-      imageURLs: [data.urls.thumb],
+      imageURLs: [data.urls.small],
       text: data.description,
     }));
 
@@ -56,14 +56,18 @@ const useScroll: UseScrollType = () => {
       // setData([...data, ...(await useFetch<MockData>(data[data.length-1]])));
       // return;
     }
-    const startIndex = Math.floor(top / ITEM_HEIGHT);
+
+    setStartIndex(Math.floor(top / ITEM_HEIGHT));
+  }, [top]);
+
+  useEffect(() => {
     const nextOffset = startIndex * ITEM_HEIGHT;
 
     setFeeds(
       data.slice(startIndex, startIndex + FIX_FEED).map((data) => ({
         id: data.id,
         nickname: data.user.username,
-        imageURLs: [data.urls.thumb],
+        imageURLs: [data.urls.small],
         text: data.description,
       }))
     );
@@ -72,7 +76,7 @@ const useScroll: UseScrollType = () => {
       ...scroll,
       offset: nextOffset < 0 ? 0 : nextOffset,
     });
-  }, [top]);
+  }, [startIndex]);
 
   return { feeds, offset, height, handleScroll };
 };
