@@ -41,7 +41,7 @@ const useScroll: UseScrollType = () => {
     const nextFeeds: FeedProps[] = data.slice(startIndex, startIndex + FIX_FEED).map((data) => ({
       id: data.id,
       nickname: data.user.username,
-      imageURLs: [data.urls.small],
+      imageURLs: [data.urls.thumb, data.urls.small],
       text: data.description,
     }));
 
@@ -67,7 +67,7 @@ const useScroll: UseScrollType = () => {
       data.slice(startIndex, startIndex + FIX_FEED).map((data) => ({
         id: data.id,
         nickname: data.user.username,
-        imageURLs: [data.urls.small],
+        imageURLs: [data.urls.thumb, data.urls.small],
         text: data.description,
       }))
     );

@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import CarouselContents from './CarouselContents';
 import { useClientRect } from '@hooks/useClientRect';
+import { useMoveSlide } from './useMoveSlide';
 import Slide from './Slide';
 import Arrow from './Arrow';
 import Dots from './Dots';
-import { useMoveSlide } from './useMoveSlide';
 
 const CarouselDiv = styled.div`
   position: relative;
@@ -42,13 +42,13 @@ const Carousel = ({ imageURLs, children, lazy }: CarouselProps) => {
           ))}
         </CarouselContents>
 
-        {imageURLs.length > 1 ? (
+        {imageURLs.length > 1 && (
           <>
-            <Arrow direction={'right'} handleClick={nextSlide} />
-            <Arrow direction={'left'} handleClick={prevSlide} />
+            {slideIndex === 0 && <Arrow direction={'right'} handleClick={nextSlide} />}
+            {slideIndex === imageURLs.length - 1 && <Arrow direction={'left'} handleClick={prevSlide} />}
             <Dots slides={imageURLs} slideIndex={slideIndex} />
           </>
-        ) : null}
+        )}
       </CarouselDiv>
       {children !== undefined ? React.cloneElement(children, { controller: { translateStyle, slideIndex, nextSlide, prevSlide, certainSlide }, imageURLs: imageURLs }) : null}
     </>
