@@ -1,11 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
-import NanumPenScriptFont from '@assets/fonts/NanumPenScript-Regular.ttf';
 
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'Nanum Pen Script';
-    src: url(${NanumPenScriptFont});
-  }
   * {
     padding: 0;
     margin: 0;
