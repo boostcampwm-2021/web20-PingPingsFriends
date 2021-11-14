@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateHeartDto } from './dto/create-heart.dto';
-import { UpdateHeartDto } from './dto/update-heart.dto';
 import { Heart } from './entities/heart.entity';
+import { HeartRepository } from './heart.repository';
 
 @Injectable()
 export class HeartsService {
   constructor(
-    @InjectRepository(Heart)
-    private heartRepository: Repository<Heart>
+    @InjectRepository(HeartRepository)
+    private heartRepository: HeartRepository
   ) {}
 
-  findAll() {
-    return `This action returns all hearts`;
+  async setHeart(postId: number, userId: number) {
+    const heart = new Heart();
+    heart.postId = postId;
+    heart.userId = userId;
+    return this.heartRepository.createLiked(heart);
   }
 
   async findOne(userId: number, postId: number) {
@@ -24,13 +25,5 @@ export class HeartsService {
         userId: userId,
       })
       .getCount();
-  }
-
-  update(id: number, updateHeartDto: UpdateHeartDto) {
-    return `This action updates a #${id} heart`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} heart`;
   }
 }

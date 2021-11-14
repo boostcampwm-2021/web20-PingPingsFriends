@@ -14,8 +14,8 @@ export class HeartsController {
   constructor(private readonly heartsService: HeartsService) {}
 
   @Get(':postId') //좋아요 추가
-  setHeart(@Param('postId', ParseIntPipe) id: number) {
-    return this.heartsService.setHeart();
+  setHeart(@Param('postId', ParseIntPipe) postId: number) {
+    return this.heartsService.setHeart(postId, 1);
   }
 
   @Delete(':postId') //좋아요 삭제
