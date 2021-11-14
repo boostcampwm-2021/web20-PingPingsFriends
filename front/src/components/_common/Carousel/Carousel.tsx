@@ -29,7 +29,7 @@ export interface CarouselControl {
   certainSlide: (idx: number) => void;
 }
 
-const Carousel = ({ imageURLs, scrollRef, children }: CarouselProps) => {
+const Carousel = ({ imageURLs, children }: CarouselProps) => {
   const [rect, ref] = useClientRect();
   const [translateStyle, slideIndex, nextSlide, prevSlide, certainSlide] = useMoveSlide({ slideCount: imageURLs.length, rect });
 
@@ -38,7 +38,7 @@ const Carousel = ({ imageURLs, scrollRef, children }: CarouselProps) => {
       <CarouselDiv ref={ref}>
         <CarouselContents trans={translateStyle} width={rect.width * imageURLs.length}>
           {imageURLs.map((src, index) => (
-            <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} scrollRef={scrollRef} />
+            <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} />
           ))}
         </CarouselContents>
 

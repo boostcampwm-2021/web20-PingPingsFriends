@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from '@components/Header/Header';
-import FeedScrollBox from '@components/Feed/FeedScrollBox';
+import FeedContainer from '@components/Feed/FeedContainer';
 import FeedFAB from '@components/Feed/FeedFAB';
 import styled from 'styled-components';
 import HabitatPreview from '@components/Habitat/HabitatPreview';
@@ -21,14 +21,14 @@ const MainPageBlock = styled.div`
 const MainPage = () => {
   // 비로그인시 userHabitatId == -1
   const [userHabitatId, setUserHabitatId] = useState(-1);
+
   const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useHistory(userHabitatId);
 
   const { habitatInfo } = useHabitatInfo(curHabitatId);
-
   return (
     <MainPageBlock>
       <Header habitatInfo={habitatInfo} />
-      <FeedScrollBox habitatInfo={habitatInfo} />
+      <FeedContainer habitatInfo={habitatInfo} />
       <FeedFAB />
       <HabitatPreview habitat={habitatList.current[historyIdx.current + 1]} onClick={handleNextHabitat} side={'right'} />
       <HabitatPreview habitat={habitatList.current[historyIdx.current - 1]} onClick={handlePrevHabitat} side={'left'} />
