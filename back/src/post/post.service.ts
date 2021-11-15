@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
+import { Content } from 'src/contents/entities/content.entity';
+import { PostContent } from 'src/post-contents/entities/post-content.entity';
+import { Connection } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
+import { PatchPostRequestDto } from './dto/patchPostRequestDto';
+import { Post } from './entities/post.entity';
 import { PostRepository } from './post.repository';
 
 const LIMIT_NUMBER = 10;
@@ -10,7 +15,8 @@ const LIMIT_NUMBER = 10;
 export class PostService {
   constructor(
     @InjectRepository(PostRepository)
-    private postRepository: PostRepository // @InjectRepository(PostContent) // private postContentRepository: Repository<PostContent>
+    private postRepository: PostRepository,
+    private connection: Connection
   ) {}
 
   async create(
@@ -136,54 +142,70 @@ export class PostService {
     });
   }
 
-  // async update(
-  //   id: number,
-  //   patchPostRequestDto: PatchPostRequestDto,
-  //   contentsInfos: CreateContentDto[]
-  // ) {
-  //   const post = await this.postRepository.findOne(id, {
-  //     relations: ['postContents'],
-  //   });
-  //   const updateIds = JSON.parse(
-  //     patchPostRequestDto.contentInfos
-  //   ).map((info: Content, i: number) => info.id);
-  //   const excludedPost = post.postContents.filter(
-  //     (postContent, i) =>
-  //       !updateIds.includes('' + postContent.contentsId)
-  //   );
+  async update(
+    id: number,
+    patchPostRequestDto: PatchPostRequestDto,
+    contentsInfos: CreateContentDto[]
+  ) {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
 
-  //   if (
-  //     post.postContents.length -
-  //       excludedPost.length +
-  //       contentsInfos.length >
-  //     10
-  //   )
-  //     return false;
+    const postRepository = queryRunner.manager.getRepository(Post);
+    const postContentRepository =
+      queryRunner.manager.getRepository(PostContent);
+    const contentRepository =
+      queryRunner.manager.getRepository(Content);
 
-  //   this.postContentRepository.remove(excludedPost);
+    const post = await postRepository.findOne(id, {
+      relations: ['postContents'],
+    });
 
-  //   const newContents = contentsInfos.map((contentsInfo, i) => {
-  //     return this.contentRepository.create(contentsInfo);
-  //   });
-  //   const newContentsEntities = await this.contentRepository.save(
-  //     newContents
-  //   );
+    const updateIds = JSON.parse(patchPostRequestDto.contentIds).map(
+      (info: { id: string }, i: number) => info.id
+    );
 
-  //   newContentsEntities.forEach((newContentsEntity, i) => {
-  //     const newPostContent = this.postContentRepository.create({
-  //       postId: post.id,
-  //       contentsId: newContentsEntity.id,
-  //     });
-  //     this.postContentRepository.save(newPostContent);
-  //   });
+    const excludedPostContents = post.postContents.filter(
+      (postContent, i) =>
+        !updateIds.includes('' + postContent.contentsId)
+    );
 
-  //   this.postRepository.update(id, {
-  //     humanContent: patchPostRequestDto.humanContent,
-  //     animalContent: patchPostRequestDto.animalContent,
-  //   });
+    if (
+      post.postContents.length -
+        excludedPostContents.length +
+        contentsInfos.length >
+      10
+    )
+      return false;
 
-  //   return true;
-  // }
+    queryRunner.startTransaction();
+
+    try {
+      const excludedContentIds = excludedPostContents.map(
+        (postContent) => postContent.contentsId
+      );
+      await contentRepository.delete(excludedContentIds);
+
+      const contents = await contentRepository.save(contentsInfos);
+      const postContents = contents.map((content) => ({
+        postId: post.id,
+        contentsId: content.id,
+      }));
+      postContentRepository.insert(postContents);
+
+      await postRepository.update(id, {
+        humanContent: patchPostRequestDto.humanContent,
+        animalContent: patchPostRequestDto.animalContent,
+      });
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
 
   remove(id: number) {
     return this.postRepository.delete(id);
