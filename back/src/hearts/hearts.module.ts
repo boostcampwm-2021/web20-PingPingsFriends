@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { HeartsService } from './hearts.service';
 import { HeartsController } from './hearts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Heart } from './entities/heart.entity';
+import { HeartRepository } from './heart.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Heart])],
+  imports: [TypeOrmModule.forFeature([HeartRepository])],
   controllers: [HeartsController],
   providers: [HeartsService],
 })

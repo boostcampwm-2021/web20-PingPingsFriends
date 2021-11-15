@@ -1,34 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateHeartDto } from './dto/create-heart.dto';
-import { UpdateHeartDto } from './dto/update-heart.dto';
 import { Heart } from './entities/heart.entity';
+import { HeartRepository } from './heart.repository';
 
 @Injectable()
 export class HeartsService {
   constructor(
-    @InjectRepository(Heart)
-    private heartRepository: Repository<Heart>
+    @InjectRepository(HeartRepository)
+    private heartRepository: HeartRepository
   ) {}
 
-  create(createHeartDto: CreateHeartDto) {
-    return 'This action adds a new heart';
+  async setHeart(postId: number, userId: number) {
+    const heart = new Heart();
+    heart.postId = postId;
+    heart.userId = userId;
+    return this.heartRepository.createLiked(heart);
   }
 
-  findAll() {
-    return `This action returns all hearts`;
+  async deleteHeart(postId: number, userId: number) {
+    const heart = new Heart();
+    heart.postId = postId;
+    heart.userId = userId;
+    return this.heartRepository.deleteLiked(heart);
+  }
+
+  async getHeartCount(postId: number) {
+    return this.heartRepository.countPostLiked(postId);
+  }
+
+  async getAllLikedUser(postId: number, skip: number, take: number) {
+    return this.heartRepository.getLikedList(postId, skip, take);
   }
 
   async findOne(userId: number, postId: number) {
-    return await this.heartRepository.createQueryBuilder('heart').where('heart.postId = :postId AND heart.userId = :userId', { postId: postId, userId: userId }).getCount();
-  }
-
-  update(id: number, updateHeartDto: UpdateHeartDto) {
-    return `This action updates a #${id} heart`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} heart`;
+    return await this.heartRepository
+      .createQueryBuilder('heart')
+      .where('heart.postId = :postId AND heart.userId = :userId', {
+        postId: postId,
+        userId: userId,
+      })
+      .getCount();
   }
 }
