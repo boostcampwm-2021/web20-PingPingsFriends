@@ -13,12 +13,10 @@ import {
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import {
-  getPartialFilesInfo,
-  multerOption,
-} from 'src/utills/s3.util';
+import { getPartialFilesInfo } from 'utils/s3.util';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PatchPostRequestDto } from './dto/patchPostRequestDto';
+import multerOption from 'config/s3.config';
 
 @Controller('post')
 export class PostController {

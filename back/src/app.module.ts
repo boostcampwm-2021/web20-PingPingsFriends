@@ -9,7 +9,7 @@ import { SpeciesModule } from './species/species.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentsModule } from './comments/comments.module';
 import { HeartsModule } from './hearts/hearts.module';
-import databaseConfig from './database/database.config';
+import databaseConfig from '../config/database.config';
 
 @Module({
   imports: [
