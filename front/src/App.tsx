@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage';
 import ExplorePage from './pages/ExplorePage';
 import TestPage from './pages/TestPage';
 import GlobalStyle from '@lib/styles/GlobalStyle';
+import '@lib/styles/fonts.css';
 
 function App() {
   return (

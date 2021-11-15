@@ -21,6 +21,7 @@ const FeedContainerDiv = styled.div`
   flex-shrink: 0;
   border-radius: 30px;
   position: relative;
+  margin: 10px 0;
 `;
 
 const FeedHeaderDiv = styled.div`
@@ -62,19 +63,17 @@ export interface FeedProps {
   nickname: string;
   imageURLs: string[];
   text: string;
-  lastFeed?: (node: HTMLDivElement) => void;
-  scrollRef?: any;
+  lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => {
+const Feed = ({ nickname, imageURLs, text, lazy }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
   const [like, toggleLike] = useLike();
-
   const test = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
 
   return (
-    <FeedContainerDiv ref={lastFeed}>
+    <FeedContainerDiv>
       <FeedHeaderDiv>
         <Avatar size={'30px'} />
         <span>{nickname}</span>
@@ -83,7 +82,7 @@ const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => 
         </DropBox>
       </FeedHeaderDiv>
       <FeedContents>
-        <Carousel imageURLs={imageURLs} scrollRef={scrollRef} />
+        <Carousel imageURLs={imageURLs} lazy={lazy} />
       </FeedContents>
       <FeedInfoDiv>
         <HeartButton like={like} toggleLike={toggleLike} />
@@ -102,4 +101,5 @@ const Feed = ({ nickname, imageURLs, text, lastFeed, scrollRef }: FeedProps) => 
   );
 };
 
-export default Feed;
+// export default Feed;
+export default React.memo(Feed);

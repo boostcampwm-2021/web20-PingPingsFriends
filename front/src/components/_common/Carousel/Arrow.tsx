@@ -8,7 +8,13 @@ const ArrowDiv = styled.div<Partial<ArrowProps>>`
   top: calc(50% - 24px);
   width: 24px;
   height: 24px;
-  ${({ direction }) => (direction === 'right' ? `right:0` : `left:0`)};
+  ${({ direction }) => (direction === 'right' ? `right:5px` : `left:5px`)};
+  svg {
+    box-shadow: 0 0 3px 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
   &:hover {
     cursor: pointer;
   }
