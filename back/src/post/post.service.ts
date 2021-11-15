@@ -1,50 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
-import { Content } from 'src/contents/entities/content.entity';
-import { Heart } from 'src/hearts/entities/heart.entity';
-import { PostContent } from 'src/post-contents/entities/post-content.entity';
-import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
-import { PatchPostRequestDto } from './dto/patchPostRequestDto';
-import { UpdatePostDto } from './dto/update-post.dto';
-import { Post } from './entities/post.entity';
+import { PostRepository } from './post.repository';
 
 const LIMIT_NUMBER = 10;
 
 @Injectable()
 export class PostService {
   constructor(
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
-    @InjectRepository(Content)
-    private contentRepository: Repository<Content>,
-    @InjectRepository(PostContent)
-    private postContentRepository: Repository<PostContent>,
-    @InjectRepository(Heart)
-    private heartRespository: Repository<Heart>
+    @InjectRepository(PostRepository)
+    private postRepository: PostRepository // @InjectRepository(PostContent) // private postContentRepository: Repository<PostContent>
   ) {}
 
   async create(
     createPostDto: CreatePostDto,
     contentsInfos: CreateContentDto[]
   ) {
-    let post = new Post();
-    post.animalContent = createPostDto.animalContent;
-    post.humanContent = createPostDto.humanContent;
-    post.userId = createPostDto.userId;
-    post.habitatId = createPostDto.habitatId;
-    const postContents = contentsInfos.map((contentsInfo, i) => {
-      const content = new Content();
-      content.url = contentsInfo.url;
-      content.mimeType = contentsInfo.mimeType;
-      const postContent = new PostContent();
-      postContent.content = content;
-      return postContent;
-    });
-    post.postContents = postContents;
-    post = await this.postRepository.save(post);
-    return post;
+    return await this.postRepository.createPost(
+      createPostDto,
+      contentsInfos
+    );
   }
 
   async getFirstPage(habitatId: number, userId: number) {
@@ -160,54 +136,54 @@ export class PostService {
     });
   }
 
-  async update(
-    id: number,
-    patchPostRequestDto: PatchPostRequestDto,
-    contentsInfos: CreateContentDto[]
-  ) {
-    const post = await this.postRepository.findOne(id, {
-      relations: ['postContents'],
-    });
-    const updateIds = JSON.parse(
-      patchPostRequestDto.contentInfos
-    ).map((info: Content, i: number) => info.id);
-    const excludedPost = post.postContents.filter(
-      (postContent, i) =>
-        !updateIds.includes('' + postContent.contentsId)
-    );
+  // async update(
+  //   id: number,
+  //   patchPostRequestDto: PatchPostRequestDto,
+  //   contentsInfos: CreateContentDto[]
+  // ) {
+  //   const post = await this.postRepository.findOne(id, {
+  //     relations: ['postContents'],
+  //   });
+  //   const updateIds = JSON.parse(
+  //     patchPostRequestDto.contentInfos
+  //   ).map((info: Content, i: number) => info.id);
+  //   const excludedPost = post.postContents.filter(
+  //     (postContent, i) =>
+  //       !updateIds.includes('' + postContent.contentsId)
+  //   );
 
-    if (
-      post.postContents.length -
-        excludedPost.length +
-        contentsInfos.length >
-      10
-    )
-      return false;
+  //   if (
+  //     post.postContents.length -
+  //       excludedPost.length +
+  //       contentsInfos.length >
+  //     10
+  //   )
+  //     return false;
 
-    this.postContentRepository.remove(excludedPost);
+  //   this.postContentRepository.remove(excludedPost);
 
-    const newContents = contentsInfos.map((contentsInfo, i) => {
-      return this.contentRepository.create(contentsInfo);
-    });
-    const newContentsEntities = await this.contentRepository.save(
-      newContents
-    );
+  //   const newContents = contentsInfos.map((contentsInfo, i) => {
+  //     return this.contentRepository.create(contentsInfo);
+  //   });
+  //   const newContentsEntities = await this.contentRepository.save(
+  //     newContents
+  //   );
 
-    newContentsEntities.forEach((newContentsEntity, i) => {
-      const newPostContent = this.postContentRepository.create({
-        postId: post.id,
-        contentsId: newContentsEntity.id,
-      });
-      this.postContentRepository.save(newPostContent);
-    });
+  //   newContentsEntities.forEach((newContentsEntity, i) => {
+  //     const newPostContent = this.postContentRepository.create({
+  //       postId: post.id,
+  //       contentsId: newContentsEntity.id,
+  //     });
+  //     this.postContentRepository.save(newPostContent);
+  //   });
 
-    this.postRepository.update(id, {
-      humanContent: patchPostRequestDto.humanContent,
-      animalContent: patchPostRequestDto.animalContent,
-    });
+  //   this.postRepository.update(id, {
+  //     humanContent: patchPostRequestDto.humanContent,
+  //     animalContent: patchPostRequestDto.animalContent,
+  //   });
 
-    return true;
-  }
+  //   return true;
+  // }
 
   remove(id: number) {
     return this.postRepository.delete(id);

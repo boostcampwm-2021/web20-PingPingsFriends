@@ -53,20 +53,20 @@ export class PostController {
     return this.postService.findOne(+id);
   }
 
-  @Patch(':id')
-  @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
-  update(
-    @Param('id') id: string,
-    @Body() patchPostRequestDto: PatchPostRequestDto,
-    @UploadedFiles() files: Express.Multer.File[]
-  ) {
-    const contentsInfos = getPartialFilesInfo(files);
-    return this.postService.update(
-      +id,
-      patchPostRequestDto,
-      contentsInfos
-    );
-  }
+  // @Patch(':id')
+  // @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() patchPostRequestDto: PatchPostRequestDto,
+  //   @UploadedFiles() files: Express.Multer.File[]
+  // ) {
+  //   const contentsInfos = getPartialFilesInfo(files);
+  //   return this.postService.update(
+  //     +id,
+  //     patchPostRequestDto,
+  //     contentsInfos
+  //   );
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
