@@ -30,17 +30,20 @@ export class PostService {
   }
 
   async getFirstPage(habitatId: number, userId: number) {
-    const queryBuilder = this.getPostWithHabitatQueryBuilder(
+    let baseSql = this.getBaseQuery();
+    let tailSql = this.getTailQuery();
+
+    const posts = await this.connection.query(baseSql + tailSql, [
+      userId,
       habitatId,
-      userId
-    );
-    const posts = await queryBuilder
-      .orderBy('post.id', 'DESC')
-      .take(LIMIT_NUMBER)
-      .getMany();
+      LIMIT_NUMBER,
+    ]);
+
+    console.log(posts.length);
+
     const lastPostId =
       posts.length === LIMIT_NUMBER
-        ? posts[LIMIT_NUMBER - 1].id
+        ? posts[LIMIT_NUMBER - 1].post_id
         : null;
 
     if (lastPostId) return { posts, lastPostId };
@@ -52,20 +55,20 @@ export class PostService {
     userId: number,
     oldLastPostId: number
   ) {
-    const queryBuilder = this.getPostWithHabitatQueryBuilder(
-      habitatId,
-      userId
+    let baseSql = this.getBaseQuery();
+    let tailSql = this.getTailQuery();
+    let middleSql = `
+    and p.post_id < ?
+    `;
+
+    const posts = await this.connection.query(
+      baseSql + middleSql + tailSql,
+      [userId, habitatId, oldLastPostId, LIMIT_NUMBER]
     );
-    const posts = await queryBuilder
-      .andWhere('post.id < :lastPostId', {
-        lastPostId: oldLastPostId,
-      })
-      .orderBy('post.id', 'DESC')
-      .take(LIMIT_NUMBER)
-      .getMany();
+
     const currentLastPostId =
       posts.length === LIMIT_NUMBER
-        ? posts[LIMIT_NUMBER - 1].id
+        ? posts[LIMIT_NUMBER - 1].post_id
         : null;
 
     if (currentLastPostId)
@@ -73,56 +76,32 @@ export class PostService {
     else return { posts };
   }
 
-  private getPostWithHabitatQueryBuilder(
-    habitatId: number,
-    userId: number
-  ) {
-    return this.postRepository
-      .createQueryBuilder('post')
-      .innerJoinAndSelect('post.user', 'user')
-      .select([
-        'post.id',
-        'post.habitatId',
-        'post.humanContent',
-        'post.animalContent',
-        'post.createdAt',
-        'user.id',
-        'user.username',
-        'user.nickname',
-      ])
-      .innerJoinAndSelect('user.content', 'content')
-      .leftJoinAndSelect('post.postContents', 'postContents')
-      .leftJoinAndSelect('postContents.content', 'postContent')
-      .leftJoinAndSelect(
-        'post.hearts',
-        'heart',
-        'heart.userId = :userId',
-        { userId: userId }
-      )
-      .loadRelationCountAndMap(
-        'post.numOfHearts',
-        'post.likingUsers',
-        'user'
-      )
-      .loadRelationCountAndMap(
-        'post.numOfComments',
-        'post.comments',
-        'comments'
-      )
-      .where('post.habitatId = :habitatId ', {
-        habitatId: habitatId,
-      });
+  private getBaseQuery() {
+    return `
+    select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.url, group_concat(pcc.url) as urls, group_concat(pcc.mime_type) as types, if(h.post_id, p.post_id, null) as is_heart
+    from post p
+    left join user u on u.user_id = p.user_id
+    left join contents c on c.contents_id = u.contents_id
+    left join post_contents pc on pc.post_id = p.post_id
+    left join contents pcc on pc.contents_id = pcc.contents_id
+    left join heart h on h.post_id = p.post_id and h.user_id = ?
+    where p.habitat_id = ? 
+    `;
   }
 
-  async findAll(
-    habitatId: number,
-    userId: number,
-    lastPostId?: number
-  ) {
+  private getTailQuery() {
+    return `
+    group by p.post_id
+    order by p.post_id desc 
+    limit ? ;
+    `;
+  }
+
+  async findAll(habitatId: number, lastPostId?: number) {
     if (!lastPostId) {
-      return await this.getFirstPage(habitatId, userId);
+      return await this.getFirstPage(habitatId, 1);
     } else {
-      return await this.getNextPage(habitatId, userId, lastPostId);
+      return await this.getNextPage(habitatId, 1, lastPostId);
     }
   }
 
