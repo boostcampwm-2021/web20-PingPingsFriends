@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FollowController } from './follow.controller';
-import { FollowService } from './follow.service';
+import { FollowController } from '../follow.controller';
+import { FollowService } from '../follow.service';
 
 describe('FollowController', () => {
   let controller: FollowController;

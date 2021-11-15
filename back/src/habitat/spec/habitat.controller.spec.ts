@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HabitatController } from './habitat.controller';
-import { HabitatService } from './habitat.service';
+import { HabitatController } from '../habitat.controller';
+import { HabitatService } from '../habitat.service';
 
 describe('HabitatController', () => {
   let controller: HabitatController;
