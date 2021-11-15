@@ -6,17 +6,16 @@ import Preview from './Preview';
 import { ReactComponent as AddContentsSvg } from '../../assets/icons/add_contents.svg';
 import { ReactComponent as PetBtnSvg } from '../../assets/icons/pet_btn.svg';
 import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.svg';
-import { flexBox } from '@lib/styles/mixin';
+import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
 
 const WriteForm = styled.form`
+  ${boxShadow('20px')};
   background-color: ${Palette.WHITE};
   width: 600px;
   height: 400px;
-  border-radius: 20px;
   position: relative;
   padding: 30px;
-  box-shadow: 0 4px 10px rgba(51, 51, 51, 1), 0 0 4px rgba(51, 51, 51, 0.5);
 `;
 
 const DefaultBtn = styled.button`

@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 import HabitatsContainer from './HabitatsContainer';
-import { flexBox } from '@lib/styles/mixin';
+import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { HabitatInfo } from '@hooks/useHabitatInfo';
 
 const HabitatModalDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
+  ${boxShadow('8px')};
   width: 700px;
   height: 450px;
   background: ${Palette.WHITE};
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgb(51 51 51), 0 0 4px rgb(51 51 51 / 50%);
 `;
 
 const HabitatSearchDiv = styled.div`

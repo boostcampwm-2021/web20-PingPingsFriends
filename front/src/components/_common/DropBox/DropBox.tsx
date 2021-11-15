@@ -1,6 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
+import { boxShadow } from '@src/lib/styles/mixin';
 
 export interface DropBoxProps {
   start: 'left' | 'right';
@@ -15,6 +16,7 @@ const DROPBOX_ITEM_HEIGHT = '40px';
 const DROPBOX_BORDER_RADIUS = '7px';
 
 const DropBoxDiv = styled.div<any>`
+  ${boxShadow(DROPBOX_BORDER_RADIUS)};
   width: ${(props) => props.width}px;
   height: max-content;
   background-color: ${Palette.WHITE};
@@ -22,8 +24,6 @@ const DropBoxDiv = styled.div<any>`
   ${(props) => `${props.start}:${props.offset}px`};
   top: ${(props) => props.top}px;
   z-index: 1;
-  border-radius: ${DROPBOX_BORDER_RADIUS};
-  box-shadow: 0 4px 10px rgba(51, 51, 51, 1), 0 0 4px rgba(51, 51, 51, 0.5);
   p {
     font-size: 12px;
     height: ${DROPBOX_ITEM_HEIGHT};
