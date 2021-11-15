@@ -29,24 +29,22 @@ export class PostService {
     createPostDto: CreatePostDto,
     contentsInfos: CreateContentDto[]
   ) {
-    const newPost = this.postRepository.create(createPostDto);
-    const newPostEntity = await this.postRepository.save(newPost);
-
-    const newContents = contentsInfos.map((contentsInfo, i) => {
-      return this.contentRepository.create(contentsInfo);
+    let post = new Post();
+    post.animalContent = createPostDto.animalContent;
+    post.humanContent = createPostDto.humanContent;
+    post.userId = createPostDto.userId;
+    post.habitatId = createPostDto.habitatId;
+    const postContents = contentsInfos.map((contentsInfo, i) => {
+      const content = new Content();
+      content.url = contentsInfo.url;
+      content.mimeType = contentsInfo.mimeType;
+      const postContent = new PostContent();
+      postContent.content = content;
+      return postContent;
     });
-    const newContentsEntities = await this.contentRepository.save(
-      newContents
-    );
-
-    newContentsEntities.forEach((newContentsEntity, i) => {
-      const newPostContent = this.postContentRepository.create({
-        postId: newPostEntity.id,
-        contentsId: newContentsEntity.id,
-      });
-      this.postContentRepository.save(newPostContent);
-    });
-    return newPostEntity;
+    post.postContents = postContents;
+    post = await this.postRepository.save(post);
+    return post;
   }
 
   async getFirstPage(habitatId: number, userId: number) {

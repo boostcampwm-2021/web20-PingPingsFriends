@@ -20,7 +20,9 @@ export class PostContent {
   @JoinColumn({ name: 'post_id', referencedColumnName: 'id' })
   post: Post;
 
-  @OneToOne(() => Content, (content) => content.postContent)
+  @OneToOne(() => Content, (content) => content.postContent, {
+    cascade: ['insert'],
+  })
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })
   content: Content;
 }
