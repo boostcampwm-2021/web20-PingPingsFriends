@@ -1,16 +1,14 @@
-import { Inject, Injectable, Req, Res } from '@nestjs/common';
+import { Injectable, Req, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import * as multer from 'multer';
 import * as multerS3 from 'multer-s3';
-import { CreateS3Dto } from './dto/create-s3.dto';
-import { UpdateS3Dto } from './dto/update-s3.dto';
 import * as dotenv from 'dotenv';
-import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { Request, Response } from 'express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 dotenv.config();
 
-const s3 = new AWS.S3({
+export const s3 = new AWS.S3({
   endpoint: process.env.S3_ENDPOINT,
   region: 'kr-standard',
   credentials: {
@@ -19,45 +17,55 @@ const s3 = new AWS.S3({
   },
 });
 
+export const multerOption = {
+  storage: multerS3({
+    s3: s3,
+    bucket: 'spongebob-bucket',
+    acl: 'public-read',
+    key: function (request, file, cb) {
+      cb(null, `${Date.now().toString()}-${file.originalname}`);
+    },
+  }),
+};
+
+interface fileDto extends Express.Multer.File {
+  location: string;
+  mimetype: string;
+}
+
 @Injectable()
 export class S3Service {
-  constructor(
-    @Inject('USER_REPOSITORY')
-    private userRepository: Repository<User>
-  ) {}
-
-  async uploadS3(@Req() req, @Res() res) {
-    try {
+  uploadS3(@Req() req: Request, @Res() res: Response) {
+    return new Promise((resolve, reject) => {
       this.upload(req, res, (err: any) => {
-        if (err) {
-          console.log(err);
-          return res.status(404).json(`Failed to upload image file: ${err}`);
+        if (err) reject();
+
+        const files = req.files;
+
+        console.log(files);
+
+        if (Array.isArray(files)) {
+          const contentsInfos = files.map((v: fileDto, i: number) => {
+            return {
+              location: v.location,
+              mimetype: v.mimetype,
+            };
+          });
+          resolve(contentsInfos);
         }
-        const imageUrl = req.files[0].location;
-        this.updateProfile(imageUrl);
-        return res.status(201).json(imageUrl);
       });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json(`Failed to upload image file: ${err}`);
-    }
+    });
   }
 
-  async updateProfile(url: string) {
-    const user = await this.userRepository.findOne(1);
-    user.url = url;
-    await this.userRepository.save(user);
-    return url;
-  }
+  upload = multer(multerOption).array('upload', 10);
 
-  upload = multer({
-    storage: multerS3({
-      s3: s3,
-      bucket: 'spongebob-bucket',
-      acl: 'public-read',
-      key: function (request, file, cb) {
-        cb(null, `${Date.now().toString()}-${file.originalname}`);
-      },
-    }),
-  }).array('upload', 1);
+  getPartialFilesInfo(files: Express.Multer.File[]) {
+    const contentsInfos = files.map((v: fileDto, i: number) => {
+      return {
+        url: v.location,
+        mimeType: v.mimetype,
+      };
+    });
+    return contentsInfos;
+  }
 }

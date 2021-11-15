@@ -7,4 +7,6 @@ export enum Palette {
   ORANGE = '#F0CC96',
   BACKGROUND_GRAY = '#EEEEEE',
   WHITE = '#FFFFFF',
+  ACTIVE = '#0095f6',
+  RED = `#ED4956`,
 }

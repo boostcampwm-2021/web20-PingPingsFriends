@@ -2,13 +2,13 @@
   {
     "id": 1,
     "nickname": "장화 신은 고양이",
-    "imageURL": "cat.jpg",
+    "imageURLs": ["제리.mp4", "제리2.mp4"],
     "text": "야옹 야옹 미야옹.... 냥냥 냐앙... 야옹 야옹 미야옹.... 냥냥 냐앙... 야옹 야옹 미야옹.... 냥냥 냐앙... 야옹 야옹 미야옹.... 냥냥 냐앙... 야옹 야옹 미야옹.... 냥냥 냐앙... "
   },
   {
     "id": 2,
     "nickname": "미친개 초코",
-    "imageURL": "dog.jpeg",
+    "imageURLs": ["cat.jpg", "dog.jpeg", "default_avatar.png"],
     "text": "웕 웕! 웕 그르르... 웕! 웕 웕! 웕 그르르... 웕! 웕 웕! 웕 그르르... 웕! "
   }
 ]

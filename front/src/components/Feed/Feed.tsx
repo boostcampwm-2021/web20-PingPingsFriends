@@ -1,17 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as VertBtnSvg } from '../../assets/icons/more_vert_btn.svg';
-import { ReactComponent as HeartBtnSvg } from '../../assets/icons/empty_heart_btn.svg';
-import { ReactComponent as CommentBtnSvg } from '../../assets/icons/comment_btn.svg';
-import Avatar from '../_common/Avatar/Avatar';
-import { flexBox } from '../../lib/styles/mixin';
-
-export interface FeedJson {
-  id: number;
-  nickname: string;
-  imageURL: string;
-  text: string;
-}
+import { ReactComponent as VertBtnSvg } from '@assets/icons/more_vert_btn.svg';
+import { ReactComponent as CommentBtnSvg } from '@assets/icons/comment_btn.svg';
+import Avatar from '@common/Avatar/Avatar';
+import DropBox from '@common/DropBox/DropBox';
+import Carousel from '@common/Carousel/Carousel';
+import HeartButton from '@components/HeartButton/HeartButton';
+import { flexBox } from '@lib/styles/mixin';
+import { useLike } from '@components/HeartButton/useLike';
+import { makeDropBoxMenu } from '@common/DropBox/makeDropBoxMenu';
+import Modal from '@common/Modal/Modal';
+import DeleteModal from '@components/DeleteModal/DeleteModal';
+import DetailModal from '@components/DetailModal/DetailModal';
+import useModal from '@common/Modal/useModal';
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -20,6 +21,7 @@ const FeedContainerDiv = styled.div`
   flex-shrink: 0;
   border-radius: 30px;
   position: relative;
+  margin: 10px 0;
 `;
 
 const FeedHeaderDiv = styled.div`
@@ -34,19 +36,10 @@ const FeedHeaderDiv = styled.div`
   }
 `;
 
-const FeedContents = styled.div<Pick<FeedJson, 'imageURL'>>`
+const FeedContents = styled.div`
   width: 100%;
+  height: 500px;
   position: relative;
-  background-color: aliceblue;
-
-  &::after {
-    padding-bottom: 100%;
-    content: '';
-    background-image: ${(props) => `url(${props.imageURL})`};
-    background-position: center;
-    background-size: cover;
-    display: block;
-  }
 `;
 
 const FeedInfoDiv = styled.div`
@@ -65,24 +58,48 @@ const FeedTextDiv = styled.div`
   padding: 0 10px;
 `;
 
-const Feed = ({ json }: { json: FeedJson }) => {
+export interface FeedProps {
+  id?: string;
+  nickname: string;
+  imageURLs: string[];
+  text: string;
+  lazy?: (node: HTMLDivElement) => void;
+}
+
+const Feed = ({ nickname, imageURLs, text, lazy }: FeedProps) => {
+  const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
+  const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
+  const [like, toggleLike] = useLike();
+  const test = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
+
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
-        <Avatar />
-        <span>{json.nickname}</span>
-        <VertBtnSvg className="vert_btn" />
+        <Avatar size={'30px'} />
+        <span>{nickname}</span>
+        <DropBox start="right" offset={10} top={55} width={150} items={test}>
+          <VertBtnSvg className="vert_btn button" />
+        </DropBox>
       </FeedHeaderDiv>
-      <FeedContents imageURL={json.imageURL} />
+      <FeedContents>
+        <Carousel imageURLs={imageURLs} lazy={lazy} />
+      </FeedContents>
       <FeedInfoDiv>
-        <HeartBtnSvg />
-        <CommentBtnSvg />
+        <HeartButton like={like} toggleLike={toggleLike} />
+        <CommentBtnSvg className={'button'} onClick={toggleDetailModal} />
         <span>13</span>
         <span className="time">2시간 전</span>
       </FeedInfoDiv>
-      <FeedTextDiv>{json.text}</FeedTextDiv>
+      <FeedTextDiv>{text}</FeedTextDiv>
+      <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
+        <DeleteModal hide={toggleDeleteModal} />
+      </Modal>
+      <Modal isShowing={isDetailShowing} hide={toggleDetailModal}>
+        <DetailModal imageURLs={imageURLs} hide={toggleDetailModal} />
+      </Modal>
     </FeedContainerDiv>
   );
 };
 
-export default Feed;
+// export default Feed;
+export default React.memo(Feed);
