@@ -12,6 +12,7 @@ import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { UpdateHabitatDto } from './dto/update-habitat.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Controller('habitat')
 @ApiTags('서식지 API')
@@ -28,8 +29,12 @@ export class HabitatController {
   }
 
   @Get()
-  getHabitatList(@Query() query) {
-    return this.habitatService.getHabitatList(query.skip, query.take);
+  @ApiOperation({
+    summary: '서식지 리스트 반환 API',
+    description: '서식지 종류 리스트를 등록유저가 많은 순으로 반환',
+  })
+  getHabitatList(@Query() query: PaginationQueryDto) {
+    return this.habitatService.getHabitatList(query);
   }
 
   @Get(':id')

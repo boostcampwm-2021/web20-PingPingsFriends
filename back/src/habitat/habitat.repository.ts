@@ -1,10 +1,6 @@
-import {
-  DeleteResult,
-  EntityRepository,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { Habitat } from './entities/habitat.entity';
 
 @EntityRepository(Habitat)
@@ -24,12 +20,16 @@ export class habitatRepository extends Repository<Habitat> {
     return result;
   }
 
-  async selectHabitatList(skip, take) {
+  async selectHabitatList({ skip, take }: PaginationQueryDto) {
     return this.createQueryBuilder('habitat')
-      .select('COUNT() AS habitatCount')
+      .select('habitat')
+      .addSelect(
+        '(SELECT count(*) from user u where u.habitat_id = habitat.habitat_id)',
+        'userCnt'
+      )
+      .orderBy('userCnt', 'DESC')
       .skip(skip)
       .take(take)
-      .groupBy('habitatCount')
       .getMany();
   }
 }

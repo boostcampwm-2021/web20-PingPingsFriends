@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UpdateHabitatDto } from './dto/update-habitat.dto';
 import { habitatRepository } from './habitat.repository';
 
@@ -19,7 +20,7 @@ export class HabitatService {
     );
   }
 
-  getHabitatList(skip: number, take: number) {
+  getHabitatList({ skip, take }: PaginationQueryDto) {
     return this.habitatRepository.selectHabitatList(skip, take);
   }
 
