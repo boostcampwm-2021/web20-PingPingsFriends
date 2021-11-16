@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+const TEXT = {
+  NEXT: '다음',
+  BACK: '뒤로 가기',
+  REGISTER: '가입',
+};
 type SlideDirection = 'right' | 'left' | '';
 
 const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean) => {
@@ -10,19 +15,23 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean) => {
 
   const handleAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (accountFlag) {
+    const target = e.target as HTMLButtonElement;
+
+    if (target.innerHTML === TEXT.NEXT && accountFlag) {
       setDirection('right');
+      return;
     }
+    history.goBack();
   };
 
   const handleMoreInfoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
-    if (target.innerHTML === '뒤로 가기') {
+    if (target.innerHTML === TEXT.BACK) {
       setDirection('left');
       return;
     }
-    if (target.innerHTML === '가입' && moreInfoFlag) {
+    if (target.innerHTML === TEXT.REGISTER && moreInfoFlag) {
       // todo: something
       return;
     }
