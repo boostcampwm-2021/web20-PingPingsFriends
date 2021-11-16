@@ -1,15 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { UpdateHabitatDto } from './dto/update-habitat.dto';
+import { habitatRepository } from './habitat.repository';
 
 @Injectable()
 export class HabitatService {
-  create(createHabitatDto: CreateHabitatDto) {
-    return 'This action adds a new habitat';
+  constructor(
+    private readonly habitatRepository: habitatRepository
+  ) {}
+
+  createHabitat(
+    createHabitatDto: CreateHabitatDto,
+    leaderId: number
+  ) {
+    return this.habitatRepository.createHabitat(
+      createHabitatDto,
+      leaderId
+    );
   }
 
-  findAll() {
-    return `This action returns all habitat`;
+  getHabitatList(skip: number, take: number) {
+    return this.habitatRepository.selectHabitatList(skip, take);
   }
 
   findOne(id: number) {

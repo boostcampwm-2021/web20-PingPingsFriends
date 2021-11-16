@@ -11,12 +11,18 @@ import {
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { UpdateHabitatDto } from './dto/update-habitat.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('habitat')
+@ApiTags('서식지 API')
 export class HabitatController {
   constructor(private readonly habitatService: HabitatService) {}
 
   @Post()
+  @ApiOperation({
+    summary: '서식지 추가 API',
+    description: '유저가 서식지를 추가한다.',
+  })
   createHabitat(@Body() createHabitatDto: CreateHabitatDto) {
     return this.habitatService.createHabitat(createHabitatDto, 1);
   }
