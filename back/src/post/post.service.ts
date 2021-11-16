@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
@@ -178,12 +179,50 @@ export class PostService {
       return true;
     } catch (err) {
       await queryRunner.rollbackTransaction();
+      return false;
     } finally {
       await queryRunner.release();
     }
   }
 
-  remove(id: number) {
-    return this.postRepository.delete(id);
+  async remove(id: number) {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+
+    const postRepository = queryRunner.manager.getRepository(Post);
+    const postContentRepository =
+      queryRunner.manager.getRepository(PostContent);
+    const contentRepository =
+      queryRunner.manager.getRepository(Content);
+    const commentRepository =
+      queryRunner.manager.getRepository(Comment);
+
+    const post = await postRepository.findOne(id, {
+      relations: ['postContents', 'comments'],
+    });
+
+    queryRunner.startTransaction();
+
+    try {
+      const contentsIds = post.postContents.map(
+        (postContent) => postContent.contentsId
+      );
+
+      contentRepository.delete(contentsIds);
+
+      if (post.comments.length)
+        commentRepository.remove(post.comments);
+
+      postRepository.delete(post.id);
+
+      queryRunner.commitTransaction();
+
+      return true;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      return false;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
