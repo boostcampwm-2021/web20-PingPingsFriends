@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFiles,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -23,7 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetPostResponseDto } from './dto/getPostResponse.dto';
-import { GetPostListResponseDto } from './dto/getPostListResponse.dto';
+import { ParseOptionalIntPipe } from 'pipes/parse-optional-int.pipe';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -54,10 +55,10 @@ export class PostController {
   })
   @Get('habitats/:habitatId')
   async findAll(
-    @Param('habitatId') habitatId: string,
-    @Query('lastPostId') lastPostId?: string
+    @Param('habitatId', ParseIntPipe) habitatId: number,
+    @Query('lastPostId', ParseIntPipe) lastPostId?: number
   ) {
-    return await this.postService.findAll(+habitatId, +lastPostId);
+    return await this.postService.findAll(habitatId, lastPostId);
   }
 
   @ApiCreatedResponse({
@@ -69,8 +70,8 @@ export class PostController {
     description: '특정 게시글을 조회하는 api입니다.',
   })
   @Get(':id/habitats/:habitatId')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.postService.findOne(id);
   }
 
   @ApiBody({ type: PatchPostRequestDto })
@@ -82,13 +83,13 @@ export class PostController {
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
     const contentsInfos = getPartialFilesInfo(files);
     return await this.postService.update(
-      +id,
+      id,
       patchPostRequestDto,
       contentsInfos
     );
@@ -100,7 +101,7 @@ export class PostController {
     description: '게시물을 삭제하는 api입니다.',
   })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.postService.remove(id);
   }
 }
