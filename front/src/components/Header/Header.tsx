@@ -5,6 +5,7 @@ import Place from './Place';
 import UserInfo from './UserInfo';
 import { flexBox } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
+import MagicNumber from '@lib/styles/magic';
 import Modal from '@common/Modal/Modal';
 import useModal from '@common/Modal/useModal';
 import { HabitatInfo } from '@hooks/useHabitatInfo';
@@ -15,7 +16,7 @@ const HeaderBlock = styled.div`
   ${flexBox('space-between', 'center')};
   flex-shrink: 0;
   width: 100%;
-  height: 54px;
+  height: ${MagicNumber.HEADER_HEIGHT};
   padding: 0 12px;
   border-bottom: solid ${Palette.GRAY} 1px;
   background: ${Palette.WHITE};

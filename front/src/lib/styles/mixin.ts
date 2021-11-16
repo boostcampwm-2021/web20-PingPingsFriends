@@ -9,3 +9,8 @@ export const flexBox = (justify: FlexOption = 'center', align: FlexOption = 'cen
   align-items: ${align};
   flex-direction: ${direction};
 `;
+
+export const boxShadow = (borderRadius: string) => css`
+  border-radius: ${borderRadius};
+  box-shadow: 0 4px 10px rgba(51, 51, 51, 1), 0 0 4px rgba(51, 51, 51, 0.5);
+`;
