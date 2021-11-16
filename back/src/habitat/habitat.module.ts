@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { HabitatController } from './habitat.controller';
-import { Habitat } from './entities/habitat.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { habitatRepository } from './habitat.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Habitat])],
+  imports: [TypeOrmModule.forFeature([habitatRepository])],
   controllers: [HabitatController],
   providers: [HabitatService],
 })

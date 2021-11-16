@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { UpdateHabitatDto } from './dto/update-habitat.dto';
@@ -8,13 +17,13 @@ export class HabitatController {
   constructor(private readonly habitatService: HabitatService) {}
 
   @Post()
-  create(@Body() createHabitatDto: CreateHabitatDto) {
-    return this.habitatService.create(createHabitatDto);
+  createHabitat(@Body() createHabitatDto: CreateHabitatDto) {
+    return this.habitatService.createHabitat(createHabitatDto, 1);
   }
 
   @Get()
-  findAll() {
-    return this.habitatService.findAll();
+  getHabitatList(@Query() query) {
+    return this.habitatService.getHabitatList(query.skip, query.take);
   }
 
   @Get(':id')
@@ -23,7 +32,10 @@ export class HabitatController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHabitatDto: UpdateHabitatDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateHabitatDto: UpdateHabitatDto
+  ) {
     return this.habitatService.update(+id, updateHabitatDto);
   }
 
