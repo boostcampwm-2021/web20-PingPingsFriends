@@ -56,7 +56,7 @@ export class PostController {
   @Get('habitats/:habitatId')
   async findAll(
     @Param('habitatId', ParseIntPipe) habitatId: number,
-    @Query('lastPostId', ParseIntPipe) lastPostId?: number
+    @Query('lastPostId', ParseOptionalIntPipe) lastPostId?: number
   ) {
     return await this.postService.findAll(habitatId, lastPostId);
   }
