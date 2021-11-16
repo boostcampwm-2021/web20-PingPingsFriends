@@ -15,33 +15,32 @@ const FloatingDiv = styled.div<{ pos: number }>`
   width: 60px;
   font-size: 12px;
   color: #545454;
+  z-index: 2;
   svg {
     width: 50px;
     height: 50px;
   }
 `;
 
-const FeedFAB = () => {
+const FeedFAB = ({ toggleMode, getPosFunc }: { toggleMode: () => void; getPosFunc: () => number }) => {
   const { isShowing, toggle } = useModal();
-  const FEED_SECTION_WIDTH: number = 500;
-  const FAB_OFFSET: number = 10;
-  const getFloatingPos = () => (window.innerWidth + FEED_SECTION_WIDTH) / 2 + FAB_OFFSET;
-  const [floatingPos, setFloatingPos] = useState(getFloatingPos());
+  const [floatingPos, setFloatingPos] = useState(getPosFunc());
   const changeResponsivePosition = () => {
-    setFloatingPos(getFloatingPos());
+    setFloatingPos(getPosFunc());
   };
 
   useEffect(() => {
+    setFloatingPos(getPosFunc());
     window.addEventListener('resize', changeResponsivePosition);
     return () => {
       window.removeEventListener('resize', changeResponsivePosition);
     };
-  }, []);
+  }, [getPosFunc]);
 
   return (
     <FloatingDiv pos={floatingPos}>
       <div>탐험하기</div>
-      <ZoomBtnSvg />
+      <ZoomBtnSvg onClick={toggleMode} />
       <div>글쓰기</div>
       <WriteBtnSvg onClick={toggle} />
       <Modal isShowing={isShowing} hide={toggle}>
