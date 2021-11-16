@@ -12,7 +12,7 @@ import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { UpdateHabitatDto } from './dto/update-habitat.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 
 @Controller('habitat')
 @ApiTags('서식지 API')

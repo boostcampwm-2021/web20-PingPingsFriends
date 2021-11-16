@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
-import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UpdateHabitatDto } from './dto/update-habitat.dto';
 import { habitatRepository } from './habitat.repository';
 

@@ -10,6 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 import { HeartsService } from './hearts.service';
 @Controller('hearts')
 @ApiTags('좋아요 API')
@@ -50,12 +51,11 @@ export class HeartsController {
   })
   getAllLikedUser(
     @Param('postId', ParseIntPipe) postId: number,
-    @Query() query
+    @Query() paginationQueryDto: PaginationQueryDto
   ) {
     return this.heartsService.getAllLikedUser(
       postId,
-      query.skip,
-      query.take
+      paginationQueryDto
     );
   }
 

@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
-import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { Habitat } from './entities/habitat.entity';
 
 @EntityRepository(Habitat)
@@ -20,7 +19,7 @@ export class habitatRepository extends Repository<Habitat> {
     return result;
   }
 
-  async selectHabitatList({ skip, take }: PaginationQueryDto) {
+  async selectHabitatList(skip: number, take: number) {
     return this.createQueryBuilder('habitat')
       .select('habitat')
       .addSelect(
