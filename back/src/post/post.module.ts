@@ -9,15 +9,7 @@ import { Heart } from 'src/hearts/entities/heart.entity';
 import { PostRepository } from './post.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Post,
-      PostContent,
-      Content,
-      Heart,
-      PostRepository,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([PostRepository])],
   controllers: [PostController],
   providers: [PostService],
 })

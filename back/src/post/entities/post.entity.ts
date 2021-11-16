@@ -54,7 +54,9 @@ export class Post {
   })
   likingUsers: User[];
 
-  @OneToMany(() => PostContent, (postContent) => postContent.post)
+  @OneToMany(() => PostContent, (postContent) => postContent.post, {
+    cascade: ['insert'],
+  })
   postContents: PostContent[];
 
   @OneToMany(() => Comment, (comment) => comment.post)

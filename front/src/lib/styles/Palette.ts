@@ -9,4 +9,7 @@ export enum Palette {
   WHITE = '#FFFFFF',
   ACTIVE = '#0095f6',
   RED = `#ED4956`,
+  GREEN = '#8EB695',
+  YELLOW = '#FBDEA2',
+  IVORY = '#F2E2C6',
 }

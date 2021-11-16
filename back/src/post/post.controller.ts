@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { getPartialFilesInfo } from 'utils/s3.util';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PatchPostRequestDto } from './dto/patchPostRequestDto';
@@ -38,14 +37,9 @@ export class PostController {
   @Get(':habitatId')
   async findAll(
     @Param('habitatId') habitatId: string,
-    @Query('userId') userId: string,
     @Query('lastPostId') lastPostId?: string
   ) {
-    return await this.postService.findAll(
-      +habitatId,
-      +userId,
-      +lastPostId
-    );
+    return await this.postService.findAll(+habitatId, +lastPostId);
   }
 
   @Get(':habitatId/:id')
@@ -55,13 +49,13 @@ export class PostController {
 
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
-  update(
+  async update(
     @Param('id') id: string,
     @Body() patchPostRequestDto: PatchPostRequestDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return this.postService.update(
+    return await this.postService.update(
       +id,
       patchPostRequestDto,
       contentsInfos
