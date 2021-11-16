@@ -1,5 +1,5 @@
 export class PatchPostRequestDto {
-  contentInfos: string;
+  contentIds: string;
   humanContent: string;
   animalContent: string;
 }
