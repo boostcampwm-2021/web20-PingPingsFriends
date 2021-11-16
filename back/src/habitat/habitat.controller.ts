@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
@@ -37,9 +38,15 @@ export class HabitatController {
     return this.habitatService.getHabitatList(query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.habitatService.findOne(+id);
+  @Get(':habitatId')
+  @ApiOperation({
+    summary: '서식지 정보 반환 API',
+    description: '서식지 id로 서식지 정보 반환',
+  })
+  getHabitatInfo(
+    @Param('habitatId', ParseIntPipe) habitatId: number
+  ) {
+    return this.habitatService.getHabitatInfo(habitatId);
   }
 
   @Patch(':id')

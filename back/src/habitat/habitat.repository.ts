@@ -3,7 +3,7 @@ import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { Habitat } from './entities/habitat.entity';
 
 @EntityRepository(Habitat)
-export class habitatRepository extends Repository<Habitat> {
+export class HabitatRepository extends Repository<Habitat> {
   //db 접근로직
   async createHabitat(
     createHabitatDto: CreateHabitatDto,
