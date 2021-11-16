@@ -10,6 +10,7 @@ import { Post } from './entities/post.entity';
 import { PostRepository } from './post.repository';
 
 const LIMIT_NUMBER = 10;
+const USER_ID = 1;
 
 @Injectable()
 export class PostService {
@@ -29,17 +30,24 @@ export class PostService {
     );
   }
 
+  async findAll(habitatId: number, lastPostId?: number) {
+    if (!lastPostId) {
+      return await this.getFirstPage(habitatId, USER_ID);
+    } else {
+      return await this.getNextPage(habitatId, USER_ID, lastPostId);
+    }
+  }
+
   async getFirstPage(habitatId: number, userId: number) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
+    let whereSql = `where p.habitat_id = ? 
+    `;
 
-    const posts = await this.connection.query(baseSql + tailSql, [
-      userId,
-      habitatId,
-      LIMIT_NUMBER,
-    ]);
-
-    console.log(posts.length);
+    const posts = await this.connection.query(
+      baseSql + whereSql + tailSql,
+      [userId, habitatId, LIMIT_NUMBER]
+    );
 
     const lastPostId =
       posts.length === LIMIT_NUMBER
@@ -57,12 +65,14 @@ export class PostService {
   ) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
+    let whereSql = `where p.habitat_id = ?
+    `;
     let middleSql = `
     and p.post_id < ?
     `;
 
     const posts = await this.connection.query(
-      baseSql + middleSql + tailSql,
+      baseSql + whereSql + middleSql + tailSql,
       [userId, habitatId, oldLastPostId, LIMIT_NUMBER]
     );
 
@@ -78,14 +88,16 @@ export class PostService {
 
   private getBaseQuery() {
     return `
-    select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.url, group_concat(pcc.url) as urls, group_concat(pcc.mime_type) as types, if(h.post_id, p.post_id, null) as is_heart
+    select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.url as user_image_url
+    , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.mime_type) as post_contents_types
+    , count(h.post_id) as numOfHearts
+    , if((select count(*) from heart where post_id = p.post_id and user_id = ?), true, false) as is_heart
     from post p
     left join user u on u.user_id = p.user_id
     left join contents c on c.contents_id = u.contents_id
     left join post_contents pc on pc.post_id = p.post_id
     left join contents pcc on pc.contents_id = pcc.contents_id
-    left join heart h on h.post_id = p.post_id and h.user_id = ?
-    where p.habitat_id = ? 
+    left join heart h on h.post_id = p.post_id
     `;
   }
 
@@ -97,28 +109,13 @@ export class PostService {
     `;
   }
 
-  async findAll(habitatId: number, lastPostId?: number) {
-    if (!lastPostId) {
-      return await this.getFirstPage(habitatId, 1);
-    } else {
-      return await this.getNextPage(habitatId, 1, lastPostId);
-    }
-  }
-
-  findOne(id: number) {
-    return this.postRepository.findOne(id, {
-      relations: [
-        'user',
-        'user.content',
-        'comments',
-        'comments.user',
-        'comments.user.content',
-        'postContents',
-        'postContents.content',
-        'hearts',
-        'hearts.user',
-      ],
-    });
+  async findOne(id: number) {
+    let baseSql = this.getBaseQuery();
+    let whereSql = `where p.post_id = ?;
+    `;
+    return (
+      await this.connection.query(baseSql + whereSql, [USER_ID, id])
+    )[0];
   }
 
   async update(
@@ -152,7 +149,7 @@ export class PostService {
       post.postContents.length -
         excludedPostContents.length +
         contentsInfos.length >
-      10
+      LIMIT_NUMBER
     )
       return false;
 
