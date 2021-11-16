@@ -41,7 +41,7 @@ const ErrorMessageDiv = styled.div`
 
 interface InputProps {
   placeholder: string;
-  value: string;
+  value?: string;
   name: string;
   handleChange?: React.ChangeEventHandler<HTMLInputElement>;
   type?: 'text' | 'password';

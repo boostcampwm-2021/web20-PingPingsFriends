@@ -7,14 +7,14 @@ interface Validation<T> {
 }
 
 export type Validations<T> = Validation<T>[];
-type ErrorType<T> = Partial<Record<keyof T, string>>;
+export type ErrorType<T> = Partial<Record<keyof T, string>>;
 
 const useForm = <T>(initialValues: T, validations: Validations<T>) => {
   const [flag, setFlag] = useState(false);
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<ErrorType<T>>({});
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
