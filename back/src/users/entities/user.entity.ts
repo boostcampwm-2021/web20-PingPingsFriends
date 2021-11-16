@@ -4,16 +4,7 @@ import { Habitat } from 'src/habitat/entities/habitat.entity';
 import { Heart } from 'src/hearts/entities/heart.entity';
 import { Post } from 'src/post/entities/post.entity';
 import { Species } from 'src/species/entities/species.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  OneToOne,
-  ManyToOne,
-  JoinColumn,
-  ManyToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 
 @Entity()
 export class User {
