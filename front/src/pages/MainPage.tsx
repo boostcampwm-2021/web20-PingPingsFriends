@@ -78,7 +78,7 @@ const MainPage = () => {
             feed: (
               <>
                 <FeedContainer habitatInfo={habitatInfo} />
-                <FeedFAB getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
+                <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
                 <HabitatPreview habitat={habitatList.current[historyIdx.current + 1]} onClick={handleNextHabitat} side={'right'} />
                 <HabitatPreview habitat={habitatList.current[historyIdx.current - 1]} onClick={handlePrevHabitat} side={'left'} />
               </>
@@ -86,7 +86,7 @@ const MainPage = () => {
             explore: (
               <>
                 <Explore habitatInfo={habitatInfo} />
-                <FeedFAB getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
+                <FeedFAB mode={mode} getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
               </>
             ),
           }[mode]
