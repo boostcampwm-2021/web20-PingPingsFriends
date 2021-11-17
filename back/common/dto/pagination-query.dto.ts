@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateHabitatDto {
-  @ApiProperty()
+export class PaginationQueryDto {
   @IsNotEmpty()
-  name: string;
+  @ApiProperty()
+  skip: number;
 
-  @ApiProperty()
   @IsNotEmpty()
-  color: string;
+  @ApiProperty()
+  take: number;
 }

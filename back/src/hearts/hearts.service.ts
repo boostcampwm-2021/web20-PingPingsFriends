@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 import { Heart } from './entities/heart.entity';
 import { HeartRepository } from './heart.repository';
 
@@ -28,7 +29,10 @@ export class HeartsService {
     return this.heartRepository.countPostLiked(postId);
   }
 
-  async getAllLikedUser(postId: number, skip: number, take: number) {
+  async getAllLikedUser(
+    postId: number,
+    { skip, take }: PaginationQueryDto
+  ) {
     return this.heartRepository.getLikedList(postId, skip, take);
   }
 

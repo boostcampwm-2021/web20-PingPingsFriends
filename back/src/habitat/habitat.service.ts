@@ -1,26 +1,55 @@
 import { Injectable } from '@nestjs/common';
+import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
+import { PostRepository } from 'src/post/post.repository';
+import { UserRepository } from 'src/users/user.repository';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
-import { UpdateHabitatDto } from './dto/update-habitat.dto';
+import { HabitatRepository } from './habitat.repository';
 
 @Injectable()
 export class HabitatService {
-  create(createHabitatDto: CreateHabitatDto) {
-    return 'This action adds a new habitat';
+  constructor(
+    private readonly habitatRepository: HabitatRepository,
+    private readonly postRepository: PostRepository,
+    private readonly userRepository: UserRepository
+  ) {}
+
+  createHabitat(
+    createHabitatDto: CreateHabitatDto,
+    leaderId: number
+  ) {
+    return this.habitatRepository.createHabitat(
+      createHabitatDto,
+      leaderId
+    );
   }
 
-  findAll() {
-    return `This action returns all habitat`;
+  getHabitatList({ skip, take }: PaginationQueryDto) {
+    return this.habitatRepository.selectHabitatList(skip, take);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} habitat`;
+  async getHabitatInfo(habitatId: number) {
+    const habitat = await this.habitatRepository.findOneOrFail(
+      habitatId
+    );
+    const [userCnt, postCnt, recentThreeUser] = await Promise.all([
+      this.userRepository.count({ habitat }),
+      this.postRepository.count({ habitat }),
+      this.postRepository.find({
+        take: 3,
+        order: { createdAt: 'DESC' },
+        select: ['userId', 'createdAt'],
+      }),
+    ]);
+    return {
+      leaderId: habitat.leaderId,
+      userCnt,
+      postCnt,
+      recentThreeUser,
+      lastActTime: recentThreeUser[0].createdAt,
+    };
   }
 
-  update(id: number, updateHabitatDto: UpdateHabitatDto) {
-    return `This action updates a #${id} habitat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} habitat`;
+  getRandomHabitat(currentId: number) {
+    return this.habitatRepository.selectRandomHabitat(currentId);
   }
 }
