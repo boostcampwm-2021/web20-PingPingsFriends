@@ -3,7 +3,6 @@ import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 import { PostRepository } from 'src/post/post.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
-import { UpdateHabitatDto } from './dto/update-habitat.dto';
 import { HabitatRepository } from './habitat.repository';
 
 @Injectable()
@@ -50,11 +49,7 @@ export class HabitatService {
     };
   }
 
-  update(id: number, updateHabitatDto: UpdateHabitatDto) {
-    return `This action updates a #${id} habitat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} habitat`;
+  getRandomHabitat(currentId: number) {
+    return this.habitatRepository.selectRandomHabitat(currentId);
   }
 }

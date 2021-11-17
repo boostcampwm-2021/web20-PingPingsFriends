@@ -31,4 +31,12 @@ export class HabitatRepository extends Repository<Habitat> {
       .take(take)
       .getMany();
   }
+
+  async selectRandomHabitat(currentId: number) {
+    return this.createQueryBuilder('habitat')
+      .select('habitat.id')
+      .where('habitat.id != :currentId', { currentId })
+      .orderBy('RAND()')
+      .getOne();
+  }
 }

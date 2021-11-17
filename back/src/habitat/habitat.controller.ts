@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
-import { UpdateHabitatDto } from './dto/update-habitat.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 
@@ -19,6 +18,17 @@ import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 @ApiTags('서식지 API')
 export class HabitatController {
   constructor(private readonly habitatService: HabitatService) {}
+
+  @Get('random')
+  @ApiOperation({
+    summary: '서식지 랜덤 pk 반환 API',
+    description: '랜덤으로 서식지 pk값을 반환',
+  })
+  getRandomHabitat(
+    @Query('currentId', ParseIntPipe) currentId: number
+  ) {
+    return this.habitatService.getRandomHabitat(currentId);
+  }
 
   @Post()
   @ApiOperation({
@@ -47,18 +57,5 @@ export class HabitatController {
     @Param('habitatId', ParseIntPipe) habitatId: number
   ) {
     return this.habitatService.getHabitatInfo(habitatId);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateHabitatDto: UpdateHabitatDto
-  ) {
-    return this.habitatService.update(+id, updateHabitatDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.habitatService.remove(+id);
   }
 }
