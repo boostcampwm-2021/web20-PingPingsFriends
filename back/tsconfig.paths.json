@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@users/*": ["./src/users/*"],
+      "@post/*": ["./src/post/*"],
+      "@comments/*": ["./src/comments/*"],
+      "@contents/*": ["./src/contents/*"],
+      "@follow/*": ["./src/follow/*"],
+      "@habitat/*": ["./src/habitat/*"],
+      "@hearts/*": ["./src/hearts/*"],
+      "@post-contents/*": ["./src/post-contents/*"],
+      "@species/*": ["./src/species/*"],
+      "@config/*": ["./config/*"],
+      "@utils/*": ["./utils/*"],
+      "@common/*": ["./common/*"]
+    }
+  }
+}
