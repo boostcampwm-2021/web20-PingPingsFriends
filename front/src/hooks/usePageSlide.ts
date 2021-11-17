@@ -21,7 +21,9 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean) => {
       setDirection('right');
       return;
     }
-    history.goBack();
+    if (target.innerHTML === TEXT.BACK) {
+      history.goBack();
+    }
   };
 
   const handleMoreInfoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
