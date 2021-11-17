@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const useHistory = (userHabitatId: number) => {
+const useSideNavi = (userHabitatId: number) => {
   const [curHabitatId, setCurHabitatId] = useState(userHabitatId);
   const habitatList = useRef<number[]>([]);
   const historyIdx = useRef(4);
@@ -49,4 +49,4 @@ const useHistory = (userHabitatId: number) => {
   };
 };
 
-export default useHistory;
+export default useSideNavi;
