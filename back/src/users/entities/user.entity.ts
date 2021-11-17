@@ -1,7 +1,6 @@
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Content } from 'src/contents/entities/content.entity';
 import { Habitat } from 'src/habitat/entities/habitat.entity';
-import { Heart } from 'src/hearts/entities/heart.entity';
 import { Post } from 'src/post/entities/post.entity';
 import { Species } from 'src/species/entities/species.entity';
 import {
@@ -13,7 +12,10 @@ import {
   ManyToOne,
   JoinColumn,
   ManyToMany,
+  BeforeInsert,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { InternalServerErrorException } from '@nestjs/common';
 
 @Entity()
 export class User {
@@ -23,13 +25,22 @@ export class User {
   @Column({ length: 20 })
   username: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 70 })
   password: string;
 
   @Column({ length: 20 })
   nickname: string;
 
-  @OneToOne(() => Content, (content) => content.user)
+  @Column({ name: 'habitat_id' })
+  habitatId: number;
+
+  @Column({ name: 'species_id' })
+  speciesId: number;
+
+  @Column({ name: 'contents_id', nullable: true })
+  contentsId: number;
+
+  @OneToOne(() => Content, (content) => content.user, { cascade: ['insert'] })
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })
   content: Content;
 
@@ -52,4 +63,14 @@ export class User {
 
   @ManyToMany(() => Post, (post) => post.likingUsers)
   likedPosts: Post[];
+
+  @BeforeInsert()
+  async hashPassword() {
+    try {
+      this.password = await bcrypt.hash(this.password, 10);
+      console.log(this.password);
+    } catch (err) {
+      throw new InternalServerErrorException();
+    }
+  }
 }
