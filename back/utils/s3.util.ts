@@ -1,12 +1,30 @@
+interface transforms {
+  id: string;
+  size: number;
+  bucket: string;
+  key: string;
+  acl: string;
+  contentType: string;
+  contentDisposition: any;
+  storageClass: string;
+  serverSideEncryption: any;
+  metadata: any;
+  location: string;
+  etag: string;
+}
+
 interface fileDto extends Express.Multer.File {
   location: string;
   mimetype: string;
+  transforms: transforms[];
 }
 
 export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
+  console.log(files, files[0]);
   const contentsInfos = files.map((v: fileDto, i: number) => {
+    console.log(v, i, v.transforms);
     return {
-      url: v.location,
+      url: v.transforms[0].location,
       mimeType: v.mimetype,
     };
   });
