@@ -9,6 +9,7 @@ import { makeDropBoxMenu } from '@common/DropBox/makeDropBoxMenu';
 import { flexBox } from '@lib/styles/mixin';
 import { ReactComponent as HamburgerMenuSvg } from '@assets/icons/hamburger_menu.svg';
 import MagicNumber from '@src/lib/styles/magic';
+import { useHistory } from 'react-router-dom';
 
 const UserInfoBlock = styled.div`
   ${flexBox('center', 'center')}
@@ -23,8 +24,15 @@ interface UserInfoProps {
 }
 
 const UserInfo = ({ username = '핑핑이' }: UserInfoProps) => {
+  const history = useHistory();
   const { isShowing, toggle } = useModal();
-  const dropboxMenu = makeDropBoxMenu([{ text: '로그인', handler: toggle }, { text: '회원가입' }]);
+
+  const moveRegisterPage = () => history.push('/register');
+
+  const dropboxMenu = makeDropBoxMenu([
+    { text: '로그인', handler: toggle },
+    { text: '회원가입', handler: moveRegisterPage },
+  ]);
   return (
     <UserInfoBlock>
       <div className={'username'}>{username}</div>

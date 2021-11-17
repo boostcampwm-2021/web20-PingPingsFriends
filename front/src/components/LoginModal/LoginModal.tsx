@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
 import { ToggleHandler } from '@common/Modal/useModal';
+import { useHistory } from 'react-router-dom';
 
 const LoginDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
@@ -63,6 +64,12 @@ const AuthBtn = styled(DefaultBtn)`
 `;
 
 const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push('/register');
+  };
+
   return (
     <LoginDiv>
       <LoginForm>
@@ -80,7 +87,9 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
         </LoginBtnDiv>
       </LoginForm>
       <AuthBtnDiv>
-        <AuthBtn color={Palette.GREEN}>회원가입</AuthBtn>
+        <AuthBtn onClick={handleClick} color={Palette.GREEN}>
+          회원가입
+        </AuthBtn>
       </AuthBtnDiv>
     </LoginDiv>
   );
