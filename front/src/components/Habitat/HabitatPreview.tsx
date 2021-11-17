@@ -11,7 +11,7 @@ const HabitatPreviewBlock = styled.div<Pick<HabitatPreviewProps, 'side'> & { rad
   ${flexBox('center', null, 'column')}
   position: absolute;
   border-radius: 50%;
-  transform: translateY(50vh) ${(props) => `translateY(-${props.radius - parseInt(MagicNumber.HEADER_HEIGHT) / 2}px)`};
+  transform: translateY(50vh) ${(props) => `translateY(-${props.radius}px)`};
   background: ${({ color }) => color ?? Palette.GRAY};
   cursor: pointer;
   transition: background-color 0.5s ease-out 0s;

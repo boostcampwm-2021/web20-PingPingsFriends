@@ -21,6 +21,7 @@ const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   box-sizing: border-box;
   gap: 20px;
   overflow-y: scroll;
+  z-index: 1;
 `;
 
 export interface Unsplash {
