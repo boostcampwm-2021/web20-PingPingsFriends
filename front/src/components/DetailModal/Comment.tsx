@@ -76,22 +76,31 @@ interface CommentProps {
   toggleEditMode: (text: string) => void;
 }
 
+type mode = 'edit' | 'delete' | 'normal';
+
 const Comment = ({ nickname, comment, avatar, userId, toggleEditMode }: CommentProps) => {
   const myId = 'me';
-  const [editMode, setEditMode] = useState(false);
-  const [isConfirm, setConfirm] = useState(false);
+  // const [editMode, setEditMode] = useState(false);
+  // const [isConfirm, setConfirm] = useState(false);
+  const [mode, setMode] = useState<mode>('normal');
 
   const handleEditBtnClick = () => {
-    setEditMode(!editMode);
+    setMode(mode === 'edit' ? 'normal' : 'edit');
+    // setEditMode(!editMode);
     toggleEditMode(comment);
   };
 
   const handleDeleteBtnClick = () => {
-    setConfirm(true);
+    if (mode === 'edit') toggleEditMode('');
+    setMode('delete');
+  };
+
+  const handleConfirmCancel = () => {
+    setMode('normal');
   };
 
   return (
-    <CommentDiv isEdited={editMode}>
+    <CommentDiv isEdited={mode === 'edit'}>
       <Avatar size={'30px'} />
       <TextDiv>
         <span>{nickname}</span>
@@ -103,12 +112,12 @@ const Comment = ({ nickname, comment, avatar, userId, toggleEditMode }: CommentP
           <DeleteSvg onClick={handleDeleteBtnClick} />
         </ControlDiv>
       )}
-      {isConfirm && (
+      {mode === 'delete' && (
         <DeleteHoverDiv>
           <span>삭제하시겠습니까?</span>
           <div>
             <CheckBtnSvg className={'button'} />
-            <CancelBtnSvg className={'button'} onClick={() => setConfirm(false)} />
+            <CancelBtnSvg className={'button'} onClick={handleConfirmCancel} />
           </div>
         </DeleteHoverDiv>
       )}
