@@ -23,7 +23,13 @@ const FloatingDiv = styled.div<{ pos: number }>`
   }
 `;
 
-const FeedFAB = ({ toggleMode, getPosFunc, mode }: { toggleMode: () => void; getPosFunc: () => number; mode: 'feed' | 'explore' }) => {
+interface FeedFABType {
+  toggleMode: () => void;
+  getPosFunc: () => number;
+  mode: 'feed' | 'explore';
+}
+
+const FeedFAB = ({ toggleMode, getPosFunc, mode }: FeedFABType) => {
   const { isShowing, toggle } = useModal();
   const [floatingPos, setFloatingPos] = useState(getPosFunc());
   const changeResponsivePosition = () => {
