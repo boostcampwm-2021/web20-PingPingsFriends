@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Feed from './Feed';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { HabitatInfo } from '@src/types/Habitat';
 import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
 import useScroll from '@hooks/useScroll';
@@ -67,7 +67,7 @@ const FeedContainer = ({ habitatInfo }: FeedScrollBoxProps) => {
   });
 
   return (
-    <FeedContainerDiv color={habitatInfo?.color} onScroll={handleScroll} ref={rootRef}>
+    <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={rootRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
           {feeds.map((feed) => (
