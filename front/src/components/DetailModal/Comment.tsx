@@ -76,13 +76,13 @@ interface CommentProps {
   toggleEditMode: (text: string) => void;
 }
 
-type mode = 'edit' | 'delete' | 'normal';
+type Mode = 'edit' | 'delete' | 'normal';
 
 const Comment = ({ nickname, comment, avatar, userId, toggleEditMode }: CommentProps) => {
   const myId = 'me';
   // const [editMode, setEditMode] = useState(false);
   // const [isConfirm, setConfirm] = useState(false);
-  const [mode, setMode] = useState<mode>('normal');
+  const [mode, setMode] = useState<Mode>('normal');
 
   const handleEditBtnClick = () => {
     setMode(mode === 'edit' ? 'normal' : 'edit');
