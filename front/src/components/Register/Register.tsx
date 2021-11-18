@@ -7,6 +7,8 @@ import useForm, { Validations } from '@hooks/useForm';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './Transition.css';
 import usePageSlide from '@hooks/usePageSlide';
+import ProfileImage from '@components/Register/ProfileImage';
+import LoadingBar from '@components/Register/LoadingBar';
 
 const RegisterDiv = styled.div`
   position: relative;
@@ -34,13 +36,11 @@ const initialUserData = {
 };
 export interface InfoData {
   username: string;
-  profile: File | null;
   habitat: string;
   category: string;
 }
 const initialInfoData = {
   username: '',
-  profile: null,
   habitat: '강남역 뒷골목',
   category: '고양이',
 };
@@ -59,13 +59,17 @@ interface RegisterProps extends RouteComponentProps {}
 const Register = ({ location }: RegisterProps) => {
   const { values: accountValues, handleChange: handleAccountChange, errors: accountErrors, flag: accountFlag } = useForm<UserData>(initialUserData, userDataValidations);
   const { values: moreInfoValues, handleChange: handleMoreInfoChange, errors: moreInfoErrors, flag: moreInfoFlag } = useForm<InfoData>(initialInfoData, infoDataValidations);
-  const { direction, handleAccountClick, handleMoreInfoClick } = usePageSlide(accountFlag, moreInfoFlag);
+  const { direction, handleAccountClick, handleMoreInfoClick } = usePageSlide(accountFlag, moreInfoFlag, accountValues, moreInfoValues);
 
   return (
     <RegisterDiv>
+      <LoadingBar />
       <TransitionGroup className={'transition-group'}>
         <CSSTransition key={location.pathname} classNames={direction} timeout={500}>
           <Switch location={location}>
+            <Route path="/register/set-profile">
+              <ProfileImage />
+            </Route>
             <Route path="/register/more-info">
               <MoreInfo values={moreInfoValues} handleChange={handleMoreInfoChange} errors={moreInfoErrors} flag={moreInfoFlag} handleMoreInfoClick={handleMoreInfoClick} />
             </Route>
