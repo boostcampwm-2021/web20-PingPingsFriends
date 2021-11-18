@@ -21,14 +21,8 @@ export class PostService {
     private connection: Connection
   ) {}
 
-  async create(
-    createPostDto: CreatePostDto,
-    contentsInfos: CreateContentDto[]
-  ) {
-    return await this.postRepository.createPost(
-      createPostDto,
-      contentsInfos
-    );
+  async create(createPostDto: CreatePostDto, contentsInfos: CreateContentDto[], userId: number) {
+    return await this.postRepository.createPost(createPostDto, contentsInfos, userId);
   }
 
   async findAll(habitatId: number, lastPostId?: number) {
@@ -45,25 +39,19 @@ export class PostService {
     let whereSql = `where p.habitat_id = ? 
     `;
 
-    const posts = await this.connection.query(
-      baseSql + whereSql + tailSql,
-      [userId, habitatId, LIMIT_NUMBER]
-    );
+    const posts = await this.connection.query(baseSql + whereSql + tailSql, [
+      userId,
+      habitatId,
+      LIMIT_NUMBER,
+    ]);
 
-    const lastPostId =
-      posts.length === LIMIT_NUMBER
-        ? posts[LIMIT_NUMBER - 1].post_id
-        : null;
+    const lastPostId = posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].post_id : null;
 
     if (lastPostId) return { posts, lastPostId };
     else return { posts };
   }
 
-  async getNextPage(
-    habitatId: number,
-    userId: number,
-    oldLastPostId: number
-  ) {
+  async getNextPage(habitatId: number, userId: number, oldLastPostId: number) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
     let whereSql = `where p.habitat_id = ?
@@ -72,18 +60,17 @@ export class PostService {
     and p.post_id < ?
     `;
 
-    const posts = await this.connection.query(
-      baseSql + whereSql + middleSql + tailSql,
-      [userId, habitatId, oldLastPostId, LIMIT_NUMBER]
-    );
+    const posts = await this.connection.query(baseSql + whereSql + middleSql + tailSql, [
+      userId,
+      habitatId,
+      oldLastPostId,
+      LIMIT_NUMBER,
+    ]);
 
     const currentLastPostId =
-      posts.length === LIMIT_NUMBER
-        ? posts[LIMIT_NUMBER - 1].post_id
-        : null;
+      posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].post_id : null;
 
-    if (currentLastPostId)
-      return { posts, lastPostId: currentLastPostId };
+    if (currentLastPostId) return { posts, lastPostId: currentLastPostId };
     else return { posts };
   }
 
@@ -114,9 +101,7 @@ export class PostService {
     let baseSql = this.getBaseQuery();
     let whereSql = `where p.post_id = ?;
     `;
-    return (
-      await this.connection.query(baseSql + whereSql, [USER_ID, id])
-    )[0];
+    return (await this.connection.query(baseSql + whereSql, [USER_ID, id]))[0];
   }
 
   async update(
@@ -128,10 +113,8 @@ export class PostService {
     await queryRunner.connect();
 
     const postRepository = queryRunner.manager.getRepository(Post);
-    const postContentRepository =
-      queryRunner.manager.getRepository(PostContent);
-    const contentRepository =
-      queryRunner.manager.getRepository(Content);
+    const postContentRepository = queryRunner.manager.getRepository(PostContent);
+    const contentRepository = queryRunner.manager.getRepository(Content);
 
     const post = await postRepository.findOne(id, {
       relations: ['postContents'],
@@ -142,14 +125,11 @@ export class PostService {
     );
 
     const excludedPostContents = post.postContents.filter(
-      (postContent, i) =>
-        !updateIds.includes('' + postContent.contentsId)
+      (postContent, i) => !updateIds.includes('' + postContent.contentsId)
     );
 
     if (
-      post.postContents.length -
-        excludedPostContents.length +
-        contentsInfos.length >
+      post.postContents.length - excludedPostContents.length + contentsInfos.length >
       LIMIT_NUMBER
     )
       return false;
@@ -157,9 +137,7 @@ export class PostService {
     queryRunner.startTransaction();
 
     try {
-      const excludedContentIds = excludedPostContents.map(
-        (postContent) => postContent.contentsId
-      );
+      const excludedContentIds = excludedPostContents.map((postContent) => postContent.contentsId);
       await contentRepository.delete(excludedContentIds);
 
       const contents = await contentRepository.save(contentsInfos);
@@ -190,12 +168,9 @@ export class PostService {
     await queryRunner.connect();
 
     const postRepository = queryRunner.manager.getRepository(Post);
-    const postContentRepository =
-      queryRunner.manager.getRepository(PostContent);
-    const contentRepository =
-      queryRunner.manager.getRepository(Content);
-    const commentRepository =
-      queryRunner.manager.getRepository(Comment);
+    const postContentRepository = queryRunner.manager.getRepository(PostContent);
+    const contentRepository = queryRunner.manager.getRepository(Content);
+    const commentRepository = queryRunner.manager.getRepository(Comment);
 
     const post = await postRepository.findOne(id, {
       relations: ['postContents', 'comments'],
@@ -204,14 +179,11 @@ export class PostService {
     queryRunner.startTransaction();
 
     try {
-      const contentsIds = post.postContents.map(
-        (postContent) => postContent.contentsId
-      );
+      const contentsIds = post.postContents.map((postContent) => postContent.contentsId);
 
       contentRepository.delete(contentsIds);
 
-      if (post.comments.length)
-        commentRepository.remove(post.comments);
+      if (post.comments.length) commentRepository.remove(post.comments);
 
       postRepository.delete(post.id);
 

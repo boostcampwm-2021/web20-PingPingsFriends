@@ -11,6 +11,7 @@ import { flexBox } from '@lib/styles/mixin';
 import useHabitatInfo from '@hooks/useHabitatInfo';
 import MagicNumber from '@src/lib/styles/magic';
 import { useLocation } from 'react-router-dom';
+import { useUserState, useUserDispatch, User } from '@src/contexts/UserContext';
 
 const DEFAULT_HABITAT = 2;
 
@@ -18,11 +19,14 @@ const MainPage = () => {
   // const location = useLocation();
   // 비로그인시 userHabitatId == -1
 
-  const [userHabitatId, setUserHabitatId] = useState(DEFAULT_HABITAT);
+  const userState = useUserState();
+  const userDispatch = useUserDispatch();
+
+  const [userHabitatId, setUserHabitatId] = useState(userState.data?.habitatId);
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
 
-  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx, setCurHabitatId } = useSideNavi(userHabitatId);
+  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx, setCurHabitatId } = useSideNavi(userHabitatId as number);
   const { habitatInfo } = useHabitatInfo(curHabitatId);
 
   // useEffect(() => {

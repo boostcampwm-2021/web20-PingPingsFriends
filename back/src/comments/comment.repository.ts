@@ -32,30 +32,34 @@ export class CommentRepository extends Repository<Comment> {
   }
 
   async selectCommentListByCursor(lastId: number, postId: number, limit: number) {
-    console.log(lastId, postId, limit);
-    return this.createQueryBuilder('comment')
+    return await this.createQueryBuilder('comment')
       .innerJoin('comment.post', 'post')
       .innerJoin('comment.user', 'user')
       .leftJoin('user.content', 'content')
-      .addSelect('user.nickname', 'nickname')
+      .addSelect('user.nickname')
       .addSelect('content.url')
       .where('comment.id < :lastId', { lastId })
       .andWhere('comment.post.id = :postId', { postId })
       .orderBy('comment.id', 'DESC')
       .take(limit)
       .getMany();
+  }
 
-    return await this.query(
-      `SELECT c.comment_id FROM comment c
-        WHERE c.comment_id < ? AND post_id = ?
-        ORDER BY c.comment_id DESC
-        LIMIT ?;`,
-      [lastId, postId, limit]
-    );
+  async selectCommentListFirst(postId: number, limit: number) {
+    return await this.createQueryBuilder('comment')
+      .innerJoin('comment.post', 'post')
+      .innerJoin('comment.user', 'user')
+      .leftJoin('user.content', 'content')
+      .addSelect('user.nickname')
+      .addSelect('content.url')
+      .andWhere('comment.post.id = :postId', { postId })
+      .orderBy('comment.id', 'DESC')
+      .take(limit)
+      .getMany();
   }
 
   async findAll(postId: number) {
-    return this.createQueryBuilder('comment')
+    return await this.createQueryBuilder('comment')
       .innerJoin('comment.post', 'post')
       .innerJoin('comment.user', 'user')
       .leftJoin('user.content', 'content')

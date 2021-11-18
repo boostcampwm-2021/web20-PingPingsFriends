@@ -7,6 +7,7 @@ import ExplorePage from './pages/ExplorePage';
 import TestPage from './pages/TestPage';
 import GlobalStyle from '@lib/styles/GlobalStyle';
 import '@lib/styles/fonts.css';
+import { UserProvider } from '@src/contexts/UserContext';
 
 function App() {
   return (
@@ -22,12 +23,14 @@ function App() {
         <Route path="/explore">
           <ExplorePage />
         </Route>
-        <Route path="/user">
-          <UserPage />
-        </Route>
-        <Route path="/">
-          <MainPage />
-        </Route>
+        <UserProvider>
+          <Route path="/user">
+            <UserPage />
+          </Route>
+          <Route path="/">
+            <MainPage />
+          </Route>
+        </UserProvider>
       </Switch>
     </>
   );

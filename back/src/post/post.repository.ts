@@ -7,11 +7,15 @@ import { Post } from './entities/post.entity';
 
 @EntityRepository(Post)
 export class PostRepository extends Repository<Post> {
-  async createPost(createPostDto: CreatePostDto, contentsInfos: CreateContentDto[]): Promise<Post> {
+  async createPost(
+    createPostDto: CreatePostDto,
+    contentsInfos: CreateContentDto[],
+    userId: number
+  ): Promise<Post> {
     const post = new Post();
     post.animalContent = createPostDto.animalContent;
     post.humanContent = createPostDto.humanContent;
-    post.userId = createPostDto.userId;
+    post.userId = userId;
     post.habitatId = createPostDto.habitatId;
 
     const postContents = contentsInfos.map((contentsInfo, i) => {
