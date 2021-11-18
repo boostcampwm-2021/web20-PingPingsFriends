@@ -8,6 +8,111 @@ import { ReactComponent as PetBtnSvg } from '../../assets/icons/pet_btn.svg';
 import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.svg';
 import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
+import { useUserState } from '@src/contexts/UserContext';
+import Config from '@lib/constants/config';
+
+interface WriteModalProps {
+  hide: ToggleHandler;
+}
+
+const WriteModal = ({ hide }: WriteModalProps) => {
+  const MAX_CONTENTS = 8;
+  const MAX_TEXT = 500;
+  const [contents, setContents] = useState<File[]>([]);
+  const [text, setText] = useState('');
+  const [isValid, setValid] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputContents = e.target.files as FileList;
+    setContents([...contents, ...inputContents].slice(0, 8));
+  };
+  const userState = useUserState();
+
+  const removeContents = (targetIdx: number) => {
+    const newContents = contents.filter((file, idx) => idx !== targetIdx);
+    setContents(newContents);
+  };
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length > 500) return;
+    setText(e.target.value);
+  };
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(e);
+    if (!isValid) return;
+    const data = new FormData();
+    data.append('text', text);
+    contents.forEach((content) => data.append('contents', content));
+    const form = e.target as HTMLFormElement;
+
+    try {
+      if (!userState.data) {
+        return;
+      }
+      const response: Response = await fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${userState.data.accessToken}` }, body: data });
+      const result = await response.json();
+      console.log(result);
+
+      if (result) {
+        // 글쓰기 성공
+      } else {
+        // 글쓰기 실패
+      }
+    } catch (e) {
+      console.log(e as Error);
+    }
+  };
+
+  useEffect(() => {
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, [contents]);
+  useEffect(() => {
+    if (contents.length && text.length) setValid(true);
+    else setValid(false);
+  }, [contents, text]);
+
+  if (userState.data?.userId !== -1) {
+    return (
+      <WriteForm method={'POST'} action={Config.BACK_HOST + '/api/posts'} id={'write'} onSubmit={handleFormSubmit}>
+        <ContentsDiv>
+          <FileInsertLabel htmlFor="input-contents">
+            <AddContentsSvg />
+            <p>
+              {contents.length}/{MAX_CONTENTS}
+            </p>
+          </FileInsertLabel>
+          <FileInput ref={fileInputRef} onChange={handleFileInputChange} id="input-contents" type="file" accept="image/*, video/*" name="contents" form="write" multiple />
+          {contents.length ? (
+            <SwipeBox width="80%" height="100%" gap="10px">
+              <>
+                {contents.map((file, idx) => (
+                  <Preview key={file.lastModified} file={file} idx={idx} removeContents={removeContents} />
+                ))}
+              </>
+            </SwipeBox>
+          ) : null}
+        </ContentsDiv>
+        <TextInput value={text} onChange={handleTextInputChange} name="text" form="write" placeholder="내용을 입력하세요" />
+        <TextIndicatorP>
+          ({text.length}/{MAX_TEXT})
+        </TextIndicatorP>
+        <ValidInfoP>{isValid ? '' : '사진과 글은 필수입니다!'}</ValidInfoP>
+        <SubmitBtn type={'submit'} valid={isValid} className={'modal-close-button'}>
+          <PetBtnSvg />
+          <p>Done</p>
+        </SubmitBtn>
+        <CancelBtn className="modal-close-button" type="button" onClick={hide}>
+          <CancelBtnSvg />
+          <p>Back</p>
+        </CancelBtn>
+      </WriteForm>
+    );
+  } else {
+    return <AlertDiv>먼저 로그인 해주세요!</AlertDiv>;
+  }
+};
+
+export default WriteModal;
 
 const WriteForm = styled.form`
   ${boxShadow('20px')};
@@ -86,86 +191,11 @@ const ContentsDiv = styled.div`
   margin-bottom: 10px;
 `;
 
-interface WriteModalProps {
-  hide: ToggleHandler;
-}
-
-const WriteModal = ({ hide }: WriteModalProps) => {
-  const MAX_CONTENTS = 8;
-  const MAX_TEXT = 500;
-  const [contents, setContents] = useState<File[]>([]);
-  const [text, setText] = useState('');
-  const [isValid, setValid] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputContents = e.target.files as FileList;
-    setContents([...contents, ...inputContents].slice(0, 8));
-  };
-
-  const removeContents = (targetIdx: number) => {
-    const newContents = contents.filter((file, idx) => idx !== targetIdx);
-    setContents(newContents);
-  };
-  const handleTextInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length > 500) return;
-    setText(e.target.value);
-  };
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!isValid) return;
-    const data = new FormData();
-    data.append('text', text);
-    contents.forEach((content) => data.append('contents', content));
-    const form = e.target as HTMLFormElement;
-    fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'multipart/form-data' }, body: data }).then((res) => {
-      console.log(res);
-      // window.location.href = '/';
-    });
-  };
-
-  useEffect(() => {
-    (fileInputRef.current as HTMLInputElement).value = '';
-  }, [contents]);
-  useEffect(() => {
-    if (contents.length && text.length) setValid(true);
-    else setValid(false);
-  }, [contents, text]);
-
-  return (
-    <WriteForm method="post" action="/test" id="write" onSubmit={handleFormSubmit}>
-      <ContentsDiv>
-        <FileInsertLabel htmlFor="input-contents">
-          <AddContentsSvg />
-          <p>
-            {contents.length}/{MAX_CONTENTS}
-          </p>
-        </FileInsertLabel>
-        <FileInput ref={fileInputRef} onChange={handleFileInputChange} id="input-contents" type="file" accept="image/*, video/*" name="contents" form="write" multiple />
-        {contents.length ? (
-          <SwipeBox width="80%" height="100%" gap="10px">
-            <>
-              {contents.map((file, idx) => (
-                <Preview key={file.lastModified} file={file} idx={idx} removeContents={removeContents} />
-              ))}
-            </>
-          </SwipeBox>
-        ) : null}
-      </ContentsDiv>
-      <TextInput value={text} onChange={handleTextInputChange} name="text" form="write" placeholder="내용을 입력하세요" />
-      <TextIndicatorP>
-        ({text.length}/{MAX_TEXT})
-      </TextIndicatorP>
-      <ValidInfoP>{isValid ? '' : '사진과 글은 필수입니다!'}</ValidInfoP>
-      <SubmitBtn type="submit" valid={isValid} className={'modal-close-button'} onClick={hide}>
-        <PetBtnSvg />
-        <p>Done</p>
-      </SubmitBtn>
-      <CancelBtn className="modal-close-button" type="button" onClick={hide}>
-        <CancelBtnSvg />
-        <p>Back</p>
-      </CancelBtn>
-    </WriteForm>
-  );
-};
-
-export default WriteModal;
+const AlertDiv = styled.div`
+  ${boxShadow('20px')};
+  background-color: ${Palette.WHITE};
+  width: 300px;
+  height: 200px;
+  text-align: center;
+  line-height: 200px;
+`;

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 export type ModalEvent = React.MouseEvent<Element> | React.KeyboardEvent<Element>;
-export type ToggleHandler = (event: ModalEvent) => void;
+export type ToggleHandler = (event: ModalEvent | 'off') => void;
 
 const useModal = ($elem = '#modal') => {
   const [isShowing, setIsShowing] = useState(false);
@@ -9,6 +9,10 @@ const useModal = ($elem = '#modal') => {
   const $portal = document.querySelector($elem) as Element;
 
   const toggle: ToggleHandler = (event) => {
+    if (event === 'off') {
+      setIsShowing(!isShowing);
+      return;
+    }
     if ('key' in event && event.key === 'Escape') {
       setIsShowing(!isShowing);
       return;

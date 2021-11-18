@@ -6,23 +6,30 @@ export interface User {
   nickname: string;
   habitatId: number;
   speciesId: number;
-  url: string | null;
-  accessToken: string;
+  url: string;
+  accessToken?: string;
 }
 interface UserState {
   loading: boolean;
   data: User | null;
-  error: Error | null;
+  error: any | null;
 }
 interface Action {
   type: 'GET_USER' | 'GET_USER_SUCCESS' | 'GET_USER_ERROR';
   data?: User;
-  error?: Error;
+  error?: any;
 }
-
-const initialState: UserState = {
+const DEFAULT_HABITAT = 2;
+export const initialState: UserState = {
   loading: false,
-  data: null,
+  data: {
+    userId: -1,
+    nickname: '익명의 핑핑이',
+    url: '/default_avatar.png',
+    habitatId: DEFAULT_HABITAT,
+    speciesId: 2,
+    username: 'pingping',
+  },
   error: null,
 };
 const loadingState: UserState = {
@@ -58,7 +65,7 @@ const userReducer = (state: UserState, action: Action): UserState => {
 const UserStateContext = createContext<UserState | null>(null);
 const UserDispatchContext = createContext<React.Dispatch<Action> | null>(null);
 
-export const UserProvider = (children: React.ReactNode) => {
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(userReducer, initialState);
 
   return (
