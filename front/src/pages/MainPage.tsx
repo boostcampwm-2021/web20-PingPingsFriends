@@ -5,7 +5,7 @@ import FeedFAB from '@components/Feed/FeedFAB';
 import Explore from '@components/Explore/Explore';
 import styled from 'styled-components';
 import HabitatPreview from '@components/Habitat/HabitatPreview';
-import useHistory from '@hooks/useHistory';
+import useSideNavi from '@src/hooks/useSideNavi';
 import { Palette } from '@lib/styles/Palette';
 import { flexBox } from '@lib/styles/mixin';
 import useHabitatInfo from '@hooks/useHabitatInfo';
@@ -49,7 +49,7 @@ const MainPage = () => {
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
 
-  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx, setCurHabitatId } = useHistory(userHabitatId);
+  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx, setCurHabitatId } = useSideNavi(userHabitatId);
   const { habitatInfo } = useHabitatInfo(curHabitatId);
 
   useEffect(() => {
@@ -87,8 +87,8 @@ const MainPage = () => {
               <>
                 <FeedContainer habitatInfo={habitatInfo} />
                 <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
-                <HabitatPreview habitat={habitatList.current[historyIdx.current + 1]} onClick={handleNextHabitat} side={'right'} />
-                <HabitatPreview habitat={habitatList.current[historyIdx.current - 1]} onClick={handlePrevHabitat} side={'left'} />
+                <HabitatPreview habitat={habitatList.current[historyIdx + 1]} onClick={handleNextHabitat} side={'right'} />
+                <HabitatPreview habitat={habitatList.current[historyIdx - 1]} onClick={handlePrevHabitat} side={'left'} />
               </>
             ),
             explore: (

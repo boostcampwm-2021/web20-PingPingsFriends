@@ -4,12 +4,12 @@ import { rectType } from '@hooks/useClientRect';
 
 const SlideImg = styled.img<Pick<SlideProps, 'rect'>>`
   width: ${({ rect }) => rect.width}px;
-  height: 100%;
+  height: ${({ rect }) => rect.height}px;
   object-fit: cover;
 `;
 const Video = styled.video<Pick<SlideProps, 'rect'>>`
   width: ${({ rect }) => rect.width}px;
-  height: 100%;
+  height: ${({ rect }) => rect.height}px;
   object-fit: cover;
 `;
 
@@ -27,7 +27,7 @@ const Slide = ({ src, rect, lazy }: SlideProps) => {
           <source src={src} type={'video/mp4'} />
         </Video>
       ) : (
-        <SlideImg src={'default_avatar.png'} data-src={src} rect={rect} alt="피드 이미지" />
+        <SlideImg src={lazy ? 'default_avatar.png' : src} data-src={src} rect={rect} alt="피드 이미지" />
       )}
     </div>
   );
