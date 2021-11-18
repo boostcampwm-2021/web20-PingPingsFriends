@@ -19,13 +19,17 @@ const useSideNavi = (userHabitatId: number) => {
 
   useEffect(() => {
     if (historyIdx === 1 || historyIdx === habitatList.length - 2) {
-      const resList = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0];
-      if (historyIdx === 1) {
-        setHabitatList([...resList, ...habitatList]);
-        setHistoryIdx(historyIdx + 10);
-      } else {
-        setHabitatList([...habitatList, ...resList]);
-      }
+      // const resList = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0];
+      fetch(Config.BACK_HOST + `/api/habitat/random?currentId=${curHabitatId}`)
+        .then((res) => res.json())
+        .then((data: number[]) => {
+          if (historyIdx === 1) {
+            setHabitatList([...data, ...habitatList]);
+            setHistoryIdx(historyIdx + 10);
+          } else {
+            setHabitatList([...habitatList, ...data]);
+          }
+        });
     }
   }, [curHabitatId]);
 
