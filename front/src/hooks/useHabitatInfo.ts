@@ -1,23 +1,18 @@
 import { useEffect, useState } from 'react';
-
-export interface HabitatInfo {
-  recentUser: string[];
-  totalUser: number;
-  totalPost: number;
-  recentUpload: string;
-  king: string;
-  name: string;
-  color: string;
-}
+import Config from '@lib/constants/config';
+import { HabitatInfo } from '@src/types/Habitat';
 
 const useHabitatInfo = (habitatId: number) => {
   const [habitatInfo, setHabitatInfo] = useState<HabitatInfo | undefined>(undefined);
 
   useEffect(() => {
     if (habitatId === undefined) return;
-    fetch(`/habitat/${habitatId}.json`, { headers: { Accept: 'application/json' } })
+    fetch(Config.BACK_HOST + `/api/habitat/${habitatId}`, { headers: { Accept: 'application/json' } })
       .then((res) => res.json())
-      .then((json) => setHabitatInfo(json))
+      .then((data: HabitatInfo) => {
+        console.log(data);
+        setHabitatInfo(data);
+      })
       .catch((err) => {
         console.log(err);
         setHabitatInfo(undefined);

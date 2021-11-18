@@ -8,7 +8,7 @@ import { Palette } from '@lib/styles/Palette';
 import MagicNumber from '@lib/styles/magic';
 import Modal from '@common/Modal/Modal';
 import useModal from '@common/Modal/useModal';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { HabitatInfo } from '@src/types/Habitat';
 
 const LOGO: string = '핑핑이 친구들';
 
@@ -32,7 +32,7 @@ const Header = ({ habitatInfo }: HeaderProps) => {
   return (
     <HeaderBlock>
       <div className={'Logo'}>{LOGO}</div>
-      <Place habitat={habitatInfo?.name} toggle={toggle} />
+      <Place habitat={habitatInfo?.habitat.name} toggle={toggle} />
       <UserInfo />
       <Modal isShowing={isShowing} hide={toggle}>
         <HabitatModal hide={toggle} />

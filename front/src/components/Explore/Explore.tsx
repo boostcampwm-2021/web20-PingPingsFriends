@@ -1,5 +1,5 @@
 import React, { RefObject, useEffect, useRef } from 'react';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { HabitatInfo } from '@src/types/Habitat';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 
@@ -25,7 +25,7 @@ const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined }) => {
   const divRef = useRef<HTMLDivElement>(null);
 
   return (
-    <ExploreDiv ref={divRef} color={habitatInfo?.color}>
+    <ExploreDiv ref={divRef} color={habitatInfo?.habitat.color}>
       adafds
     </ExploreDiv>
   );

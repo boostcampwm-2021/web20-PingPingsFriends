@@ -1,9 +1,4 @@
-import {
-  DeleteResult,
-  EntityRepository,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
+import { DeleteResult, EntityRepository, Repository, UpdateResult } from 'typeorm';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
@@ -11,9 +6,7 @@ import { Comment } from './entities/comment.entity';
 @EntityRepository(Comment)
 export class CommentRepository extends Repository<Comment> {
   //db 접근로직
-  async createComment(
-    createCommentDto: CreateCommentDto
-  ): Promise<Comment> {
+  async createComment(createCommentDto: CreateCommentDto): Promise<Comment> {
     const { post_id, content } = createCommentDto;
 
     const comment = new Comment();
@@ -25,10 +18,7 @@ export class CommentRepository extends Repository<Comment> {
     return result;
   }
 
-  async updateComment(
-    id: number,
-    updateCommentDto: UpdateCommentDto
-  ): Promise<UpdateResult> {
+  async updateComment(id: number, updateCommentDto: UpdateCommentDto): Promise<UpdateResult> {
     const { content } = updateCommentDto;
     const result = await this.update(id, { content });
     console.log(result);
@@ -39,5 +29,19 @@ export class CommentRepository extends Repository<Comment> {
     const result = await this.delete(id);
     console.log(result);
     return result;
+  }
+
+  async selectCommentListByCursor(lastId: number, postId: number, limit: number) {
+    return await this.query(
+      `SELECT c.comment_id FROM comment c
+        WHERE c.comment_id < ? AND post_id = ?
+        ORDER BY c.comment_id DESC
+        LIMIT ?;`,
+          []
+    );
+  }
+
+  async findAll(postId:number) {
+    return this.repo
   }
 }

@@ -1,34 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
-import { ModalHabitat } from '@components/HabitatModal/HabitatModal';
 import { useHistory } from 'react-router-dom';
 import { ToggleHandler } from '@common/Modal/useModal';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useGetDiv } from '@hooks/useGetDiv';
-
-const HabitatsContainerDiv = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  justify-items: center;
-  align-content: space-between;
-  width: 650px;
-  height: 320px;
-  overflow-y: scroll;
-  padding: 20px;
-`;
-const HabitatBlockDiv = styled.div<Partial<HabitatInfo>>`
-  ${flexBox('center', 'center')}
-  width: 250px;
-  height: 55px;
-  border-radius: 30px;
-  margin: 20px;
-  background: ${({ color }) => color};
-`;
+import { HabitatLists } from '@src/types/Habitat';
 
 interface HabitatsContainerProps {
-  habitatInfos: ModalHabitat[];
+  habitatInfos: HabitatLists;
   hide: ToggleHandler;
 }
 
@@ -60,14 +40,33 @@ const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
 
   return (
     <HabitatsContainerDiv ref={rootRef}>
-      {habitatInfos.map((habitatInfo) => (
-        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick} className={'modal-close-button'}>
-          {habitatInfo.name}
-        </HabitatBlockDiv>
-      ))}
+      {habitatInfos.map((habitatInfo) => 
+      <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick} className={'modal-close-button'}>
+      {habitatInfo.name}
+    </HabitatBlockDiv>
+    )}
       <div ref={observerRef} />
     </HabitatsContainerDiv>
   );
 };
 
 export default HabitatsContainer;
+
+const HabitatsContainerDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  align-content: space-between;
+  width: 650px;
+  height: 320px;
+  overflow-y: scroll;
+  padding: 20px;
+`;
+const HabitatBlockDiv = styled.div<{ color: string }>`
+  ${flexBox('center', 'center')}
+  width: 250px;
+  height: 55px;
+  border-radius: 30px;
+  margin: 20px;
+  background: ${({ color }) => color};
+`;
