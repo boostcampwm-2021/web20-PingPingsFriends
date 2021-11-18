@@ -14,12 +14,11 @@ import { ApiTags, ApiOperation, ApiCreatedResponse } from '@nestjs/swagger';
 import { userResponseDto } from './dto/userResponseDto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import multerOption from 'config/s3.config';
-import { ParseUsernamePipe } from 'pipes/validation-sign-up.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
 import { multerUserOption } from 'config/s3.config';
 import { ParseUsernamePipe } from 'common/pipes/validation-sign-up.pipe';
+import FileDto from 'common/dto/transformFileDto';
 
 @ApiTags('users')
 @Controller('users')
@@ -44,10 +43,7 @@ export class UsersController {
 
   @Post('register')
   @UseInterceptors(FileInterceptor('upload', multerUserOption))
-  register(
-    @Body(ParseUsernamePipe) createUserDto: CreateUserDto,
-    @UploadedFile() image: Express.MulterS3.File
-  ) {
+  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image: FileDto) {
     return this.usersService.create(createUserDto, image);
   }
 
