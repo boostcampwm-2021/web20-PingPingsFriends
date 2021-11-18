@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Feed from './Feed';
 import { HabitatInfo } from '@hooks/useHabitatInfo';
-import { flexBox } from '@lib/styles/mixin';
+import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
 import useScroll from '@hooks/useScroll';
 import ScrollContainer from '@components/Feed/ScrollBoxContainer';
@@ -12,6 +12,7 @@ import { useGetDiv } from '@hooks/useGetDiv';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
+  ${prettyScroll()};
   width: 500px;
   background-color: ${(props) => (props.color !== undefined ? props.color : Palette.PINK)};
   transition: background-color 0.5s ease-out 0s;
@@ -70,7 +71,7 @@ const FeedContainer = ({ habitatInfo }: FeedScrollBoxProps) => {
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
           {feeds.map((feed) => (
-            <Feed key={feed.id} nickname={feed.nickname} imageURLs={feed.imageURLs} text={feed.text} lazy={lazy} />
+            <Feed key={feed.id} feedId={feed.id} nickname={feed.nickname} imageURLs={feed.imageURLs} text={feed.text} lazy={lazy} />
           ))}
         </ViewPort>
       </ScrollContainer>

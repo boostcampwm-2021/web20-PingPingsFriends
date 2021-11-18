@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { ModalHabitat } from '@components/HabitatModal/HabitatModal';
+import { useHistory } from 'react-router-dom';
+import { ToggleHandler } from '@common/Modal/useModal';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useGetDiv } from '@hooks/useGetDiv';
 
 const HabitatsContainerDiv = styled.div`
   display: grid;
@@ -10,12 +15,7 @@ const HabitatsContainerDiv = styled.div`
   align-content: space-between;
   width: 650px;
   height: 320px;
-  border: 1px black solid;
   overflow-y: scroll;
-  -ms-overflow-style: none; /* IE and Edge */
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
-  }
   padding: 20px;
 `;
 const HabitatBlockDiv = styled.div<Partial<HabitatInfo>>`
@@ -28,27 +28,44 @@ const HabitatBlockDiv = styled.div<Partial<HabitatInfo>>`
 `;
 
 interface HabitatsContainerProps {
-  habitatInfos: HabitatInfo[];
+  habitatInfos: ModalHabitat[];
+  hide: ToggleHandler;
 }
 
-const HabitatsContainer = ({ habitatInfos }: HabitatsContainerProps) => {
+const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
+  const history = useHistory();
+  const [root, rootRef] = useGetDiv();
+
+  const observeHabitats: IntersectionObserverCallback = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        //todo: habitat 메뉴 증가
+        console.log('todo');
+      }
+    });
+  };
+
+  const options = {
+    root: root,
+    rootMargin: '200px 0px',
+  };
+
+  const observerRef = useIntersectionObserver(observeHabitats, options);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    history.push(`${target.dataset.id}`);
+    hide(e);
+  };
+
   return (
-    <HabitatsContainerDiv>
+    <HabitatsContainerDiv ref={rootRef}>
       {habitatInfos.map((habitatInfo) => (
-        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color}>
+        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick} className={'modal-close-button'}>
           {habitatInfo.name}
         </HabitatBlockDiv>
       ))}
-      {habitatInfos.map((habitatInfo) => (
-        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color}>
-          {habitatInfo.name}
-        </HabitatBlockDiv>
-      ))}
-      {habitatInfos.map((habitatInfo) => (
-        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color}>
-          {habitatInfo.name}
-        </HabitatBlockDiv>
-      ))}
+      <div ref={observerRef} />
     </HabitatsContainerDiv>
   );
 };

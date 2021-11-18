@@ -23,7 +23,7 @@ const DropBoxDiv = styled.div<any>`
   position: absolute;
   ${(props) => `${props.start}:${props.offset}px`};
   top: ${(props) => props.top}px;
-  z-index: 1;
+  z-index: 5;
   p {
     font-size: 12px;
     height: ${DROPBOX_ITEM_HEIGHT};

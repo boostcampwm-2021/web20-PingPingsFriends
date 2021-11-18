@@ -59,14 +59,14 @@ const FeedTextDiv = styled.div`
 `;
 
 export interface FeedProps {
-  id?: string;
+  feedId?: string;
   nickname: string;
   imageURLs: string[];
   text: string;
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ nickname, imageURLs, text, lazy }: FeedProps) => {
+const Feed = ({ feedId, nickname, imageURLs, text, lazy }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
   const [like, toggleLike] = useLike();
@@ -95,7 +95,7 @@ const Feed = ({ nickname, imageURLs, text, lazy }: FeedProps) => {
         <DeleteModal hide={toggleDeleteModal} />
       </Modal>
       <Modal isShowing={isDetailShowing} hide={toggleDetailModal}>
-        <DetailModal imageURLs={imageURLs} hide={toggleDetailModal} />
+        <DetailModal feedId={feedId} nickname={nickname} text={text} imageURLs={imageURLs} hide={toggleDetailModal} />
       </Modal>
     </FeedContainerDiv>
   );

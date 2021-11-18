@@ -1,4 +1,6 @@
-interface transforms {
+import { CreateContentDto } from "src/contents/dto/create-content.dto";
+
+interface Transforms {
   id: string;
   size: number;
   bucket: string;
@@ -13,22 +15,32 @@ interface transforms {
   etag: string;
 }
 
-interface fileDto extends Express.Multer.File {
+interface FileDto extends Express.Multer.File {
   location: string;
   mimetype: string;
-  transforms: transforms[];
+  transforms: Transforms[];
 }
 
 export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
-  console.log(files, files[0]);
-  const contentsInfos = files.map((v: fileDto, i: number) => {
-    console.log(v, i, v.transforms);
+  const contentsInfos = files.map((v: FileDto, i: number) => {
     return {
       url: v.transforms[0].location,
       mimeType: v.mimetype,
     };
   });
   return contentsInfos;
+};
+
+export const getPartialFileInfo = (
+  file?: FileDto
+): CreateContentDto | undefined => {
+  if (!file) return undefined;
+
+  const contentInfo = {
+    url: file.transforms[0].location,
+    mimeType: file.mimetype,
+  };
+  return contentInfo;
 };
 
 // Test code
