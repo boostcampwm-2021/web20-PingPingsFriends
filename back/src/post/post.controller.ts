@@ -16,15 +16,10 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { getPartialFilesInfo } from 'utils/s3.util';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PatchPostRequestDto } from './dto/patchPostRequestDto';
-import multerOption from 'config/s3.config';
-import {
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { multerTransFormOption } from 'config/s3.config';
+import { ApiBody, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetPostResponseDto } from './dto/getPostResponse.dto';
-import { ParseOptionalIntPipe } from 'pipes/parse-optional-int.pipe';
+import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -37,16 +32,13 @@ export class PostController {
     description: '게시글을 작성하는 api입니다.',
   })
   @Post()
-  @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return await this.postService.create(
-      createPostDto,
-      contentsInfos
-    );
+    return await this.postService.create(createPostDto, contentsInfos);
   }
 
   @ApiOperation({
@@ -81,18 +73,14 @@ export class PostController {
     description: '게시글을 수정하는 api입니다.',
   })
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return await this.postService.update(
-      id,
-      patchPostRequestDto,
-      contentsInfos
-    );
+    return await this.postService.update(id, patchPostRequestDto, contentsInfos);
   }
 
   @ApiCreatedResponse({ type: Boolean })
