@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import FileDto from 'common/dto/transformFileDto';
 import { getPartialFileInfo } from 'utils/s3.util';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -12,7 +13,7 @@ export class UsersService {
     return this.userRepository.find({ relations: ['likedPost'] });
   }
 
-  async create(createUserDto: CreateUserDto, image?: Express.MulterS3.File) {
+  async create(createUserDto: CreateUserDto, image?: FileDto) {
     const foundUser = await this.userRepository.findOne({ username: createUserDto.username });
     if (foundUser) return false;
 
