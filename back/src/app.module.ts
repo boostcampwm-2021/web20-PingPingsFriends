@@ -8,6 +8,7 @@ import { SpeciesModule } from './species/species.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentsModule } from './comments/comments.module';
 import { HeartsModule } from './hearts/hearts.module';
+import { AuthModule } from './auth/auth.module';
 import databaseConfig from '../config/database.config';
 
 @Module({
@@ -21,6 +22,7 @@ import databaseConfig from '../config/database.config';
     SpeciesModule,
     HeartsModule,
     CommentsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
