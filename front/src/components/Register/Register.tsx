@@ -7,6 +7,8 @@ import useForm, { Validations } from '@hooks/useForm';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './Transition.css';
 import usePageSlide from '@hooks/usePageSlide';
+import ProfileImage from '@components/Register/ProfileImage';
+import LoadingBar from '@components/Register/LoadingBar';
 
 const RegisterDiv = styled.div`
   position: relative;
@@ -63,9 +65,13 @@ const Register = ({ location }: RegisterProps) => {
 
   return (
     <RegisterDiv>
+      <LoadingBar />
       <TransitionGroup className={'transition-group'}>
         <CSSTransition key={location.pathname} classNames={direction} timeout={500}>
           <Switch location={location}>
+            <Route path="/register/set-profile">
+              <ProfileImage values={moreInfoValues} handleChange={handleMoreInfoChange} />
+            </Route>
             <Route path="/register/more-info">
               <MoreInfo values={moreInfoValues} handleChange={handleMoreInfoChange} errors={moreInfoErrors} flag={moreInfoFlag} handleMoreInfoClick={handleMoreInfoClick} />
             </Route>
