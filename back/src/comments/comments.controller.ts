@@ -7,14 +7,12 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { CursorPaginationDto } from './dto/cursor-pagination.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
 
@@ -38,10 +36,7 @@ export class CommentsController {
     summary: '댓글 수정 API',
     description: '게시물 댓글을 수정한다.',
   })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateCommentDto: UpdateCommentDto
-  ) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateCommentDto: UpdateCommentDto) {
     return this.commentsService.updateComment(id, updateCommentDto);
   }
 
@@ -52,5 +47,23 @@ export class CommentsController {
   })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.commentsService.removeComment(id);
+  }
+
+  @Get('cursor') //댓글 커서 페이지네이션
+  @ApiOperation({
+    summary: '댓글 리스트 반환 API',
+    description: '게시물(postId)의 특정 댓글(lastId)부터 특정 개수(limit)를 반환하는 API',
+  })
+  getCommentList(@Query() query: CursorPaginationDto) {
+    return this.commentsService.getCommentList(query);
+  }
+
+  @Get('all:postId') //댓글 전체반환
+  @ApiOperation({
+    summary: '댓글 리스트 반환 API',
+    description: '게시물(postId)의 특정 댓글(lastId)부터 특정 개수(limit)를 반환하는 API',
+  })
+  getCommentList(@Param('postId', ParseIntPipe) postId: number) {
+    return this.commentsService.getCommentAll(postId);
   }
 }
