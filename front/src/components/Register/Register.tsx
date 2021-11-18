@@ -25,34 +25,34 @@ const RegisterDiv = styled.div`
 `;
 
 export interface UserData {
-  id: string;
+  username: string;
   password: string;
   passwordConfirm: string;
 }
 const initialUserData = {
-  id: '',
+  username: '',
   password: '',
   passwordConfirm: '',
 };
 export interface InfoData {
-  username: string;
+  nickname: string;
   habitat: string;
   category: string;
 }
 const initialInfoData = {
-  username: '',
+  nickname: '',
   habitat: '강남역 뒷골목',
   category: '고양이',
 };
 const userDataValidations: Validations<UserData> = [
-  { value: 'id', check: (values) => values['id'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
-  { value: 'id', check: (values) => values['id'].length === 0, message: '아이디를 입력하세요.' },
+  { value: 'username', check: (values) => values['username'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
+  { value: 'username', check: (values) => values['username'].length === 0, message: '아이디를 입력하세요.' },
   { value: 'password', check: (values) => values['password'].length < 8, message: '비밀번호는 8자 이상이어야합니다.' },
   { value: 'password', check: (values) => values['password'].length === 0, message: '비밀번호를 입력하세요.' },
   { value: 'passwordConfirm', check: (values) => values['passwordConfirm'] !== values['password'], message: '입력하신 비밀번호와 일치하지 않습니다' },
 ];
 
-const infoDataValidations: Validations<InfoData> = [{ value: 'username', check: (values) => values['username'].length <= 4, message: '아이디는 4자를 넘어야합니다.' }];
+const infoDataValidations: Validations<InfoData> = [{ value: 'nickname', check: (values) => values['nickname'].length <= 4, message: '아이디는 4자를 넘어야합니다.' }];
 
 interface RegisterProps extends RouteComponentProps {}
 
