@@ -15,7 +15,11 @@ const RegisterDiv = styled.div`
   border: 1px solid #bebbbb;
   padding: 40px;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
 `;
 
 export interface UserData {
@@ -30,11 +34,13 @@ const initialUserData = {
 };
 export interface InfoData {
   username: string;
+  profile: File | null;
   habitat: string;
   category: string;
 }
 const initialInfoData = {
   username: '',
+  profile: null,
   habitat: '강남역 뒷골목',
   category: '고양이',
 };

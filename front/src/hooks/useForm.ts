@@ -15,6 +15,13 @@ const useForm = <T>(initialValues: T, validations: Validations<T>) => {
   const [errors, setErrors] = useState<ErrorType<T>>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (e.target.id === 'profile') {
+      const target = e.target as HTMLInputElement;
+      const file = target.files![0];
+      setValues({ ...values, [e.target.id]: file });
+
+      return;
+    }
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 

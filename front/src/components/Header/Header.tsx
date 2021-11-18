@@ -34,7 +34,9 @@ const Header = ({ habitatInfo }: HeaderProps) => {
       <div className={'Logo'}>{LOGO}</div>
       <Place habitat={habitatInfo?.name} toggle={toggle} />
       <UserInfo />
-      <Modal children={<HabitatModal />} isShowing={isShowing} hide={toggle} />
+      <Modal isShowing={isShowing} hide={toggle}>
+        <HabitatModal hide={toggle} />
+      </Modal>
     </HeaderBlock>
   );
 };

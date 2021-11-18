@@ -46,6 +46,7 @@ const useHistory = (userHabitatId: number) => {
     handlePrevHabitat,
     habitatList,
     historyIdx,
+    setCurHabitatId,
   };
 };
 
