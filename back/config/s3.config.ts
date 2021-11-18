@@ -1,6 +1,8 @@
 import * as AWS from 'aws-sdk';
+import * as multerS3TS from 'multer-s3-transform';
 import * as multerS3 from 'multer-s3';
 import * as dotenv from 'dotenv';
+import * as sharp from 'sharp';
 
 dotenv.config();
 
@@ -24,4 +26,43 @@ const multerOption = {
   }),
 };
 
-export default multerOption;
+const multerTransFormOption = {
+  storage: multerS3TS({
+    s3,
+    shouldTransform: true,
+    transforms: [
+      {
+        id: 'original',
+        key: function (request, file, cb) {
+          cb(
+            null,
+            `${Date.now().toString()}.${file.mimetype.split('/')[1]}`
+          );
+        },
+        transform: function (req, file, cb) {
+          cb(null, sharp());
+        },
+      },
+      {
+        id: 'resized',
+        key: function (request, file, cb) {
+          cb(null, `${Date.now().toString()}.jpeg`);
+        },
+        transform: function (req, file, cb) {
+          cb(
+            null,
+            sharp()
+              .resize(480, 500, {
+                fit: sharp.fit.inside,
+                withoutEnlargement: true,
+              })
+              .jpeg({ quality: 80 })
+          );
+        },
+      },
+    ],
+    bucket: 'spongebob-bucket',
+    acl: 'public-read',
+  }),
+};
+export default multerTransFormOption;

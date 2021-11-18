@@ -1,25 +1,43 @@
-import { CreateContentDto } from 'src/contents/dto/create-content.dto';
+import { CreateContentDto } from "src/contents/dto/create-content.dto";
+
+interface Transforms {
+  id: string;
+  size: number;
+  bucket: string;
+  key: string;
+  acl: string;
+  contentType: string;
+  contentDisposition: any;
+  storageClass: string;
+  serverSideEncryption: any;
+  metadata: any;
+  location: string;
+  etag: string;
+}
 
 interface FileDto extends Express.Multer.File {
   location: string;
   mimetype: string;
+  transforms: Transforms[];
 }
 
 export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
   const contentsInfos = files.map((v: FileDto, i: number) => {
     return {
-      url: v.location,
+      url: v.transforms[0].location,
       mimeType: v.mimetype,
     };
   });
   return contentsInfos;
 };
 
-export const getPartialFileInfo = (file?: Express.MulterS3.File): CreateContentDto | undefined => {
+export const getPartialFileInfo = (
+  file?: FileDto
+): CreateContentDto | undefined => {
   if (!file) return undefined;
 
   const contentInfo = {
-    url: file.location,
+    url: file.transforms[0].location,
     mimeType: file.mimetype,
   };
   return contentInfo;
