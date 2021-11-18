@@ -13,6 +13,13 @@ export class UsersService {
     return this.userRepository.find({ relations: ['likedPost'] });
   }
 
+  async findUser(userId: number) {
+    const user = await this.userRepository.findOne(userId, { relations: ['content'] });
+    delete user.password;
+    delete user.contentsId;
+    return user;
+  }
+
   async create(createUserDto: CreateUserDto, image?: FileDto) {
     const foundUser = await this.userRepository.findOne({ username: createUserDto.username });
     if (foundUser) return false;
@@ -20,5 +27,9 @@ export class UsersService {
     const contentInfo = getPartialFileInfo(image);
 
     return await this.userRepository.saveUser(createUserDto, contentInfo);
+  }
+
+  async updateImage(image: FileDto, user: any) {
+    return await this.userRepository.updateImage(image, user);
   }
 }

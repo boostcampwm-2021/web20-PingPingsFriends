@@ -15,7 +15,7 @@ interface AccountInfoProps {
 }
 
 const AccountInfo = ({ values, handleChange, errors, flag, handleAccountClick }: AccountInfoProps) => {
-  const { id, password, passwordConfirm } = values;
+  const { username, password, passwordConfirm } = values;
 
   return (
     <AccountInfoBlock>
@@ -24,7 +24,7 @@ const AccountInfo = ({ values, handleChange, errors, flag, handleAccountClick }:
         <div className={'title'}>계정 만들기</div>
       </Header>
       <Form>
-        <Input name={'id'} placeholder={'아이디'} value={id} handleChange={handleChange} errorMessage={errors.id} />
+        <Input name={'username'} placeholder={'아이디'} value={username} handleChange={handleChange} errorMessage={errors.username} />
         <Input name={'password'} type={'password'} placeholder={'비밀번호'} value={password} handleChange={handleChange} errorMessage={errors.password} />
         <Input name={'passwordConfirm'} type={'password'} placeholder={'비밀번호 확인'} value={passwordConfirm} handleChange={handleChange} errorMessage={errors.passwordConfirm} />
         <ButtonContainer>

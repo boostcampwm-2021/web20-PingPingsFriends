@@ -1,15 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 export class CursorPaginationDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  lastId: number;
+  @ApiProperty({ required: false })
+  lastId?: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  postId: string;
+  postId: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  limit: string;
+  limit: number;
 }

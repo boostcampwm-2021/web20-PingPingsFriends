@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
+  Req,
   Request,
   UploadedFile,
   UseGuards,
@@ -19,6 +21,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { multerUserOption } from 'config/s3.config';
 import { ParseUsernamePipe } from 'common/pipes/validation-sign-up.pipe';
 import FileDto from 'common/dto/transformFileDto';
+import { User } from './entities/user.entity';
 
 @ApiTags('users')
 @Controller('users')
@@ -47,9 +50,23 @@ export class UsersController {
     return this.usersService.create(createUserDto, image);
   }
 
+  @ApiCreatedResponse({
+    description: '성공',
+    type: User,
+  })
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req) {
-    return this.authService.login(req.user);
+    const { accessToken } = await this.authService.login(req.user);
+    const user = await this.usersService.findUser(req.user.id);
+
+    return { accessToken, user };
+  }
+
+  @Patch('contents')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('upload', multerUserOption))
+  updateImage(@UploadedFile() image: FileDto, @Req() req: any) {
+    return this.usersService.updateImage(image, req.user);
   }
 }

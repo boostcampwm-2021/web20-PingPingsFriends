@@ -51,19 +51,19 @@ export class CommentsController {
 
   @Get('cursor') //댓글 커서 페이지네이션
   @ApiOperation({
-    summary: '댓글 리스트 반환 API',
+    summary: '댓글 리스트 반환 cursor pagination API',
     description: '게시물(postId)의 특정 댓글(lastId)부터 특정 개수(limit)를 반환하는 API',
   })
   getCommentList(@Query() query: CursorPaginationDto) {
     return this.commentsService.getCommentList(query);
   }
 
-  @Get('all:postId') //댓글 전체반환
+  @Get('all/:postId') //댓글 전체반환
   @ApiOperation({
-    summary: '댓글 리스트 반환 API',
-    description: '게시물(postId)의 특정 댓글(lastId)부터 특정 개수(limit)를 반환하는 API',
+    summary: '댓글 리스트 반환 All API',
+    description: '게시물(postId)의 모든 댓글반환',
   })
-  getCommentList(@Param('postId', ParseIntPipe) postId: number) {
+  getCommentAll(@Param('postId', ParseIntPipe) postId: number) {
     return this.commentsService.getCommentAll(postId);
   }
 }

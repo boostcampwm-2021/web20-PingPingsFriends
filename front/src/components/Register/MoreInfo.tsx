@@ -19,7 +19,7 @@ const habitatOptions = ['강남역 뒷골목', '부산 해운대', '서울숲'];
 const animalOptions = ['고양이', '강아지', '돌멩이'];
 
 const MoreInfo = ({ values, flag, handleMoreInfoClick, errors, handleChange }: MoreInfoProps) => {
-  const { username } = values;
+  const { nickname } = values;
 
   return (
     <MoreInfoBlock>
@@ -28,7 +28,7 @@ const MoreInfo = ({ values, flag, handleMoreInfoClick, errors, handleChange }: M
         <div className={'title'}>추가 정보 입력하기</div>
       </Header>
       <Form>
-        <Input name={'username'} placeholder={'유저 아이디'} value={username} handleChange={handleChange} errorMessage={errors.username} />
+        <Input name={'nickname'} placeholder={'유저 아이디'} value={nickname} handleChange={handleChange} errorMessage={errors.nickname} />
         <Select name={'habitat'} id={'habitat'} options={habitatOptions} label={'서식지'} handleChange={handleChange} />
         <Select name={'category'} id={'category'} options={animalOptions} label={'동물 카테고리'} handleChange={handleChange} />
         <ButtonContainer>

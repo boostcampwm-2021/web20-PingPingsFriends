@@ -1,3 +1,4 @@
+import FileDto from 'common/dto/transformFileDto';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { EntityRepository, Repository } from 'typeorm';
@@ -36,5 +37,16 @@ export class UserRepository extends Repository<User> {
     WHERE u.user_id = ?;`,
       [id]
     );
+  }
+
+  async updateImage(image: FileDto, user: any) {
+    const originalUser = await this.findOne(user.id, { relations: ['content'] });
+    if (!originalUser) return false;
+
+    const content = new Content();
+    content.url = image.location;
+    content.mimeType = image.mimetype;
+    originalUser.content = content;
+    return await this.save(originalUser);
   }
 }

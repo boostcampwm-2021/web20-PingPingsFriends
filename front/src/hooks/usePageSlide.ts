@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { InfoData, UserData } from '@components/Register/Register';
+import Config from '@lib/constants/config';
 
 enum TEXT {
   NEXT = '다음',
@@ -26,16 +27,40 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: Use
     }
   };
 
-  const handleMoreInfoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMoreInfoClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
     if (target.innerHTML === TEXT.BACK) {
       setDirection('left');
       return;
     }
+
     if (target.innerHTML === TEXT.REGISTER && moreInfoFlag) {
-      //todo: fetch userData, infoData
-      history.push(`/register/set-profile`);
+      const body: BodyInit = JSON.stringify({
+        username: userData.username,
+        password: userData.password,
+        nickname: infoData.nickname,
+        habitatId: 1,
+        speciesId: 1,
+      });
+
+      const headers = new Headers();
+      headers.append('Accept', 'application/json');
+      headers.append('Content-Type', 'application/json');
+
+      const response: Response = await fetch(`${Config.BACK_HOST}/api/users/register`, {
+        method: 'POST',
+        headers,
+        body,
+      });
+
+      console.log(response);
+
+      if (response) {
+        history.push(`/register/set-profile`);
+        return;
+      }
+      history.push(`/register`);
       return;
     }
   };
