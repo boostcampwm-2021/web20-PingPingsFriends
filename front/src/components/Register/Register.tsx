@@ -36,13 +36,11 @@ const initialUserData = {
 };
 export interface InfoData {
   username: string;
-  profile: File | null;
   habitat: string;
   category: string;
 }
 const initialInfoData = {
   username: '',
-  profile: null,
   habitat: '강남역 뒷골목',
   category: '고양이',
 };
@@ -61,7 +59,7 @@ interface RegisterProps extends RouteComponentProps {}
 const Register = ({ location }: RegisterProps) => {
   const { values: accountValues, handleChange: handleAccountChange, errors: accountErrors, flag: accountFlag } = useForm<UserData>(initialUserData, userDataValidations);
   const { values: moreInfoValues, handleChange: handleMoreInfoChange, errors: moreInfoErrors, flag: moreInfoFlag } = useForm<InfoData>(initialInfoData, infoDataValidations);
-  const { direction, handleAccountClick, handleMoreInfoClick } = usePageSlide(accountFlag, moreInfoFlag);
+  const { direction, handleAccountClick, handleMoreInfoClick } = usePageSlide(accountFlag, moreInfoFlag, accountValues, moreInfoValues);
 
   return (
     <RegisterDiv>
@@ -70,7 +68,7 @@ const Register = ({ location }: RegisterProps) => {
         <CSSTransition key={location.pathname} classNames={direction} timeout={500}>
           <Switch location={location}>
             <Route path="/register/set-profile">
-              <ProfileImage values={moreInfoValues} handleChange={handleMoreInfoChange} />
+              <ProfileImage />
             </Route>
             <Route path="/register/more-info">
               <MoreInfo values={moreInfoValues} handleChange={handleMoreInfoChange} errors={moreInfoErrors} flag={moreInfoFlag} handleMoreInfoClick={handleMoreInfoClick} />

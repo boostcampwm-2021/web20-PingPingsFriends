@@ -5,7 +5,7 @@ interface useReadFileURLProps {
 }
 
 const useReadFileURL = ({ file }: useReadFileURLProps) => {
-  const [imageURL, setImageURL] = useState<string | null>(null);
+  const [imageURL, setImageURL] = useState<string>('');
 
   useEffect(() => {
     const fileReader = new FileReader();

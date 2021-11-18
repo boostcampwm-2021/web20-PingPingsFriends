@@ -1,19 +1,38 @@
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import { ReactComponent as PhotoCameraSvg } from '@assets/icons/photo_camera.svg';
 import defaultImage from '@assets/images/default_avatar.png';
-import { InfoData } from '@components/Register/Register';
 import useReadFileURL from '@hooks/useReadFileURL';
+import Button from '@components/Button/Button';
+import useFlag from '@components/Register/useFlag';
 
-interface MoreInfoProps {
-  values: InfoData;
-  handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
-}
-
-const ProfileImage = ({ values, handleChange }: MoreInfoProps) => {
-  const { profile } = values;
+const ProfileImage = () => {
+  const [profile, setProfile] = useState<File | null>(null);
   const imageURL = useReadFileURL({ file: profile });
+  const flag = useFlag(imageURL);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (e.target.id === 'profile') {
+      const target = e.target as HTMLInputElement;
+      const file = target.files![0];
+      setProfile(file);
+      return;
+    }
+  };
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    if (target.classList.contains('cancel-button')) {
+      console.log('go home');
+      // history.push('/');
+      return;
+    }
+    if (flag && target.classList.contains('confirm-button')) {
+      //todo: fetch profile-image
+      console.log('profile image fetch 보내기 & home');
+      // history.push('/');
+    }
+  };
 
   return (
     <ProfileImageBlock>
@@ -29,6 +48,13 @@ const ProfileImage = ({ values, handleChange }: MoreInfoProps) => {
         </FileInsertLabel>
         <FileInput id="profile" type="file" accept="image/*" name="contents" form="write" onChange={handleChange} />
       </Form>
+      자신을 잘 나타내는 이미지를 골라주세요
+      <ButtonContainer onClick={handleClick}>
+        <Button className={'cancel-button'} borderColor={'none'}>
+          다음에 할래요!
+        </Button>
+        <Button className={`${flag && 'active'} confirm-button`}>설정</Button>
+      </ButtonContainer>
     </ProfileImageBlock>
   );
 };
@@ -52,7 +78,7 @@ const Header = styled.div`
   }
 `;
 
-const FileInsertLabel = styled.label<{ imageURL?: string | null }>`
+const FileInsertLabel = styled.label<{ imageURL: string }>`
   width: 100px;
   height: 100px;
   border: 1px solid black;
@@ -65,7 +91,7 @@ const FileInsertLabel = styled.label<{ imageURL?: string | null }>`
     padding-bottom: 100%;
     border-radius: 50%;
     content: '';
-    background-image: url(${({ imageURL }) => (imageURL ? imageURL : defaultImage)});
+    background-image: url(${({ imageURL }) => (imageURL.length ? imageURL : defaultImage)});
     background-size: cover;
     display: block;
   }
@@ -93,4 +119,10 @@ const Form = styled.form`
   & > * {
     margin: 20px;
   }
+`;
+
+const ButtonContainer = styled.div`
+  ${flexBox('space-between', 'center')};
+  margin-top: 100px;
+  width: 100%;
 `;
