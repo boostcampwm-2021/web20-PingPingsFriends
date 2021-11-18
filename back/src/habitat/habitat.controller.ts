@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 
 @Controller('habitat')
@@ -24,9 +24,8 @@ export class HabitatController {
     summary: '서식지 랜덤 pk 반환 API',
     description: '랜덤으로 서식지 pk값을 반환',
   })
-  getRandomHabitat(
-    @Query('currentId', ParseIntPipe) currentId: number
-  ) {
+  @ApiCreatedResponse({ description: '랜덤서식지10개 배열반환.' })
+  getRandomHabitat(@Query('currentId', ParseIntPipe) currentId: number) {
     return this.habitatService.getRandomHabitat(currentId);
   }
 
@@ -53,9 +52,7 @@ export class HabitatController {
     summary: '서식지 정보 반환 API',
     description: '서식지 id로 서식지 정보 반환',
   })
-  getHabitatInfo(
-    @Param('habitatId', ParseIntPipe) habitatId: number
-  ) {
+  getHabitatInfo(@Param('habitatId', ParseIntPipe) habitatId: number) {
     return this.habitatService.getHabitatInfo(habitatId);
   }
 }

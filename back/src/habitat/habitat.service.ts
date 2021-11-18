@@ -13,14 +13,8 @@ export class HabitatService {
     private readonly userRepository: UserRepository
   ) {}
 
-  createHabitat(
-    createHabitatDto: CreateHabitatDto,
-    leaderId: number
-  ) {
-    return this.habitatRepository.createHabitat(
-      createHabitatDto,
-      leaderId
-    );
+  createHabitat(createHabitatDto: CreateHabitatDto, leaderId: number) {
+    return this.habitatRepository.createHabitat(createHabitatDto, leaderId);
   }
 
   getHabitatList({ skip, take }: PaginationQueryDto) {
@@ -28,28 +22,25 @@ export class HabitatService {
   }
 
   async getHabitatInfo(habitatId: number) {
-    const habitat = await this.habitatRepository.findOneOrFail(
-      habitatId
-    );
-    const [userCnt, postCnt, recentThreeUser] = await Promise.all([
+    const habitat = await this.habitatRepository.findOneOrFail(habitatId);
+    const [userCnt, postCnt, recentUsers, leader] = await Promise.all([
       this.userRepository.count({ habitat }),
       this.postRepository.count({ habitat }),
-      this.postRepository.find({
-        take: 3,
-        order: { createdAt: 'DESC' },
-        select: ['userId', 'createdAt'],
-      }),
+      this.postRepository.selectTopPostUserInfo(3),
+      this.userRepository.selectUserInfo(habitat.leaderId),
     ]);
     return {
-      leaderId: habitat.leaderId,
+      habitat,
+      leader: leader.length ? leader[0] : null,
       userCnt,
       postCnt,
-      recentThreeUser,
-      lastActTime: recentThreeUser[0].createdAt,
+      recentUsers,
+      lastActTime: recentUsers[0].createdAt,
     };
   }
 
-  getRandomHabitat(currentId: number) {
-    return this.habitatRepository.selectRandomHabitat(currentId);
+  async getRandomHabitat(currentId: number) {
+    const result = await this.habitatRepository.selectRandomHabitat(currentId);
+    return result.map(({ id }) => id);
   }
 }
