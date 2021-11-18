@@ -24,11 +24,14 @@ export class CommentsService {
     return this.commentRepository.removeComment(id);
   }
 
-  getCommentList({ lastId, postId, limit }: CursorPaginationDto) {
-    return this.commentRepository.selectCommentListByCursor(lastId);
+  getCommentList(query: CursorPaginationDto) {
+    const { postId, limit } = query;
+    return query.lastId === undefined
+      ? this.commentRepository.find({ where: { postId }, take: limit })
+      : this.commentRepository.selectCommentListByCursor(query.lastId, postId, limit);
   }
 
-  getCommentAll(postId: number){
+  getCommentAll(postId: number) {
     return this.commentRepository.findAll(postId);
   }
 }
