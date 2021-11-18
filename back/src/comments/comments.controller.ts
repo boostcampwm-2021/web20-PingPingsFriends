@@ -8,7 +8,10 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -36,7 +39,12 @@ export class CommentsController {
     summary: '댓글 수정 API',
     description: '게시물 댓글을 수정한다.',
   })
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateCommentDto: UpdateCommentDto) {
+  @UseGuards(AuthGuard('jwt'))
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @Req() req
+  ) {
     return this.commentsService.updateComment(id, updateCommentDto);
   }
 
@@ -52,7 +60,8 @@ export class CommentsController {
   @Get('cursor') //댓글 커서 페이지네이션
   @ApiOperation({
     summary: '댓글 리스트 반환 cursor pagination API',
-    description: '게시물(postId)의 특정 댓글(lastId)부터 특정 개수(limit)를 반환하는 API',
+    description:
+      '게시물(postId)의 특정 댓글(lastId)부터 특정 개수(limit)를 반환하는 API, 처음 요청시 lastId를 비우면 된다.',
   })
   getCommentList(@Query() query: CursorPaginationDto) {
     return this.commentsService.getCommentList(query);

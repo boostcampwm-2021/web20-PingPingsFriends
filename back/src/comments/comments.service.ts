@@ -27,7 +27,7 @@ export class CommentsService {
   getCommentList(query: CursorPaginationDto) {
     const { postId, limit } = query;
     return query.lastId === undefined
-      ? this.commentRepository.find({ where: { postId }, take: limit })
+      ? this.commentRepository.selectCommentListFirst(postId, limit)
       : this.commentRepository.selectCommentListByCursor(query.lastId, postId, limit);
   }
 
