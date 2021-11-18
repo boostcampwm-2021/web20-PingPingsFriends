@@ -1,14 +1,10 @@
+import FileDto from 'common/dto/transformFileDto';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
-
-interface FileDto extends Express.Multer.File {
-  location: string;
-  mimetype: string;
-}
 
 export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
   const contentsInfos = files.map((v: FileDto, i: number) => {
     return {
-      url: v.location,
+      url: v.transforms[0].location,
       mimeType: v.mimetype,
     };
   });

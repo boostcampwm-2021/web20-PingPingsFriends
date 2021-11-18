@@ -18,6 +18,8 @@ import multerOption from 'config/s3.config';
 import { ParseUsernamePipe } from 'pipes/validation-sign-up.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
+import { multerUserOption } from 'config/s3.config';
+import { ParseUsernamePipe } from 'common/pipes/validation-sign-up.pipe';
 
 @ApiTags('users')
 @Controller('users')
@@ -41,7 +43,7 @@ export class UsersController {
   }
 
   @Post('register')
-  @UseInterceptors(FileInterceptor('upload', multerOption))
+  @UseInterceptors(FileInterceptor('upload', multerUserOption))
   register(
     @Body(ParseUsernamePipe) createUserDto: CreateUserDto,
     @UploadedFile() image: Express.MulterS3.File

@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { InfoData, UserData } from '@components/Register/Register';
 
-const TEXT = {
-  NEXT: '다음',
-  BACK: '뒤로 가기',
-  REGISTER: '가입',
-};
+enum TEXT {
+  NEXT = '다음',
+  BACK = '뒤로 가기',
+  REGISTER = '가입',
+}
 type SlideDirection = 'right' | 'left' | '';
 
-const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean) => {
+const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: UserData, infoData: InfoData) => {
   const history = useHistory();
-  const location = useLocation();
   const [direction, setDirection] = useState<SlideDirection>('');
 
   const handleAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -22,7 +22,7 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean) => {
       return;
     }
     if (target.innerHTML === TEXT.BACK) {
-      history.goBack();
+      history.push('/');
     }
   };
 
@@ -34,14 +34,15 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean) => {
       return;
     }
     if (target.innerHTML === TEXT.REGISTER && moreInfoFlag) {
-      // todo: something
+      //todo: fetch userData, infoData
+      history.push(`/register/set-profile`);
       return;
     }
   };
 
   const movePage = useCallback(() => {
     if (direction === 'right') {
-      history.push(`${location.pathname}/more-info`);
+      history.push(`/register/more-info`);
       return;
     }
     if (direction === 'left') {
