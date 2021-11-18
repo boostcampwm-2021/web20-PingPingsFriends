@@ -10,6 +10,8 @@ import {
   UseInterceptors,
   UploadedFiles,
   ParseIntPipe,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -17,9 +19,10 @@ import { getPartialFilesInfo } from 'utils/s3.util';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PatchPostRequestDto } from './dto/patchPostRequestDto';
 import { multerTransFormOption } from 'config/s3.config';
-import { ApiBody, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetPostResponseDto } from './dto/getPostResponse.dto';
 import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -31,14 +34,17 @@ export class PostController {
     summary: '게시글 작성',
     description: '게시글을 작성하는 api입니다.',
   })
+  @ApiConsumes('multipart/form-data')
   @Post()
   @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  @UseGuards(AuthGuard('jwt'))
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
-    @UploadedFiles() files: Express.Multer.File[]
+    @UploadedFiles() files: Express.Multer.File[],
+    @Req() req
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return await this.postService.create(createPostDto, contentsInfos);
+    return await this.postService.create(createPostDto, contentsInfos, req.user.userId);
   }
 
   @ApiOperation({
@@ -67,6 +73,7 @@ export class PostController {
   }
 
   @ApiBody({ type: PatchPostRequestDto })
+  @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ type: Boolean })
   @ApiOperation({
     summary: '게시글 수정',
@@ -74,6 +81,7 @@ export class PostController {
   })
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  @UseGuards(AuthGuard('jwt'))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
@@ -88,6 +96,7 @@ export class PostController {
     summary: '게시물 삭제',
     description: '게시물을 삭제하는 api입니다.',
   })
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postService.remove(id);
