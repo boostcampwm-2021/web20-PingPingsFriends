@@ -16,30 +16,37 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
+  @ApiProperty()
   @PrimaryGeneratedColumn({ name: 'user_id' })
   id: number;
 
+  @ApiProperty()
   @Column({ length: 20 })
   username: string;
 
   @Column({ length: 70 })
   password: string;
 
+  @ApiProperty()
   @Column({ length: 20 })
   nickname: string;
 
+  @ApiProperty()
   @Column({ name: 'habitat_id', nullable: true })
   habitatId: number;
 
+  @ApiProperty()
   @Column({ name: 'species_id', nullable: true })
   speciesId: number;
 
   @Column({ name: 'contents_id', nullable: true })
   contentsId: number;
 
+  @ApiProperty({ type: () => Content })
   @OneToOne(() => Content, (content) => content.user, { cascade: ['insert'] })
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })
   content: Content;
