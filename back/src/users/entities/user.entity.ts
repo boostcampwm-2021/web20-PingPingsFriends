@@ -31,10 +31,10 @@ export class User {
   @Column({ length: 20 })
   nickname: string;
 
-  @Column({ name: 'habitat_id' })
+  @Column({ name: 'habitat_id', nullable: true })
   habitatId: number;
 
-  @Column({ name: 'species_id' })
+  @Column({ name: 'species_id', nullable: true })
   speciesId: number;
 
   @Column({ name: 'contents_id', nullable: true })
