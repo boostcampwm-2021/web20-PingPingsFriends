@@ -50,6 +50,7 @@ const useSideNavi = (userHabitatId: number) => {
     handlePrevHabitat,
     habitatList,
     historyIdx,
+    setCurHabitatId,
   };
 };
 

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 import HabitatsContainer from './HabitatsContainer';
 import { flexBox, boxShadow } from '@lib/styles/mixin';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { ToggleHandler } from '@common/Modal/useModal';
 
 const HabitatModalDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
@@ -20,18 +20,29 @@ const HabitatSearchDiv = styled.div`
   margin-bottom: 20px;
   input {
     font-size: 30px;
-
     width: 100%;
     height: 100%;
-    padding: 0;
+    padding-left: 10px;
+    border: 1px solid black;
+    border-radius: 8px;
   }
 `;
 
-const HabitatModal = () => {
+export interface ModalHabitat {
+  id: number;
+  name: string;
+  color: string;
+}
+
+interface HabitatModalProps {
+  hide: ToggleHandler;
+}
+
+const HabitatModal = ({ hide }: HabitatModalProps) => {
   //todo: 검색로직에 대해서
   // 1. HabitatModal이 열릴 때 모든 서식지 이름을 다 받아오고 키워드 입력시에 그 데이터를 필터링하기
   // 2. 페이징으로 받아오다가 키워드 입력시 패치 보내기
-  const [habitatInfos, setHabitatInfos] = useState<HabitatInfo[]>([] as HabitatInfo[]);
+  const [habitatInfos, setHabitatInfos] = useState<ModalHabitat[]>([] as ModalHabitat[]);
   const [keyword, setKeyword] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,22 +52,25 @@ const HabitatModal = () => {
   useEffect(() => {
     // todo: fetch로 서식지 목록 받아와야함
     const responseFetch = [
-      // @ts-ignore
-      { name: '강남역 뒷골목', color: '#FACBBA' },
-      // @ts-ignore
-      { name: '서울숲', color: '#ffb1b9' },
-      // @ts-ignore
-      { name: '부산 해운대', color: '#B5E8E2' },
+      { name: '강남역 뒷골목', color: '#FACBBA', id: 1 },
+      { name: '서울숲', color: '#B5E8E2', id: 2 },
+      { name: '부산 해운대', color: '#ffb1b9', id: 0 },
+      { name: '부산 해운대1', color: '#ffb1b9', id: 0 },
+      { name: '부산 해운대2', color: '#8f111e', id: 0 },
+      { name: '부산 해운대3', color: '#164125', id: 0 },
+      { name: '부산 해운대4', color: '#7a6768', id: 0 },
+      { name: '부산 해운대5', color: 'rgba(39,138,199,0.77)', id: 0 },
+      { name: '부산 해운대6', color: '#a320b2', id: 0 },
+      { name: '부산 해운대7', color: '#a320b2', id: 0 },
+      { name: '부산 해운대8', color: '#a320b2', id: 0 },
+      { name: '부산 해운대9', color: '#a320b2', id: 0 },
+      { name: '부산 해운대10', color: '#a320b2', id: 0 },
+      { name: '부산 해운대11', color: '#a320b2', id: 0 },
     ];
 
     if (keyword.length) {
-      // @ts-ignore
       setHabitatInfos(responseFetch.filter((v) => v.name.includes(keyword)));
-      responseFetch.forEach((v) => {
-        console.log(v.name);
-      });
     } else {
-      // @ts-ignore
       setHabitatInfos(responseFetch);
     }
   }, [keyword]);
@@ -64,9 +78,9 @@ const HabitatModal = () => {
   return (
     <HabitatModalDiv>
       <HabitatSearchDiv>
-        <input type="text" value={keyword} onChange={handleChange} />
+        <input type="text" value={keyword} onChange={handleChange} placeholder={'검색어를 입력하세요.'} />
       </HabitatSearchDiv>
-      <HabitatsContainer habitatInfos={habitatInfos} />
+      <HabitatsContainer habitatInfos={habitatInfos} hide={hide} />
     </HabitatModalDiv>
   );
 };

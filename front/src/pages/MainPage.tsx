@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from '@components/Header/Header';
 import FeedContainer from '@components/Feed/FeedContainer';
 import FeedFAB from '@components/Feed/FeedFAB';
@@ -10,6 +10,7 @@ import { Palette } from '@lib/styles/Palette';
 import { flexBox } from '@lib/styles/mixin';
 import useHabitatInfo from '@hooks/useHabitatInfo';
 import MagicNumber from '@src/lib/styles/magic';
+import { useLocation } from 'react-router-dom';
 
 const MainPageBlock = styled.div`
   ${flexBox(null, null, 'column')};
@@ -42,16 +43,23 @@ const EmptyStyleDiv = styled.div<{ color: string | undefined }>`
 `;
 
 const MainPage = () => {
+  const location = useLocation();
   // 비로그인시 userHabitatId == -1
   const [userHabitatId, setUserHabitatId] = useState(-1);
+  const [mode, setMode] = useState<'feed' | 'explore'>('feed');
+  const feedModeRef = useRef<HTMLDivElement>(null);
 
-  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useSideNavi(userHabitatId);
-
+  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx, setCurHabitatId } = useSideNavi(userHabitatId);
   const { habitatInfo } = useHabitatInfo(curHabitatId);
 
-  const [mode, setMode] = useState<'feed' | 'explore'>('feed');
-
-  const feedModeRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const pathHabitatId = +location.pathname.slice(1);
+    if (pathHabitatId === curHabitatId) {
+      return;
+    }
+    setCurHabitatId(pathHabitatId);
+    //todo useHistory(임시) 훅에서 피드 업데이트 요청을 날리면 될듯
+  }, [location]);
 
   const toggleMode = () => {
     if (feedModeRef.current) {

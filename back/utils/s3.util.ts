@@ -1,16 +1,28 @@
-interface fileDto extends Express.Multer.File {
+import { CreateContentDto } from 'src/contents/dto/create-content.dto';
+
+interface FileDto extends Express.Multer.File {
   location: string;
   mimetype: string;
 }
 
 export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
-  const contentsInfos = files.map((v: fileDto, i: number) => {
+  const contentsInfos = files.map((v: FileDto, i: number) => {
     return {
       url: v.location,
       mimeType: v.mimetype,
     };
   });
   return contentsInfos;
+};
+
+export const getPartialFileInfo = (file?: Express.MulterS3.File): CreateContentDto | undefined => {
+  if (!file) return undefined;
+
+  const contentInfo = {
+    url: file.location,
+    mimeType: file.mimetype,
+  };
+  return contentInfo;
 };
 
 // Test code
