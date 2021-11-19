@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { flexBox } from '@lib/styles/mixin';
+import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { useHistory } from 'react-router-dom';
 import { ToggleHandler } from '@common/Modal/useModal';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
@@ -40,11 +40,11 @@ const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
 
   return (
     <HabitatsContainerDiv ref={rootRef}>
-      {habitatInfos.map((habitatInfo) => 
-      <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick} className={'modal-close-button'}>
-      {habitatInfo.name}
-    </HabitatBlockDiv>
-    )}
+      {habitatInfos.map((habitatInfo) => (
+        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick} className={'modal-close-button'}>
+          {habitatInfo.name}
+        </HabitatBlockDiv>
+      ))}
       <div ref={observerRef} />
     </HabitatsContainerDiv>
   );
@@ -53,6 +53,7 @@ const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
 export default HabitatsContainer;
 
 const HabitatsContainerDiv = styled.div`
+  ${prettyScroll()};
   display: grid;
   grid-template-columns: 1fr 1fr;
   justify-items: center;

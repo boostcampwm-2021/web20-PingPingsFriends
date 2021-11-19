@@ -22,39 +22,15 @@ const HabitatModal = ({ hide }: HabitatModalProps) => {
     setKeyword(e.target.value);
   };
 
-  const fetchHabitats = async () => {
-    const response: Response = await fetch(`${Config.BACK_HOST}/api/habitat`);
-    const habitats: HabitatLists = await response.json();
-    setHabitatInfos(habitats);
-    return Promise;
-  };
-
   useEffect(() => {
     fetchHabitats();
-    // todo: fetch로 서식지 목록 받아와야함
-    // const habtatis = fetchHabitats();
-    const responseFetch = [
-      { name: '강남역 뒷골목', color: '#FACBBA', id: 1 },
-      { name: '서울숲', color: '#B5E8E2', id: 2 },
-      { name: '부산 해운대', color: '#ffb1b9', id: 0 },
-      { name: '부산 해운대1', color: '#ffb1b9', id: 0 },
-      { name: '부산 해운대2', color: '#8f111e', id: 0 },
-      { name: '부산 해운대3', color: '#164125', id: 0 },
-      { name: '부산 해운대4', color: '#7a6768', id: 0 },
-      { name: '부산 해운대5', color: 'rgba(39,138,199,0.77)', id: 0 },
-      { name: '부산 해운대6', color: '#a320b2', id: 0 },
-      { name: '부산 해운대7', color: '#a320b2', id: 0 },
-      { name: '부산 해운대8', color: '#a320b2', id: 0 },
-      { name: '부산 해운대9', color: '#a320b2', id: 0 },
-      { name: '부산 해운대10', color: '#a320b2', id: 0 },
-      { name: '부산 해운대11', color: '#a320b2', id: 0 },
-    ];
 
-    // if (keyword.length) {
-    //   setHabitatInfos(responseFetch.filter((v) => v.name.includes(keyword)));
-    // } else {
-    //   setHabitatInfos(responseFetch);
-    // }
+    async function fetchHabitats() {
+      const response: Response = await fetch(`${Config.BACK_HOST}/api/habitat`);
+      const habitats: HabitatLists = await response.json();
+      setHabitatInfos(habitats);
+      return Promise;
+    }
   }, [keyword]);
 
   return (
