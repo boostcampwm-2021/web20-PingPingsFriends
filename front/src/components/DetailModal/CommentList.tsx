@@ -1,5 +1,4 @@
-import { flexBox, prettyScroll } from '@src/lib/styles/mixin';
-import { Palette } from '@src/lib/styles/Palette';
+import { prettyScroll } from '@src/lib/styles/mixin';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Comment from './Comment';
@@ -36,7 +35,7 @@ const dummy_comment = [
 ];
 
 interface CommentListProps {
-  feedId: string | undefined;
+  feedId: number;
   toggleEditMode: (text: string) => void;
 }
 

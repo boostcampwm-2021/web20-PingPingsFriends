@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Header from '@components/Header/Header';
 import FeedContainer from '@components/Feed/FeedContainer';
 import FeedFAB from '@components/Feed/FeedFAB';
@@ -11,12 +11,9 @@ import { flexBox } from '@lib/styles/mixin';
 import useHabitatInfo from '@hooks/useHabitatInfo';
 import MagicNumber from '@src/lib/styles/magic';
 import { useLocation } from 'react-router-dom';
-import { useUserState, useUserDispatch, User } from '@src/contexts/UserContext';
-
-const DEFAULT_HABITAT = 2;
-
+import { useUserState, useUserDispatch } from '@src/contexts/UserContext';
 const MainPage = () => {
-  // const location = useLocation();
+  const location = useLocation();
   // 비로그인시 userHabitatId == -1
 
   const userState = useUserState();
@@ -62,7 +59,7 @@ const MainPage = () => {
           {
             feed: (
               <>
-                <FeedContainer habitatInfo={habitatInfo} />
+                <FeedContainer habitatInfo={habitatInfo} curHabitatId={curHabitatId} />
                 <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
                 <HabitatPreview habitat={habitatList[historyIdx + 1]} onClick={handleNextHabitat} side={'right'} />
                 <HabitatPreview habitat={habitatList[historyIdx - 1]} onClick={handlePrevHabitat} side={'left'} />

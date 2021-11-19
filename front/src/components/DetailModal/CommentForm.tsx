@@ -27,7 +27,7 @@ const SubmitBtn = styled.button<{ isActive: boolean }>`
 `;
 
 interface CommentFormProps {
-  feedId: string | undefined;
+  feedId: number;
   editMode: boolean;
   setInputText: React.Dispatch<React.SetStateAction<string>>;
   inputText: string;

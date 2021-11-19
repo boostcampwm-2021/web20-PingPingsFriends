@@ -25,27 +25,9 @@ const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   z-index: 1;
 `;
 
-export interface Unsplash {
-  id: string;
-  created_at: string;
-  urls: {
-    raw: string;
-    regular: string;
-    full: string;
-    thumb: string;
-    small: string;
-  };
-  description: string;
-  user: {
-    username: string;
-    profile_image: {
-      small: string;
-    };
-  };
-}
-
 interface FeedScrollBoxProps {
   habitatInfo: HabitatInfo | undefined;
+  curHabitatId: number;
 }
 
 const callback: IntersectionObserverCallback = (entries, observer) => {
@@ -58,20 +40,29 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
   });
 };
 
-const FeedContainer = ({ habitatInfo }: FeedScrollBoxProps) => {
-  const { feeds, offset, height, handleScroll } = useScroll();
+const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
+  const { feeds, offset, height, handleScroll } = useScroll(curHabitatId);
   const [root, rootRef] = useGetDiv();
   const lazy = useIntersectionObserver(callback, {
     root: root,
     rootMargin: '300px 0px',
   });
-
   return (
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={rootRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
           {feeds.map((feed) => (
-            <Feed key={feed.id} feedId={feed.id} nickname={feed.nickname} imageURLs={feed.imageURLs} text={feed.text} lazy={lazy} />
+            <Feed
+              key={feed.post_id}
+              feedId={feed.user_id}
+              nickname={feed.nickname}
+              imageURLs={feed.contents_url_array}
+              text={feed.human_content}
+              createdTime={feed.created_at}
+              numOfHearts={feed.numOfHearts}
+              is_heart={feed.is_heart}
+              lazy={lazy}
+            />
           ))}
         </ViewPort>
       </ScrollContainer>
