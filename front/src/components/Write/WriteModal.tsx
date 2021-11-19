@@ -38,23 +38,24 @@ const WriteModal = ({ hide }: WriteModalProps) => {
   };
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e);
     if (!isValid) return;
     const data = new FormData();
-    data.append('text', text);
-    contents.forEach((content) => data.append('contents', content));
+    data.append('humanContent', text);
+    data.append('animalContent', text);
+    data.append('habitatId', (userState.data?.habitatId as number).toString());
+    contents.forEach((content) => data.append('upload', content));
     const form = e.target as HTMLFormElement;
 
     try {
       if (!userState.data) {
         return;
       }
-      const response: Response = await fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${userState.data.accessToken}` }, body: data });
+      const response: Response = await fetch(form.action, { method: 'POST', headers: { Authorization: `Bearer ${userState.data.accessToken}` }, body: data });
       const result = await response.json();
-      console.log(result);
 
       if (result) {
         // 글쓰기 성공
+        hide('off');
       } else {
         // 글쓰기 실패
       }
@@ -97,7 +98,7 @@ const WriteModal = ({ hide }: WriteModalProps) => {
           ({text.length}/{MAX_TEXT})
         </TextIndicatorP>
         <ValidInfoP>{isValid ? '' : '사진과 글은 필수입니다!'}</ValidInfoP>
-        <SubmitBtn type={'submit'} valid={isValid} className={'modal-close-button'}>
+        <SubmitBtn type={'submit'} valid={isValid}>
           <PetBtnSvg />
           <p>Done</p>
         </SubmitBtn>
