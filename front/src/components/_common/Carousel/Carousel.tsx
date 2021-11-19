@@ -41,11 +41,10 @@ const Carousel = ({ imageURLs, children, lazy }: CarouselProps) => {
             <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} lazy={lazy} />
           ))}
         </CarouselContents>
-
         {imageURLs.length > 1 && (
           <>
-            {slideIndex === 0 && <Arrow direction={'right'} handleClick={nextSlide} />}
-            {slideIndex === imageURLs.length - 1 && <Arrow direction={'left'} handleClick={prevSlide} />}
+            {slideIndex !== 0 && <Arrow direction={'left'} handleClick={prevSlide} />}
+            {slideIndex !== imageURLs.length - 1 && <Arrow direction={'right'} handleClick={nextSlide} />}
             <Dots slides={imageURLs} slideIndex={slideIndex} />
           </>
         )}
