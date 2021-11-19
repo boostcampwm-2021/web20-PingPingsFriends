@@ -15,6 +15,9 @@ const useForm = <T>(initialValues: T, validations: Validations<T>) => {
   const [errors, setErrors] = useState<ErrorType<T>>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (e.target.value[e.target.value.length - 1] === ' ') {
+      return;
+    }
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
