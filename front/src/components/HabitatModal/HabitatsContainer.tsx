@@ -34,8 +34,8 @@ const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
-    history.push(`${target.dataset.id}`);
-    hide(e);
+    history.push(`/?habitat=${target.dataset.id}`);
+    hide('off');
   };
 
   return (
