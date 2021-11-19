@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 import { boxShadow } from '@src/lib/styles/mixin';
@@ -56,11 +56,29 @@ const DropBoxDiv = styled.div<any>`
 
 const DropBox = ({ start, offset, top, width, items, children }: DropBoxProps) => {
   const [isDropped, setDrop] = useState(false);
+  const dropboxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isDropped) {
+      dropboxRef.current?.focus();
+    }
+  }, [isDropped]);
+
   return (
     <>
       {React.cloneElement(children, { onClick: () => setDrop(!isDropped) })}
       {isDropped ? (
-        <DropBoxDiv start={start} offset={offset} top={top} width={width}>
+        <DropBoxDiv
+          ref={dropboxRef}
+          tabIndex={-1}
+          onBlur={() => {
+            setDrop(false);
+          }}
+          start={start}
+          offset={offset}
+          top={top}
+          width={width}
+        >
           {items}
         </DropBoxDiv>
       ) : null}
