@@ -12,7 +12,7 @@ const ModalDiv = styled.div`
   left: 0;
   top: 0;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 2;
+  z-index: 10;
 `;
 
 const ContentsDiv = styled.div`
