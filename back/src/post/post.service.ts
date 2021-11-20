@@ -78,14 +78,14 @@ export class PostService {
     return `
     select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.url as user_image_url
     , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.mime_type) as post_contents_types
-    , count(h.post_id) as numOfHearts
+    , (select count(*) from heart where post_id = p.post_id) as numOfHearts
+    , (select count(*) from comment where post_id = p.post_id) as numOfComments
     , if((select count(*) from heart where post_id = p.post_id and user_id = ?), true, false) as is_heart
     from post p
-    left join user u on u.user_id = p.user_id
-    left join contents c on c.contents_id = u.contents_id
-    left join post_contents pc on pc.post_id = p.post_id
-    left join contents pcc on pc.contents_id = pcc.contents_id
-    left join heart h on h.post_id = p.post_id
+    inner join user u on u.user_id = p.user_id
+    inner join contents c on c.contents_id = u.contents_id
+    inner join post_contents pc on pc.post_id = p.post_id
+    inner join contents pcc on pc.contents_id = pcc.contents_id
     `;
   }
 
