@@ -14,6 +14,7 @@ const databaseConfig: TypeOrmModuleOptions = {
   // autoLoadEntities: true,
   synchronize: false,
   logging: true,
+  timezone: 'KST',
 };
 
 export default databaseConfig;
