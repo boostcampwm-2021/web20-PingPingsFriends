@@ -12,7 +12,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 
-import { ApiTags, ApiOperation, ApiCreatedResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiCreatedResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { userResponseDto } from './dto/userResponseDto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,8 +31,9 @@ import FileDto from 'common/dto/transformFileDto';
 import { User } from './entities/user.entity';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { FileUploadDto } from 'common/dto/file-upload.dto';
 
-@ApiTags('users')
+@ApiTags('유저 API')
 @Controller('users')
 export class UsersController {
   constructor(
@@ -46,16 +54,19 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @ApiBody({
-    type: RegisterUserDto,
+  @Post('register')
+  @ApiBody({ type: RegisterUserDto })
+  @ApiOperation({
+    summary: '회원 가입',
+    description: '회원 가입하는 api입니다.',
   })
   @ApiConsumes('multipart/form-data')
-  @Post('register')
   @UseInterceptors(FileInterceptor('upload', multerUserOption))
   register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image: FileDto) {
     return this.usersService.create(createUserDto, image);
   }
 
+  @Post('login')
   @ApiOperation({
     summary: '유저 로그인',
     description: '유저가 로그인하는 api입니다.',
@@ -66,7 +77,6 @@ export class UsersController {
     type: User,
   })
   @UseGuards(AuthGuard('local'))
-  @Post('login')
   async login(@Request() req) {
     console.log(req.user.id);
     const { accessToken } = await this.authService.login(req.user);
@@ -75,11 +85,14 @@ export class UsersController {
     return { accessToken, user };
   }
 
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: '사진과 ',
-  })
   @Patch('contents')
+  @ApiOperation({
+    summary: '유저 프로필 사진 변경',
+    description: '유저 프로필 사진을 변경하는 api입니다.',
+  })
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: FileUploadDto })
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('upload', multerUserOption))
   updateImage(@UploadedFile() image: FileDto, @Req() req: any) {

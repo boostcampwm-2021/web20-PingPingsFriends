@@ -11,6 +11,7 @@ async function bootstrap() {
     .setDescription(`The PingPing's friends API description`)
     .setVersion('0.1.0')
     .addTag('pingpings')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
