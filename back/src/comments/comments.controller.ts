@@ -15,7 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { CursorPaginationDto } from '../../common/dto/cursor-pagination.dto';
+import { CommentCursorPaginationDto } from './dto/comments-cursor-pagination.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
 
@@ -66,7 +66,7 @@ export class CommentsController {
     description:
       '게시물(postId)의 특정 댓글(lastId)부터 특정 개수(limit)를 반환하는 API, 처음 요청시 lastId를 비우면 된다.',
   })
-  getCommentList(@Query() query: CursorPaginationDto) {
+  getCommentList(@Query() query: CommentCursorPaginationDto) {
     return this.commentsService.getCommentList(query);
   }
 

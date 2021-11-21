@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CursorPaginationDto } from 'common/dto/cursor-pagination.dto';
 import { CreateSpeciesDto } from './dto/create-species.dto';
 import { UpdateSpeciesDto } from './dto/update-species.dto';
 import { Species } from './entities/species.entity';
@@ -19,7 +20,7 @@ export class SpeciesService {
     return this.speciesRepository.save(species);
   }
 
-  findAll() {
+  getSpeciestList(query: CursorPaginationDto) {
     return `This action returns all species`;
   }
 }
