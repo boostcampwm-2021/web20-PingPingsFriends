@@ -6,9 +6,5 @@ export class CursorPaginationDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  postId: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
   limit: number;
 }

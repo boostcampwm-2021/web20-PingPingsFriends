@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CursorPaginationDto } from 'common/dto/cursor-pagination.dto';
 import { CreateSpeciesDto } from './dto/create-species.dto';
-import { UpdateSpeciesDto } from './dto/update-species.dto';
 import { Species } from './entities/species.entity';
 import { SpeciesRepository } from './species.repository';
 
@@ -21,6 +20,9 @@ export class SpeciesService {
   }
 
   getSpeciestList(query: CursorPaginationDto) {
-    return `This action returns all species`;
+    const { limit } = query;
+    return query.lastId === undefined
+      ? this.speciesRepository.selectSpeciesListFirst(limit)
+      : this.speciesRepository.selectSpeciesListByCursor(query.lastId, limit);
   }
 }
