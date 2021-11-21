@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FollowService } from './follow.service';
 
 @Controller('follow')
-@ApiTags('좋아요 API')
+@ApiTags('팔로우 API')
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
 
