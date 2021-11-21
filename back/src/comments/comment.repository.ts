@@ -13,20 +13,17 @@ export class CommentRepository extends Repository<Comment> {
     comment.userId = userId;
     comment.content = content;
     const result = await this.save(comment);
-    console.log(result);
     return result;
   }
 
   async updateComment(id: number, updateCommentDto: UpdateCommentDto): Promise<UpdateResult> {
     const { content } = updateCommentDto;
     const result = await this.update(id, { content });
-    console.log(result);
     return result;
   }
 
   async removeComment(id: number): Promise<DeleteResult> {
     const result = await this.delete(id);
-    console.log(result);
     return result;
   }
 
