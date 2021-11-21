@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSpeciesDto } from './dto/create-species.dto';
 import { UpdateSpeciesDto } from './dto/update-species.dto';
+import { SpeciesRepository } from './species.repository';
 
 @Injectable()
 export class SpeciesService {
+  constructor(
+    @InjectRepository(SpeciesRepository)
+    private speciesRepository: SpeciesRepository
+  ) {}
   create(createSpeciesDto: CreateSpeciesDto) {
     return 'This action adds a new species';
   }
