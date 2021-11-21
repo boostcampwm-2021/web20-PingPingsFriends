@@ -10,7 +10,7 @@ export class Follow {
 
   @PrimaryColumn({ name: 'followed_id' })
   @ApiProperty()
-  followedid: number;
+  followedId: number;
 
   @ApiProperty()
   @CreateDateColumn({ name: 'created_at' })
