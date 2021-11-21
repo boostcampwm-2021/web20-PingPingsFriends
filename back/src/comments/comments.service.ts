@@ -12,8 +12,8 @@ export class CommentsService {
     private commentRepository: CommentRepository
   ) {}
 
-  createComment(createCommentDto: CreateCommentDto) {
-    return this.commentRepository.createComment(createCommentDto);
+  createComment(createCommentDto: CreateCommentDto, userId: number) {
+    return this.commentRepository.createComment(createCommentDto, userId);
   }
 
   updateComment(id: number, updateCommentDto: UpdateCommentDto) {

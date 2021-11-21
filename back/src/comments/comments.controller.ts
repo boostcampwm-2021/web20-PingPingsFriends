@@ -29,9 +29,11 @@ export class CommentsController {
     summary: '댓글 추가 API',
     description: '게시물에 댓글을 추가한다.',
   })
+  @UseGuards(AuthGuard('jwt'))
   @ApiCreatedResponse({ description: '댓글 생성', type: Comment })
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.createComment(createCommentDto);
+  create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
+    console.log(req);
+    return this.commentsService.createComment(createCommentDto, req.user.userId);
   }
 
   @Patch(':id') //댓글 수정
@@ -53,7 +55,8 @@ export class CommentsController {
     summary: '댓글 삭제 API',
     description: '게시물 댓글을 삭제한다.',
   })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @UseGuards(AuthGuard('jwt'))
+  remove(@Param('id', ParseIntPipe) id: number, @Req() req) {
     return this.commentsService.removeComment(id);
   }
 

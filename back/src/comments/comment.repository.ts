@@ -6,12 +6,11 @@ import { Comment } from './entities/comment.entity';
 @EntityRepository(Comment)
 export class CommentRepository extends Repository<Comment> {
   //db 접근로직
-  async createComment(createCommentDto: CreateCommentDto): Promise<Comment> {
+  async createComment(createCommentDto: CreateCommentDto, userId: number): Promise<Comment> {
     const { post_id, content } = createCommentDto;
-
     const comment = new Comment();
     comment.postId = post_id;
-    comment.userId = 1;
+    comment.userId = userId;
     comment.content = content;
     const result = await this.save(comment);
     console.log(result);
