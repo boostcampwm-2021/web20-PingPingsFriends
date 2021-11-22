@@ -10,7 +10,7 @@ export class AuthService {
   async validateUser(beforeUsername: string, beforePassword: string) {
     const user = await this.userRepository.findOne({ username: beforeUsername });
 
-    if (!user || !compare(beforePassword, user.password)) return null;
+    if (!user || !(await compare(beforePassword, user.password))) return null;
 
     const result = {
       id: user.id,
