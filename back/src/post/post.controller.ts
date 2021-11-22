@@ -26,12 +26,14 @@ import {
   ApiCreatedResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { GetPostResponseDto } from './dto/getPostResponse.dto';
 import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import FileDto from 'common/dto/transformFileDto';
+import { GetPostListResponseDto } from './dto/getPostListResponse.dto';
 
 @ApiTags('게시물 API')
 @Controller('posts')
@@ -62,6 +64,7 @@ export class PostController {
     summary: '게시글 리스트 조회',
     description: '페이지 별 게시글 리스트를 조회하는 api입니다.',
   })
+  @ApiQuery({ name: 'lastPostId', type: 'number', required: false })
   async findAll(
     @Param('habitatId', ParseIntPipe) habitatId: number,
     @Query('lastPostId', ParseOptionalIntPipe) lastPostId?: number

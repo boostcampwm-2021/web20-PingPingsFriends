@@ -5,13 +5,14 @@ import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { Connection } from 'typeorm';
+import { convertStringToNumber } from 'utils/value-converter.util';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PatchPostRequestDto } from './dto/patchPostRequestDto';
 import { Post } from './entities/post.entity';
 import { PostRepository } from './post.repository';
 
 const LIMIT_NUMBER = 10;
-const USER_ID = 1;
+const USER_ID = 12;
 
 @Injectable()
 export class PostService {
@@ -27,9 +28,17 @@ export class PostService {
 
   async findAll(habitatId: number, lastPostId?: number) {
     if (!lastPostId) {
-      return await this.getFirstPage(habitatId, USER_ID);
+      const result = await this.getFirstPage(habitatId, USER_ID);
+      result.posts.forEach((post) =>
+        convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
+      );
+      return result;
     } else {
-      return await this.getNextPage(habitatId, USER_ID, lastPostId);
+      const result = await this.getNextPage(habitatId, USER_ID, lastPostId);
+      result.posts.forEach((post) =>
+        convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
+      );
+      return result;
     }
   }
 
@@ -45,10 +54,7 @@ export class PostService {
       LIMIT_NUMBER,
     ]);
 
-    const lastPostId = posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].post_id : null;
-
-    if (lastPostId) return { posts, lastPostId };
-    else return { posts };
+    return { posts };
   }
 
   async getNextPage(habitatId: number, userId: number, oldLastPostId: number) {
@@ -67,11 +73,7 @@ export class PostService {
       LIMIT_NUMBER,
     ]);
 
-    const currentLastPostId =
-      posts.length === LIMIT_NUMBER ? posts[LIMIT_NUMBER - 1].post_id : null;
-
-    if (currentLastPostId) return { posts, lastPostId: currentLastPostId };
-    else return { posts };
+    return { posts };
   }
 
   private getBaseQuery() {
@@ -80,7 +82,7 @@ export class PostService {
     , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.mime_type) as post_contents_types
     , (select count(*) from heart where post_id = p.post_id) as numOfHearts
     , (select count(*) from comment where post_id = p.post_id) as numOfComments
-    , if((select count(*) from heart where post_id = p.post_id and user_id = ?), true, false) as is_heart
+    , (select count(*) from heart where post_id = p.post_id and user_id = ?) as is_heart
     from post p
     inner join user u on u.user_id = p.user_id
     inner join contents c on c.contents_id = u.contents_id
