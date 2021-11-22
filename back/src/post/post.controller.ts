@@ -72,6 +72,19 @@ export class PostController {
     return await this.postService.findAll(habitatId, lastPostId);
   }
 
+  @Get('users/:userId')
+  @ApiOperation({
+    summary: '유저 게시글 리스트 조회',
+    description: '특정 유저의 게시글 리스트를 조회하는 api입니다.',
+  })
+  @ApiQuery({ name: 'lastId', required: false })
+  async findAllByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query('lastId', ParseOptionalIntPipe) lastId?: number
+  ) {
+    return await this.postService.findAllByUserId(userId, lastId);
+  }
+
   @Get(':id')
   @ApiOperation({
     summary: '특정 게시글 조회',

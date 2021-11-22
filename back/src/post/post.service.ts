@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
+import { Heart } from 'src/hearts/entities/heart.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { Connection } from 'typeorm';
 import { convertStringToNumber } from 'utils/value-converter.util';
@@ -40,6 +41,23 @@ export class PostService {
       );
       return result;
     }
+  }
+
+  async findAllByUserId(userId: number, lastId?: number) {
+    return await this.postRepository
+      .createQueryBuilder('post')
+      .select('post.id', 'postId')
+      .innerJoin('post.postContents', 'postContents')
+      .innerJoin('postContents.content', 'content')
+      .addSelect('min(content.url)', 'url')
+      .addSelect(
+        (qb) => qb.select('count(*)').from(Heart, 'heart').where('heart.postId = post.id'),
+        'numOfHearts'
+      )
+      .where('post.userId = :userId', { userId })
+      .groupBy('post.id')
+      .orderBy('post.id', 'DESC')
+      .getRawMany();
   }
 
   async getFirstPage(habitatId: number, userId: number) {
