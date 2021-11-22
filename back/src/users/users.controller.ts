@@ -55,12 +55,12 @@ export class UsersController {
   }
 
   @Post('register')
-  @ApiBody({ type: RegisterUserDto })
   @ApiOperation({
     summary: '회원 가입',
     description: '회원 가입하는 api입니다.',
   })
   @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: RegisterUserDto })
   @UseInterceptors(FileInterceptor('upload', multerUserOption))
   register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image: FileDto) {
     return this.usersService.create(createUserDto, image);
@@ -90,7 +90,7 @@ export class UsersController {
     summary: '유저 프로필 사진 변경',
     description: '유저 프로필 사진을 변경하는 api입니다.',
   })
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
   @UseGuards(AuthGuard('jwt'))

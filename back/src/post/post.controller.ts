@@ -43,11 +43,11 @@ export class PostController {
     summary: '게시글 작성',
     description: '게시글을 작성하는 api입니다.',
   })
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreatePostDto })
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
     @UploadedFiles() files: FileDto[],
@@ -84,12 +84,12 @@ export class PostController {
     summary: '게시글 수정',
     description: '게시글을 수정하는 api입니다.',
   })
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: PatchPostRequestDto })
   @ApiCreatedResponse({ type: Boolean })
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
@@ -104,9 +104,9 @@ export class PostController {
     summary: '게시물 삭제',
     description: '게시물을 삭제하는 api입니다.',
   })
-  @ApiBearerAuth()
-  @ApiCreatedResponse({ type: Boolean })
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
+  @ApiCreatedResponse({ type: Boolean })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postService.remove(id);
   }
