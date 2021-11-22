@@ -1,14 +1,44 @@
-import React, { RefObject, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { HabitatInfo } from '@src/types/Habitat';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
+import useFetchTotalFeeds from '@hooks/useFetchTotalFeeds';
+import Cell from './Cell';
+import { prettyScroll } from '@src/lib/styles/mixin';
+
+const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined }) => {
+  const divRef = useRef<HTMLDivElement>(null);
+  const [totalFeed, setLastFeedId] = useFetchTotalFeeds(habitatInfo!.habitat.id);
+  const [isReady, setReady] = useState(false);
+
+  useEffect(() => {
+    console.log(totalFeed);
+  }, [totalFeed]);
+
+  return (
+    <ExploreDiv ref={divRef} color={habitatInfo?.habitat.color} onAnimationEnd={() => setReady(true)}>
+      {isReady &&
+        totalFeed.map((feedInfo) => {
+          return feedInfo.contents_url_array.map((url, idx) => {
+            return <Cell feedInfo={feedInfo} url={url} key={idx} />;
+          });
+        })}
+    </ExploreDiv>
+  );
+};
+
+export default Explore;
 
 const ExploreDiv = styled.div<{ color: string | undefined }>`
+  ${prettyScroll()};
   width: 100%;
   margin: auto;
   background-color: ${(props) => (props.color !== undefined ? props.color : Palette.PINK)};
   z-index: 1;
   height: 100%;
+  text-align: center;
+  overflow-y: scroll;
+  padding: 5px 5px;
   animation-duration: 1s;
   animation-name: zoomout;
   @keyframes zoomout {
@@ -20,15 +50,3 @@ const ExploreDiv = styled.div<{ color: string | undefined }>`
     }
   }
 `;
-
-const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined }) => {
-  const divRef = useRef<HTMLDivElement>(null);
-
-  return (
-    <ExploreDiv ref={divRef} color={habitatInfo?.habitat.color}>
-      adafds
-    </ExploreDiv>
-  );
-};
-
-export default Explore;
