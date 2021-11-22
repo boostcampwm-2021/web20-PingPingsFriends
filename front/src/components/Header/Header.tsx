@@ -9,8 +9,8 @@ import MagicNumber from '@lib/styles/magic';
 import Modal from '@common/Modal/Modal';
 import useModal from '@common/Modal/useModal';
 import { HabitatInfo } from '@src/types/Habitat';
-
-const LOGO: string = '핑핑이 친구들';
+import logo from '@assets/images/logo2.png';
+import { useHistory } from 'react-router-dom';
 
 const HeaderBlock = styled.div`
   ${flexBox('space-between', 'center')};
@@ -20,6 +20,13 @@ const HeaderBlock = styled.div`
   padding: 0 12px;
   border-bottom: solid ${Palette.GRAY} 1px;
   background: ${Palette.WHITE};
+  .logo {
+    height: 50px;
+    object-fit: cover;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 `;
 
 interface HeaderProps {
@@ -27,11 +34,15 @@ interface HeaderProps {
 }
 
 const Header = ({ habitatInfo }: HeaderProps) => {
-  const { isShowing, toggle } = useModal();
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push('/');
+  };
 
   return (
     <HeaderBlock>
-      <div className={'Logo'}>{LOGO}</div>
+      <img className={'logo'} src={logo} alt={'로고'} onClick={handleClick} />
       <Place habitat={habitatInfo?.habitat.name} toggle={toggle} />
       <UserInfo />
       <Modal isShowing={isShowing} hide={toggle}>
