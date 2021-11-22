@@ -5,7 +5,6 @@ import { Palette } from '@lib/styles/Palette';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useHistory } from 'react-router-dom';
 import { useUserDispatch, useUserState, User } from '@src/contexts/UserContext';
-import Config from '@lib/constants/config';
 
 const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const history = useHistory();
@@ -27,7 +26,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
         username: nameInputRef.current?.value,
         password: passwordInputRef.current?.value,
       };
-      const res = await fetch(Config.BACK_HOST + '/api/users/login', {
+      const res = await fetch('/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +66,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
     <LoginDiv>
       {userState.data?.userId === -1 ? (
         <>
-          <LoginForm action={Config.BACK_HOST + '/api/users/login'} method={'POST'} onSubmit={handleLoginFormSubmit}>
+          <LoginForm action={'/api/users/login'} method={'POST'} onSubmit={handleLoginFormSubmit}>
             <LoginLabel htmlFor={'userId'}>아이디</LoginLabel>
             <LoginInput ref={nameInputRef} id={'userId'} name={'userId'} type={'text'} placeholder={'username@mail'} required />
             <LoginLabel htmlFor={'password'}>비밀번호</LoginLabel>
