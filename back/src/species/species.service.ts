@@ -19,10 +19,10 @@ export class SpeciesService {
     return this.speciesRepository.save(species);
   }
 
-  getSpeciestList(query: CursorPaginationDto) {
-    const { limit } = query;
-    return query.lastId === undefined
+  getSpeciestList(cursorPaginationDto: CursorPaginationDto) {
+    const { limit } = cursorPaginationDto;
+    return cursorPaginationDto.lastId === undefined
       ? this.speciesRepository.selectSpeciesListFirst(limit)
-      : this.speciesRepository.selectSpeciesListByCursor(query.lastId, limit);
+      : this.speciesRepository.selectSpeciesListByCursor(cursorPaginationDto.lastId, limit);
   }
 }
