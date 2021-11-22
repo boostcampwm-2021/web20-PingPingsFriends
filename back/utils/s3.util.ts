@@ -13,7 +13,6 @@ export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
 
 export const getPartialFileInfo = (file?: FileDto): CreateContentDto | undefined => {
   if (!file) return undefined;
-  console.log(file);
   const contentInfo = {
     url: file.transforms[0].location,
     mimeType: file.mimetype,

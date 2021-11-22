@@ -10,9 +10,14 @@ async function bootstrap() {
     .setTitle(`PingPing's Friends`)
     .setDescription(`The PingPing's friends API description`)
     .setVersion('0.1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'Bearer', in: 'Header' },
+      'access-token'
+    )
     .addTag('pingpings')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   await app.listen(3000);

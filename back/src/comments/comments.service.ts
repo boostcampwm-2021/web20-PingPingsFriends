@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommentRepository } from './comment.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { CursorPaginationDto } from './dto/cursor-pagination.dto';
+import { CommentCursorPaginationDto } from './dto/comments-cursor-pagination.dto';
 
 @Injectable()
 export class CommentsService {
@@ -12,8 +12,8 @@ export class CommentsService {
     private commentRepository: CommentRepository
   ) {}
 
-  createComment(createCommentDto: CreateCommentDto) {
-    return this.commentRepository.createComment(createCommentDto);
+  createComment(createCommentDto: CreateCommentDto, userId: number) {
+    return this.commentRepository.createComment(createCommentDto, userId);
   }
 
   updateComment(id: number, updateCommentDto: UpdateCommentDto) {
@@ -24,7 +24,7 @@ export class CommentsService {
     return this.commentRepository.removeComment(id);
   }
 
-  getCommentList(query: CursorPaginationDto) {
+  getCommentList(query: CommentCursorPaginationDto) {
     const { postId, limit } = query;
     return query.lastId === undefined
       ? this.commentRepository.selectCommentListFirst(postId, limit)

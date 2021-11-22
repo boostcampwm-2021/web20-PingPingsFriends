@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-import { ContentsModule } from './contents/contents.module';
 import { PostModule } from './post/post.module';
 import { HabitatModule } from './habitat/habitat.module';
 import { FollowModule } from './follow/follow.module';
@@ -15,7 +14,6 @@ import databaseConfig from '../config/database.config';
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
     UsersModule,
-    ContentsModule,
     PostModule,
     HabitatModule,
     FollowModule,
