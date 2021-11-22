@@ -9,11 +9,11 @@ export class FollowController {
   constructor(private readonly followService: FollowService) {}
 
   @Post('/:targetId')
-  @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '팔로잉,팔로우 API',
     description: '인증된 유저가 targetId에 해당하는 유저를 팔로우한다.',
   })
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   create(@Param('targetId', ParseIntPipe) targetId: number, @Req() req) {
     return this.followService.create(targetId, req.user.userId);
