@@ -62,7 +62,7 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: RegisterUserDto })
   @UseInterceptors(FileInterceptor('upload', multerUserOption))
-  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image: FileDto) {
+  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image?: FileDto) {
     return this.usersService.create(createUserDto, image);
   }
 

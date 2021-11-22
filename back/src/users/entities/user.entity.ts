@@ -51,7 +51,7 @@ export class User {
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })
   content: Content;
 
-  @ManyToOne(() => Species, (species) => species.users)
+  @ManyToOne(() => Species, (species) => species.users, { cascade: ['insert'] })
   @JoinColumn({ name: 'species_id', referencedColumnName: 'id' })
   species: Species;
 
@@ -75,7 +75,6 @@ export class User {
   async hashPassword() {
     try {
       this.password = await bcrypt.hash(this.password, 10);
-      console.log(this.password);
     } catch (err) {
       throw new InternalServerErrorException();
     }
