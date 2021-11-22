@@ -12,7 +12,7 @@ import HeartSection from './HeartSection';
 import { LikeProps } from '@components/HeartButton/useLike';
 
 interface DetailModalProps extends LikeProps {
-  hide: ToggleHandler;
+  hide?: ToggleHandler;
   imageURLs: string[];
   nickname: string;
   text: string;
@@ -21,7 +21,7 @@ interface DetailModalProps extends LikeProps {
   numOfHearts: string;
 }
 
-const DetailModal = ({ feedId, hide, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {
+const DetailModal = ({ feedId, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {
   const [editMode, setEditMode] = useState(false);
   const [inputText, setInputText] = useState('');
   const toggleEditMode = (text: string) => {

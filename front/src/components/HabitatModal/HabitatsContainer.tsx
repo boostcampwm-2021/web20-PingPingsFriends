@@ -12,7 +12,7 @@ interface HabitatsContainerProps {
   hide: ToggleHandler;
 }
 
-const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
+const HabitatsContainer = ({ habitatInfos }: HabitatsContainerProps) => {
   const history = useHistory();
   const [root, rootRef] = useGetDiv();
 
@@ -35,13 +35,12 @@ const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
     history.push(`/?habitat=${target.dataset.id}`);
-    hide('off');
   };
 
   return (
     <HabitatsContainerDiv ref={rootRef}>
       {habitatInfos.map((habitatInfo) => (
-        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick} className={'modal-close-button'}>
+        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick}>
           {habitatInfo.name}
         </HabitatBlockDiv>
       ))}

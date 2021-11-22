@@ -34,6 +34,7 @@ interface HeaderProps {
 }
 
 const Header = ({ habitatInfo }: HeaderProps) => {
+  const { isShowing, toggle, routePath } = useModal('habitats');
   const history = useHistory();
 
   const handleClick = () => {
@@ -45,7 +46,7 @@ const Header = ({ habitatInfo }: HeaderProps) => {
       <img className={'logo'} src={logo} alt={'로고'} onClick={handleClick} />
       <Place habitat={habitatInfo?.habitat.name} toggle={toggle} />
       <UserInfo />
-      <Modal isShowing={isShowing} hide={toggle}>
+      <Modal isShowing={isShowing} hide={toggle} routePath={routePath}>
         <HabitatModal hide={toggle} />
       </Modal>
     </HeaderBlock>
