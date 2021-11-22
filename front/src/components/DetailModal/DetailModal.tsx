@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
@@ -9,6 +9,65 @@ import Avatar from '../_common/Avatar/Avatar';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 import HeartSection from './HeartSection';
+import { LikeProps } from '@components/HeartButton/useLike';
+
+interface DetailModalProps extends LikeProps {
+  hide: ToggleHandler;
+  imageURLs: string[];
+  nickname: string;
+  text: string;
+  feedId: number;
+  ago: string;
+  numOfHearts: string;
+}
+
+const DetailModal = ({ feedId, hide, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {
+  const [editMode, setEditMode] = useState(false);
+  const [inputText, setInputText] = useState('');
+  const toggleEditMode = (text: string) => {
+    if (editMode) {
+      setEditMode(false);
+      setInputText('');
+    } else {
+      setEditMode(true);
+      setInputText(text);
+    }
+  };
+
+  return (
+    <DetailModalDiv>
+      <ContentsDiv>
+        <MainContentsDiv>
+          <Carousel children={<PreviewBox controller={undefined} imageURLs={undefined} />} imageURLs={imageURLs} />
+        </MainContentsDiv>
+      </ContentsDiv>
+      <VertLineDiv />
+      <CommunicateDiv>
+        <FeedInfoDiv>
+          <FeedAuthorDiv>
+            <Avatar size={'35px'} />
+            <span className={'nickname'}>{nickname}</span>
+            <span className={'time'}>{ago} 전</span>
+          </FeedAuthorDiv>
+          <p className={'text'}>
+            {text
+              ? text
+              : `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
+          </p>
+        </FeedInfoDiv>
+        <CommentList toggleEditMode={toggleEditMode} feedId={feedId} />
+        <HeartSection like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
+        <CommentForm inputText={inputText} setInputText={setInputText} editMode={editMode} feedId={feedId} />
+      </CommunicateDiv>
+    </DetailModalDiv>
+  );
+};
+
+export default DetailModal;
 
 const DetailModalDiv = styled.div`
   ${flexBox()};
@@ -78,59 +137,3 @@ const FeedAuthorDiv = styled.div`
     margin-left: 5px;
   }
 `;
-
-interface DetailModalProps {
-  hide: ToggleHandler;
-  imageURLs: string[];
-  nickname: string;
-  text: string;
-  feedId?: string;
-}
-
-const DetailModal = ({ feedId, hide, imageURLs, nickname, text }: DetailModalProps) => {
-  const [editMode, setEditMode] = useState(false);
-  const [inputText, setInputText] = useState('');
-  const toggleEditMode = (text: string) => {
-    if (editMode) {
-      setEditMode(false);
-      setInputText('');
-    } else {
-      setEditMode(true);
-      setInputText(text);
-    }
-  };
-
-  return (
-    <DetailModalDiv>
-      <ContentsDiv>
-        <MainContentsDiv>
-          <Carousel children={<PreviewBox controller={undefined} imageURLs={undefined} />} imageURLs={imageURLs} />
-        </MainContentsDiv>
-      </ContentsDiv>
-      <VertLineDiv />
-      <CommunicateDiv>
-        <FeedInfoDiv>
-          <FeedAuthorDiv>
-            <Avatar size={'35px'} />
-            <span className={'nickname'}>{nickname}</span>
-            <span className={'time'}>2시간 전</span>
-          </FeedAuthorDiv>
-          <p className={'text'}>
-            {text
-              ? text
-              : `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
-          </p>
-        </FeedInfoDiv>
-        <CommentList toggleEditMode={toggleEditMode} feedId={feedId} />
-        <HeartSection feedId={feedId} />
-        <CommentForm inputText={inputText} setInputText={setInputText} editMode={editMode} feedId={feedId} />
-      </CommunicateDiv>
-    </DetailModalDiv>
-  );
-};
-
-export default DetailModal;

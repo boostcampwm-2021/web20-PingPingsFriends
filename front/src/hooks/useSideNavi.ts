@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import Config from '@lib/constants/config';
+import { useHistory, useLocation } from 'react-router-dom';
+import queryString from '@lib/utils/queryString';
 
 const useSideNavi = (userHabitatId: number) => {
   const [curHabitatId, setCurHabitatId] = useState(userHabitatId);
   const [habitatList, setHabitatList] = useState<number[]>([]);
-  // const habitatList = useRef<number[]>([]);
-  // const historyIdx = useRef(4);
   const [historyIdx, setHistoryIdx] = useState<number>(3);
+  const history = useHistory();
+  const location = useLocation();
 
   useEffect(() => {
     fetch(Config.BACK_HOST + `/api/habitat/random?currentId=${curHabitatId}`)
@@ -19,7 +21,6 @@ const useSideNavi = (userHabitatId: number) => {
 
   useEffect(() => {
     if (historyIdx === 1 || historyIdx === habitatList.length - 2) {
-      // const resList = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0];
       fetch(Config.BACK_HOST + `/api/habitat/random?currentId=${curHabitatId}`)
         .then((res) => res.json())
         .then((data: number[]) => {
@@ -33,12 +34,20 @@ const useSideNavi = (userHabitatId: number) => {
     }
   }, [curHabitatId]);
 
+  useEffect(() => {
+    const queryMap = queryString(location.search);
+    if ('habitat' in queryMap) {
+      setCurHabitatId(+queryMap['habitat']);
+    }
+  }, [location]);
+
   const handleNextHabitat = () => {
-    setCurHabitatId(habitatList[historyIdx + 1]);
+    history.push(`/?habitat=${habitatList[historyIdx + 1]}`);
     setHistoryIdx(historyIdx + 1);
   };
 
   const handlePrevHabitat = () => {
+    history.push(`/?habitat=${habitatList[historyIdx - 1]}`);
     setCurHabitatId(habitatList[historyIdx - 1]);
     setHistoryIdx(historyIdx - 1);
   };
@@ -49,7 +58,6 @@ const useSideNavi = (userHabitatId: number) => {
     handlePrevHabitat,
     habitatList,
     historyIdx,
-    setCurHabitatId,
   };
 };
 

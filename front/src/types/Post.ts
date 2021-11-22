@@ -8,9 +8,14 @@ export interface Post {
   nickname: string;
   user_image_url: null;
   post_contents_urls: string;
-  post_contents_types: string;
+  contents_url_array: string[];
   numOfHearts: string;
   is_heart: string;
 }
 
 export type Posts = Post[];
+
+export type PostsResponse = {
+  lastPostId: number;
+  posts: Posts;
+};
