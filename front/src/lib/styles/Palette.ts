@@ -6,7 +6,11 @@ export enum Palette {
   APRICOT = '#FACBBA',
   ORANGE = '#F0CC96',
   BACKGROUND_GRAY = '#EEEEEE',
+  LIGHT_GRAY = '#D7D7D7',
   WHITE = '#FFFFFF',
   ACTIVE = '#0095f6',
   RED = `#ED4956`,
+  GREEN = '#8EB695',
+  YELLOW = '#FBDEA2',
+  IVORY = '#F2E2C6',
 }

@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Param, UseGuards, ParseIntPipe, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FollowService } from './follow.service';
-import { CreateFollowDto } from './dto/create-follow.dto';
-import { UpdateFollowDto } from './dto/update-follow.dto';
 
 @Controller('follow')
+@ApiTags('팔로우 API')
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
 
-  @Post()
-  create(@Body() createFollowDto: CreateFollowDto) {
-    return this.followService.create(createFollowDto);
+  @Post('/:targetId')
+  @ApiOperation({
+    summary: '팔로잉,팔로우 API',
+    description: '인증된 유저가 targetId에 해당하는 유저를 팔로우한다.',
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  create(@Param('targetId', ParseIntPipe) targetId: number, @Req() req) {
+    return this.followService.create(targetId, req.user.userId);
   }
 
-  @Get()
-  findAll() {
-    return this.followService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.followService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.followService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.followService.findOne(+id);
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFollowDto: UpdateFollowDto) {
-    return this.followService.update(+id, updateFollowDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateFollowDto: UpdateFollowDto) {
+  //   return this.followService.update(+id, updateFollowDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.followService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.followService.remove(+id);
+  // }
 }

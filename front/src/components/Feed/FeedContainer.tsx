@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Feed from './Feed';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
-import { flexBox } from '@lib/styles/mixin';
+import { HabitatInfo } from '@src/types/Habitat';
+import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
 import useScroll from '@hooks/useScroll';
 import ScrollContainer from '@components/Feed/ScrollBoxContainer';
@@ -12,6 +12,7 @@ import { useGetDiv } from '@hooks/useGetDiv';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
+  ${prettyScroll()};
   width: 500px;
   background-color: ${(props) => (props.color !== undefined ? props.color : Palette.PINK)};
   transition: background-color 0.5s ease-out 0s;
@@ -21,29 +22,12 @@ const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   box-sizing: border-box;
   gap: 20px;
   overflow-y: scroll;
+  z-index: 1;
 `;
-
-export interface Unsplash {
-  id: string;
-  created_at: string;
-  urls: {
-    raw: string;
-    regular: string;
-    full: string;
-    thumb: string;
-    small: string;
-  };
-  description: string;
-  user: {
-    username: string;
-    profile_image: {
-      small: string;
-    };
-  };
-}
 
 interface FeedScrollBoxProps {
   habitatInfo: HabitatInfo | undefined;
+  curHabitatId: number;
 }
 
 const callback: IntersectionObserverCallback = (entries, observer) => {
@@ -56,20 +40,29 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
   });
 };
 
-const FeedContainer = ({ habitatInfo }: FeedScrollBoxProps) => {
-  const { feeds, offset, height, handleScroll } = useScroll();
+const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
+  const { feeds, offset, height, handleScroll } = useScroll(curHabitatId);
   const [root, rootRef] = useGetDiv();
   const lazy = useIntersectionObserver(callback, {
     root: root,
     rootMargin: '300px 0px',
   });
-
   return (
-    <FeedContainerDiv color={habitatInfo?.color} onScroll={handleScroll} ref={rootRef}>
+    <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={rootRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
           {feeds.map((feed) => (
-            <Feed key={feed.id} nickname={feed.nickname} imageURLs={feed.imageURLs} text={feed.text} lazy={lazy} />
+            <Feed
+              key={feed.post_id}
+              feedId={feed.user_id}
+              nickname={feed.nickname}
+              imageURLs={feed.contents_url_array}
+              text={feed.human_content}
+              createdTime={feed.created_at}
+              numOfHearts={feed.numOfHearts}
+              is_heart={feed.is_heart}
+              lazy={lazy}
+            />
           ))}
         </ViewPort>
       </ScrollContainer>

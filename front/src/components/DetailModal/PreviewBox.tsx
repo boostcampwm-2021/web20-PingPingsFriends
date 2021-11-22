@@ -4,16 +4,12 @@ import { CarouselControl } from '@common/Carousel/Carousel';
 import SwipeBox from '@common/SwipeBox/SwipeBox';
 
 const PreviewDiv = styled.div`
-  width: 100%;
-  height: 35%;
-  margin-top: 30px;
   padding: 10px 0;
-  background-color: aliceblue;
 `;
 
 const ImgDiv = styled.div`
-  width: 30%;
-  height: 100%;
+  width: 80px;
+  height: 80px;
   flex-shrink: 0;
 `;
 

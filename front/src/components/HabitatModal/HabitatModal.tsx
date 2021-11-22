@@ -2,16 +2,55 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 import HabitatsContainer from './HabitatsContainer';
-import { flexBox } from '@lib/styles/mixin';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { flexBox, boxShadow } from '@lib/styles/mixin';
+import { ToggleHandler } from '@common/Modal/useModal';
+import Config from '@lib/constants/config';
+import { HabitatLists } from '@src/types/Habitat';
+
+interface HabitatModalProps {
+  hide: ToggleHandler;
+}
+
+const HabitatModal = ({ hide }: HabitatModalProps) => {
+  //todo: 검색로직에 대해서
+  // 1. HabitatModal이 열릴 때 모든 서식지 이름을 다 받아오고 키워드 입력시에 그 데이터를 필터링하기
+  // 2. 페이징으로 받아오다가 키워드 입력시 패치 보내기
+  const [habitatInfos, setHabitatInfos] = useState<HabitatLists | any>([] as any);
+  const [keyword, setKeyword] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+
+  useEffect(() => {
+    fetchHabitats();
+
+    async function fetchHabitats() {
+      const response: Response = await fetch(`${Config.BACK_HOST}/api/habitat`);
+      const habitats: HabitatLists = await response.json();
+      setHabitatInfos(habitats);
+      return Promise;
+    }
+  }, [keyword]);
+
+  return (
+    <HabitatModalDiv>
+      <HabitatSearchDiv>
+        <input type="text" value={keyword} onChange={handleChange} placeholder={'검색어를 입력하세요.'} />
+      </HabitatSearchDiv>
+      <HabitatsContainer habitatInfos={habitatInfos} hide={hide} />
+    </HabitatModalDiv>
+  );
+};
+
+export default HabitatModal;
 
 const HabitatModalDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
+  ${boxShadow('8px')};
   width: 700px;
   height: 450px;
   background: ${Palette.WHITE};
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgb(51 51 51), 0 0 4px rgb(51 51 51 / 50%);
 `;
 
 const HabitatSearchDiv = styled.div`
@@ -21,55 +60,10 @@ const HabitatSearchDiv = styled.div`
   margin-bottom: 20px;
   input {
     font-size: 30px;
-
     width: 100%;
     height: 100%;
-    padding: 0;
+    padding-left: 10px;
+    border: 1px solid black;
+    border-radius: 8px;
   }
 `;
-
-const HabitatModal = () => {
-  //todo: 검색로직에 대해서
-  // 1. HabitatModal이 열릴 때 모든 서식지 이름을 다 받아오고 키워드 입력시에 그 데이터를 필터링하기
-  // 2. 페이징으로 받아오다가 키워드 입력시 패치 보내기
-  const [habitatInfos, setHabitatInfos] = useState<HabitatInfo[]>([] as HabitatInfo[]);
-  const [keyword, setKeyword] = useState('');
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value);
-  };
-
-  useEffect(() => {
-    // todo: fetch로 서식지 목록 받아와야함
-    const responseFetch = [
-      // @ts-ignore
-      { name: '강남역 뒷골목', color: '#FACBBA' },
-      // @ts-ignore
-      { name: '서울숲', color: '#ffb1b9' },
-      // @ts-ignore
-      { name: '부산 해운대', color: '#B5E8E2' },
-    ];
-
-    if (keyword.length) {
-      // @ts-ignore
-      setHabitatInfos(responseFetch.filter((v) => v.name.includes(keyword)));
-      responseFetch.forEach((v) => {
-        console.log(v.name);
-      });
-    } else {
-      // @ts-ignore
-      setHabitatInfos(responseFetch);
-    }
-  }, [keyword]);
-
-  return (
-    <HabitatModalDiv>
-      <HabitatSearchDiv>
-        <input type="text" value={keyword} onChange={handleChange} />
-      </HabitatSearchDiv>
-      <HabitatsContainer habitatInfos={habitatInfos} />
-    </HabitatModalDiv>
-  );
-};
-
-export default HabitatModal;

@@ -1,41 +1,113 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
+  UploadedFiles,
+  ParseIntPipe,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
-import { multerOption, S3Service } from 'src/s3/s3.service';
+import { getPartialFilesInfo } from 'utils/s3.util';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PatchPostRequestDto } from './dto/patchPostRequestDto';
+import { multerTransFormOption } from 'config/s3.config';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
+import { GetPostResponseDto } from './dto/getPostResponse.dto';
+import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
+import { AuthGuard } from '@nestjs/passport';
+import FileDto from 'common/dto/transformFileDto';
 
-@Controller('post')
+@ApiTags('게시물 API')
+@Controller('posts')
 export class PostController {
-  constructor(private readonly postService: PostService, private readonly s3Servise: S3Service) {}
+  constructor(private readonly postService: PostService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
-  async uploadFile(@Body() createPostDto: CreatePostDto, @UploadedFiles() files: Express.Multer.File[]) {
-    const contentsInfos = this.s3Servise.getPartialFilesInfo(files);
-    return await this.postService.create(createPostDto, contentsInfos);
+  @ApiOperation({
+    summary: '게시글 작성',
+    description: '게시글을 작성하는 api입니다.',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreatePostDto })
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  async uploadFile(
+    @Body() createPostDto: CreatePostDto,
+    @UploadedFiles() files: FileDto[],
+    @Req() req
+  ) {
+    const contentsInfos = getPartialFilesInfo(files);
+    return await this.postService.create(createPostDto, contentsInfos, req.user.userId);
   }
 
-  @Get(':habitatId')
-  async findAll(@Param('habitatId') habitatId: string, @Query('userId') userId: string, @Query('lastPostId') lastPostId?: string) {
-    return await this.postService.findAll(+habitatId, +userId, +lastPostId);
+  @Get('habitats/:habitatId')
+  @ApiOperation({
+    summary: '게시글 리스트 조회',
+    description: '페이지 별 게시글 리스트를 조회하는 api입니다.',
+  })
+  async findAll(
+    @Param('habitatId', ParseIntPipe) habitatId: number,
+    @Query('lastPostId', ParseOptionalIntPipe) lastPostId?: number
+  ) {
+    return await this.postService.findAll(habitatId, lastPostId);
   }
 
-  @Get(':habitatId/:id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  @Get(':id')
+  @ApiOperation({
+    summary: '특정 게시글 조회',
+    description: '특정 게시글을 조회하는 api입니다.',
+  })
+  @ApiCreatedResponse({ type: GetPostResponseDto })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.postService.findOne(id);
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('upload', 10, multerOption))
-  update(@Param('id') id: string, @Body() patchPostRequestDto: PatchPostRequestDto, @UploadedFiles() files: Express.Multer.File[]) {
-    const contentsInfos = this.s3Servise.getPartialFilesInfo(files);
-    return this.postService.update(+id, patchPostRequestDto, contentsInfos);
+  @ApiOperation({
+    summary: '게시글 수정',
+    description: '게시글을 수정하는 api입니다.',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: PatchPostRequestDto })
+  @ApiCreatedResponse({ type: Boolean })
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() patchPostRequestDto: PatchPostRequestDto,
+    @UploadedFiles() files: FileDto[]
+  ) {
+    const contentsInfos = getPartialFilesInfo(files);
+    return await this.postService.update(id, patchPostRequestDto, contentsInfos);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  @ApiOperation({
+    summary: '게시물 삭제',
+    description: '게시물을 삭제하는 api입니다.',
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiCreatedResponse({ type: Boolean })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.postService.remove(id);
   }
 }

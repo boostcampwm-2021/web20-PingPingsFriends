@@ -5,9 +5,10 @@ import Place from './Place';
 import UserInfo from './UserInfo';
 import { flexBox } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
+import MagicNumber from '@lib/styles/magic';
 import Modal from '@common/Modal/Modal';
 import useModal from '@common/Modal/useModal';
-import { HabitatInfo } from '@hooks/useHabitatInfo';
+import { HabitatInfo } from '@src/types/Habitat';
 
 const LOGO: string = '핑핑이 친구들';
 
@@ -15,7 +16,7 @@ const HeaderBlock = styled.div`
   ${flexBox('space-between', 'center')};
   flex-shrink: 0;
   width: 100%;
-  height: 54px;
+  height: ${MagicNumber.HEADER_HEIGHT};
   padding: 0 12px;
   border-bottom: solid ${Palette.GRAY} 1px;
   background: ${Palette.WHITE};
@@ -31,9 +32,11 @@ const Header = ({ habitatInfo }: HeaderProps) => {
   return (
     <HeaderBlock>
       <div className={'Logo'}>{LOGO}</div>
-      <Place habitat={habitatInfo?.name} toggle={toggle} />
+      <Place habitat={habitatInfo?.habitat.name} toggle={toggle} />
       <UserInfo />
-      <Modal children={<HabitatModal />} isShowing={isShowing} hide={toggle} />
+      <Modal isShowing={isShowing} hide={toggle}>
+        <HabitatModal hide={toggle} />
+      </Modal>
     </HeaderBlock>
   );
 };

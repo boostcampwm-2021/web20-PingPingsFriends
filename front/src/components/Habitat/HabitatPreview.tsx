@@ -11,7 +11,7 @@ const HabitatPreviewBlock = styled.div<Pick<HabitatPreviewProps, 'side'> & { rad
   ${flexBox('center', null, 'column')}
   position: absolute;
   border-radius: 50%;
-  transform: translateY(50vh) ${(props) => `translateY(-${props.radius - parseInt(MagicNumber.HEADER_HEIGHT) / 2}px)`};
+  transform: translateY(50vh) ${(props) => `translateY(-${props.radius}px)`};
   background: ${({ color }) => color ?? Palette.GRAY};
   cursor: pointer;
   transition: background-color 0.5s ease-out 0s;
@@ -106,28 +106,28 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
   return (
     <>
       {radius > 100 && (
-        <HabitatPreviewBlock side={side} color={habitatInfo?.color} radius={radius} onClick={onClick}>
+        <HabitatPreviewBlock side={side} color={habitatInfo?.habitat.color} radius={radius} onClick={onClick}>
           {habitatInfo !== undefined ? (
             <>
               {radius > 150 ? (
                 <>
                   <AvatarDiv radius={radius} side={side}>
-                    {habitatInfo.recentUser.map((imageURL, idx) => (
-                      <Avatar imgSrc={imageURL} key={idx} size={'3em'} />
+                    {habitatInfo.recentUsers.map(({ url }, idx) => (
+                      <Avatar imgSrc={url ? url : undefined} key={idx} size={'3em'} />
                     ))}
                   </AvatarDiv>
                   <DetailDiv radius={radius}>
-                    <p>{habitatInfo.totalUser} 마리의 동물들</p>
-                    <p>{habitatInfo.totalPost}개의 게시글</p>
-                    <p>최근 활동 {compareTime(new Date(), new Date(habitatInfo.recentUpload))}</p>
+                    <p>{habitatInfo.userCnt} 마리의 동물들</p>
+                    <p>{habitatInfo.postCnt}개의 게시글</p>
+                    <p>최근 활동 {compareTime(new Date(), new Date(habitatInfo.lastActTime))}</p>
                   </DetailDiv>
                   <TitleDiv radius={radius}>
-                    <p className="habitat_king">우두머리: {habitatInfo.king}</p>
-                    <p className="habitat_name">{habitatInfo.name}</p>
+                    <p className="habitat_king">우두머리: {habitatInfo.leader?.nickname}</p>
+                    <p className="habitat_name">{habitatInfo.habitat.name}</p>
                   </TitleDiv>
                 </>
               ) : (
-                <ShrinkTitleDiv>{habitatInfo.name}</ShrinkTitleDiv>
+                <ShrinkTitleDiv>{habitatInfo.habitat.name}</ShrinkTitleDiv>
               )}
             </>
           ) : (

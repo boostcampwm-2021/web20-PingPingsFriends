@@ -1,6 +1,12 @@
 import { Content } from 'src/contents/entities/content.entity';
 import { Post } from 'src/post/entities/post.entity';
-import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 @Entity({ name: 'post_contents' })
 export class PostContent {
@@ -14,7 +20,9 @@ export class PostContent {
   @JoinColumn({ name: 'post_id', referencedColumnName: 'id' })
   post: Post;
 
-  @OneToOne(() => Content, (content) => content.postContent)
+  @OneToOne(() => Content, (content) => content.postContent, {
+    cascade: ['insert'],
+  })
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })
   content: Content;
 }

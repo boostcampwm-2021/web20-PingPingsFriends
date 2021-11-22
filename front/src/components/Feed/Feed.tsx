@@ -13,6 +13,56 @@ import Modal from '@common/Modal/Modal';
 import DeleteModal from '@components/DeleteModal/DeleteModal';
 import DetailModal from '@components/DetailModal/DetailModal';
 import useModal from '@common/Modal/useModal';
+import { formatDate } from '@lib/utils/time';
+
+export interface FeedProps {
+  feedId: number;
+  nickname: string;
+  imageURLs: string[];
+  text: string;
+  createdTime: string;
+  numOfHearts: string;
+  is_heart: string;
+  lazy?: (node: HTMLDivElement) => void;
+}
+
+const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart }: FeedProps) => {
+  const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
+  const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
+  const [like, toggleLike] = useLike(is_heart, feedId);
+  const items = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
+  const ago = formatDate(createdTime);
+
+  return (
+    <FeedContainerDiv>
+      <FeedHeaderDiv>
+        <Avatar size={'30px'} />
+        <span>{nickname}</span>
+        <DropBox start="right" offset={10} top={55} width={150} items={items}>
+          <VertBtnSvg className="vert_btn button" />
+        </DropBox>
+      </FeedHeaderDiv>
+      <FeedContents>
+        <Carousel imageURLs={imageURLs} lazy={lazy} />
+      </FeedContents>
+      <FeedInfoDiv>
+        <HeartButton like={like} toggleLike={toggleLike} />
+        <CommentBtnSvg className={'button'} onClick={toggleDetailModal} />
+        <span>13</span>
+        <span className="time">{ago} 전</span>
+      </FeedInfoDiv>
+      <FeedTextDiv>{text}</FeedTextDiv>
+      <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
+        <DeleteModal hide={toggleDeleteModal} />
+      </Modal>
+      <Modal isShowing={isDetailShowing} hide={toggleDetailModal}>
+        <DetailModal feedId={feedId} nickname={nickname} text={text} imageURLs={imageURLs} hide={toggleDetailModal} ago={ago} like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
+      </Modal>
+    </FeedContainerDiv>
+  );
+};
+
+export default React.memo(Feed);
 
 const FeedContainerDiv = styled.div`
   background-color: white;
@@ -57,49 +107,3 @@ const FeedInfoDiv = styled.div`
 const FeedTextDiv = styled.div`
   padding: 0 10px;
 `;
-
-export interface FeedProps {
-  id?: string;
-  nickname: string;
-  imageURLs: string[];
-  text: string;
-  lazy?: (node: HTMLDivElement) => void;
-}
-
-const Feed = ({ nickname, imageURLs, text, lazy }: FeedProps) => {
-  const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
-  const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
-  const [like, toggleLike] = useLike();
-  const test = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
-
-  return (
-    <FeedContainerDiv>
-      <FeedHeaderDiv>
-        <Avatar size={'30px'} />
-        <span>{nickname}</span>
-        <DropBox start="right" offset={10} top={55} width={150} items={test}>
-          <VertBtnSvg className="vert_btn button" />
-        </DropBox>
-      </FeedHeaderDiv>
-      <FeedContents>
-        <Carousel imageURLs={imageURLs} lazy={lazy} />
-      </FeedContents>
-      <FeedInfoDiv>
-        <HeartButton like={like} toggleLike={toggleLike} />
-        <CommentBtnSvg className={'button'} onClick={toggleDetailModal} />
-        <span>13</span>
-        <span className="time">2시간 전</span>
-      </FeedInfoDiv>
-      <FeedTextDiv>{text}</FeedTextDiv>
-      <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
-        <DeleteModal hide={toggleDeleteModal} />
-      </Modal>
-      <Modal isShowing={isDetailShowing} hide={toggleDetailModal}>
-        <DetailModal imageURLs={imageURLs} hide={toggleDetailModal} />
-      </Modal>
-    </FeedContainerDiv>
-  );
-};
-
-// export default Feed;
-export default React.memo(Feed);
