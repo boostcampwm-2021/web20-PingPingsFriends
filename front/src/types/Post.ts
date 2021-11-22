@@ -6,7 +6,7 @@ export interface Post {
   user_id: number;
   username: string;
   nickname: string;
-  user_image_url: null;
+  user_image_url: undefined | string;
   post_contents_urls: string;
   contents_url_array: string[];
   numOfHearts: string;

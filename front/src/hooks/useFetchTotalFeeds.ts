@@ -24,9 +24,8 @@ const useFetchTotalFeeds = (curHabitatId: number): [Posts, Dispatch<SetStateActi
           setFeeds([]);
           return;
         }
-        // post에 이미지가 null인 경우가 존재해서 임시로 아래의 로직 사용 중
-        // const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',') }));
-        const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls ? post.post_contents_urls.split(',') : ['/default_avatar.png'] }));
+        const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',') }));
+
         setFeeds(postsData);
       } catch (e) {
         console.log(e);

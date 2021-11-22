@@ -47,6 +47,7 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
     root: root,
     rootMargin: '300px 0px',
   });
+
   return (
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={rootRef}>
       <ScrollContainer height={height}>
@@ -61,6 +62,7 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
               createdTime={feed.created_at}
               numOfHearts={feed.numOfHearts}
               is_heart={feed.is_heart}
+              avatarImage={feed.user_image_url}
               lazy={lazy}
             />
           ))}

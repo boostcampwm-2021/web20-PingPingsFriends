@@ -23,10 +23,11 @@ export interface FeedProps {
   createdTime: string;
   numOfHearts: string;
   is_heart: string;
+  avatarImage: string | undefined;
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart }: FeedProps) => {
+const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
@@ -36,7 +37,7 @@ const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHeart
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
-        <Avatar size={'30px'} />
+        <Avatar size={'30px'} imgSrc={avatarImage} />
         <span>{nickname}</span>
         <DropBox start="right" offset={10} top={55} width={150} items={items}>
           <VertBtnSvg className="vert_btn button" />
