@@ -13,7 +13,7 @@ import LoadingBar from '@components/Register/LoadingBar';
 const RegisterDiv = styled.div`
   position: relative;
   width: 450px;
-  height: 500px;
+  height: 550px;
   border: 1px solid #bebbbb;
   padding: 40px;
   border-radius: 8px;
