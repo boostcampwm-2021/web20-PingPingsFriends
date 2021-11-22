@@ -4,7 +4,7 @@ import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useHistory } from 'react-router-dom';
-import { useUserDispatch, useUserState, initialState, User } from '@src/contexts/UserContext';
+import { useUserDispatch, useUserState, User } from '@src/contexts/UserContext';
 import Config from '@lib/constants/config';
 
 const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
@@ -13,7 +13,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const userDispatch = useUserDispatch();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  const [isFail, setFail] = useState(false);
+  const [isFail, setFail] = useState<boolean>(false);
 
   const handleClick = () => {
     history.push('/register');
@@ -34,25 +34,32 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
         },
         body: JSON.stringify(bodyJson),
       });
-      const data = await res.json();
-      const newState: User = {
-        userId: data.user.id,
-        username: data.user.username,
-        nickname: data.user.nickname,
-        habitatId: data.user.habitatId,
-        speciesId: data.user.speciesId,
-        url: data.user.content.url,
-        accessToken: data.accessToken,
-      };
-      if (data.accessToken) {
+      if (res.ok) {
+        const data = await res.json();
+        const newState: User = {
+          userId: data.user.id,
+          username: data.user.username,
+          nickname: data.user.nickname,
+          habitatId: data.user.habitatId,
+          speciesId: data.user.speciesId,
+          url: data.user.content.url,
+          accessToken: data.accessToken,
+        };
         userDispatch({ type: 'GET_USER_SUCCESS', data: newState });
         hide('off');
       } else {
+        switch (res.status) {
+          case 401:
+            userDispatch({ type: 'GET_USER_ERROR', error: '아이디/비밀번호가 없거나 다릅니다.' });
+            break;
+          default:
+            userDispatch({ type: 'GET_USER_ERROR', error: '알 수 없는 이유로 로그인에 실패하여습니다.' });
+        }
         setFail(true);
-        userDispatch({ type: 'GET_USER_SUCCESS', data: initialState.data! });
       }
     } catch (e) {
       userDispatch({ type: 'GET_USER_ERROR', error: e });
+      setFail(true);
     }
   };
 
@@ -74,7 +81,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
               </LoginBtn>
             </LoginBtnDiv>
           </LoginForm>
-          <p>{isFail && '실패했습니다ㅠㅜ'}</p>
+          <ErrorP>{isFail && userState.error}</ErrorP>
           <AuthBtnDiv>
             <AuthBtn onClick={handleClick} color={Palette.GREEN}>
               회원가입
@@ -146,4 +153,8 @@ const AuthBtn = styled(DefaultBtn)`
   width: 100%;
   height: 40px;
   font-size: 20px;
+`;
+
+const ErrorP = styled.p`
+  color: ${Palette.RED};
 `;

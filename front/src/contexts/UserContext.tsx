@@ -45,7 +45,7 @@ const success = (data: User): UserState => ({
 });
 const error = (error: Error): UserState => ({
   loading: false,
-  data: null,
+  data: initialState.data,
   error: error,
 });
 
