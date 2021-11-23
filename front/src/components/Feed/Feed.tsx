@@ -28,7 +28,7 @@ export interface FeedProps {
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage }: FeedProps) => {
+const Feed = ({ feedId, userId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
@@ -38,7 +38,7 @@ const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHeart
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
-        <Avatar size={'30px'} imgSrc={avatarImage} />
+        <Avatar size={'30px'} imgSrc={avatarImage} userId={userId} />
         <span>{nickname}</span>
         <DropBox start="right" offset={10} top={55} width={150} items={items}>
           <VertBtnSvg className="vert_btn button" />
@@ -58,7 +58,19 @@ const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHeart
         <DeleteModal hide={toggleDeleteModal} />
       </Modal>
       <Modal hide={toggle} routePath={routePath}>
-        <DetailModal feedId={feedId} nickname={nickname} text={text} imageURLs={imageURLs} hide={toggle} ago={ago} like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
+        <DetailModal
+          userId={userId}
+          userImgURL={avatarImage ?? null}
+          feedId={feedId}
+          nickname={nickname}
+          text={text}
+          imageURLs={imageURLs}
+          hide={toggle}
+          ago={ago}
+          like={like}
+          toggleLike={toggleLike}
+          numOfHearts={numOfHearts}
+        />
       </Modal>
     </FeedContainerDiv>
   );
