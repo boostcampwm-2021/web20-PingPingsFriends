@@ -14,10 +14,22 @@ export class UsersService {
   }
 
   async findUser(userId: number) {
-    const user = await this.userRepository.findOne(userId, { relations: ['content'] });
-    delete user.password;
-    delete user.contentsId;
-    return user;
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .select([
+        'user.id',
+        'user.username',
+        'user.nickname',
+        'habitat.id',
+        'habitat.name',
+        'species.name',
+        'content.url',
+      ])
+      .leftJoin('user.habitat', 'habitat')
+      .leftJoin('user.species', 'species')
+      .leftJoin('user.content', 'content')
+      .where('user.id = :userId', { userId })
+      .getOne();
   }
 
   async create(createUserDto: CreateUserDto, image?: FileDto) {
