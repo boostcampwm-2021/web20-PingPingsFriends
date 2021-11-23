@@ -14,6 +14,7 @@ import DeleteModal from '@components/DeleteModal/DeleteModal';
 import DetailModal from '@components/DetailModal/DetailModal';
 import useModal from '@common/Modal/useModal';
 import { formatDate } from '@lib/utils/time';
+import { useUserState } from '@src/contexts/UserContext';
 
 export interface FeedProps {
   feedId: number;
@@ -34,15 +35,18 @@ const Feed = ({ feedId, userId, nickname, imageURLs, text, lazy, createdTime, nu
   const ago = formatDate(createdTime);
   const items = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
   const { toggle, routePath } = useModal(`detail/${feedId}`);
+  const userState = useUserState();
 
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
         <Avatar size={'30px'} imgSrc={avatarImage} userId={userId} />
         <span>{nickname}</span>
-        <DropBox start="right" offset={10} top={55} width={150} items={items}>
-          <VertBtnSvg className="vert_btn button" />
-        </DropBox>
+        {userState.data?.userId === userId && (
+          <DropBox start="right" offset={10} top={55} width={150} items={items}>
+            <VertBtnSvg className="vert_btn button" />
+          </DropBox>
+        )}
       </FeedHeaderDiv>
       <FeedContents>
         <Carousel imageURLs={imageURLs} lazy={lazy} />
