@@ -193,13 +193,13 @@ export class PostService {
     try {
       const contentsIds = post.postContents.map((postContent) => postContent.contentsId);
 
-      contentRepository.delete(contentsIds);
+      await contentRepository.delete(contentsIds);
 
-      if (post.comments.length) commentRepository.remove(post.comments);
+      if (post.comments.length) await commentRepository.remove(post.comments);
 
-      postRepository.delete(post.id);
+      await postRepository.delete(post.id);
 
-      queryRunner.commitTransaction();
+      await queryRunner.commitTransaction();
 
       return true;
     } catch (err) {
