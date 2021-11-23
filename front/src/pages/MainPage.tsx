@@ -14,11 +14,10 @@ import { useUserState } from '@src/contexts/UserContext';
 const MainPage = () => {
   const userState = useUserState();
 
-  const [userHabitatId] = useState(userState.data?.habitatId);
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
 
-  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useSideNavi(userHabitatId as number);
+  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useSideNavi(userState.data!.habitatId);
   const { habitatInfo } = useHabitatInfo(curHabitatId);
 
   const toggleMode = () => {
