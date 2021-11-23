@@ -20,9 +20,9 @@ export const multerUserOption = {
     shouldTransform: true,
     transforms: [
       {
-        id: 'resized',
+        id: 'profile',
         key: function (request, file, cb) {
-          cb(null, `${uuidv1().toString()}.webp`);
+          cb(null, `${uuidv1().toString()}-profile.webp`);
         },
         transform: function (req, file, cb) {
           cb(null, sharp().resize({ width: 100, height: 100 }).webp({ quality: 80 }));
@@ -31,6 +31,9 @@ export const multerUserOption = {
     ],
     bucket: 'spongebob-bucket',
     acl: 'public-read',
+    contentType: function (req, file, cb) {
+      cb(null, 'image/webp');
+    },
   }),
 };
 
@@ -42,12 +45,15 @@ export const multerTransFormOption = () => {
       shouldTransform: true,
       transforms: [
         {
-          id: 'resized',
+          id: 'feed',
           key: function (request, file, cb) {
-            cb(null, `${uuidKey}-resized.webp`);
+            cb(null, `${uuidKey}-feed.webp`);
           },
           transform: function (req, file, cb) {
-            cb(null, sharp().webp({ quality: 80 }));
+            cb(
+              null,
+              sharp({ animated: true }).resize({ width: 470, height: 500 }).webp({ quality: 80 })
+            );
           },
         },
         {
@@ -56,12 +62,15 @@ export const multerTransFormOption = () => {
             cb(null, `${uuidKey}.webp`);
           },
           transform: function (req, file, cb) {
-            cb(null, sharp().webp({ quality: 90 }));
+            cb(null, sharp({ animated: true }).webp({ quality: 90 }));
           },
         },
       ],
       bucket: 'spongebob-bucket',
       acl: 'public-read',
+      contentType: function (req, file, cb) {
+        cb(null, 'image/webp');
+      },
     }),
   };
 };
