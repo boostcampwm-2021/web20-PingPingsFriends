@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import Input from '@common/Input/Input';
@@ -10,9 +10,11 @@ import { HabitatList } from '@src/types/Habitat';
 import { ReactComponent as AddCircle } from '@assets/icons/add_circle.svg';
 import useModal from '@common/Modal/useModal';
 import Modal from '@common/Modal/Modal';
-import SelectMake from '@components/Register/SelectMake';
+import SpeciesMakeModal from '@components/Register/SpeciesMakeModal';
 import { RegisterState } from '@src/contexts/RegisterContext';
 import useForm, { Validation } from '@components/Register/useForm';
+import useGetFetch from '@hooks/useGetFetch';
+import HabitatsMakeModal from '@components/Register/HabitatsMakeModal';
 
 interface MoreInfoProps {
   handleMoreInfoClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -20,34 +22,18 @@ interface MoreInfoProps {
 
 const validations: Validation<RegisterState>[] = [
   { value: 'nickname', check: (values) => values['nickname'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
-  { value: 'habitat', check: (values) => values['habitat'].length === 0, message: '서식지를 선택해야합니다.' },
-  { value: 'category', check: (values) => values['category'].length === 0, message: '동물을 선택해야합니다.' },
+  { value: 'habitat', check: (values) => values['habitat']?.length === 0, message: '서식지를 선택해야합니다.' },
+  { value: 'species', check: (values) => values['species']?.length === 0, message: '동물을 선택해야합니다.' },
 ];
 
 const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
-  const [speciesOptions, setSpeciesOptions] = useState<SpeciesList>([]);
-  const [habitatOptions, setHabitatOptions] = useState<HabitatList>([]);
-  const { toggle, isShowing } = useModal();
-  useEffect(() => {
-    fetchSpecies();
-
-    async function fetchSpecies() {
-      const response = await fetch('/api/species/cursor');
-      const speciesData: SpeciesList = await response.json();
-      setSpeciesOptions(speciesData);
-    }
-  }, []);
-  useEffect(() => {
-    fetchHabitats();
-    async function fetchHabitats() {
-      const response = await fetch('/api/habitat?skip=1&take=10');
-      const habitats: HabitatList = await response.json();
-      setHabitatOptions(habitats);
-    }
-  }, []);
+  const speciesOptions = useGetFetch<SpeciesList>('/api/species/cursor');
+  const habitatOptions = useGetFetch<HabitatList>('/api/habitat?skip=1&take=10');
+  const { toggle: habitatToggle, isShowing: habitatIsShowing } = useModal();
+  const { toggle: speciesToggle, isShowing: speciesIsShowing } = useModal();
 
   const { registerState, handleChange, errors, flag } = useForm(validations);
-  const { nickname } = registerState;
+  const { nickname, speciesInfo, habitatInfo } = registerState;
 
   return (
     <MoreInfoBlock>
@@ -58,12 +44,14 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
       <Form>
         <Input name={'nickname'} placeholder={'유저 아이디'} value={nickname} handleChange={handleChange} errorMessage={errors.nickname} />
         <SelectContainer>
-          <Select name={'habitat'} id={'habitat'} options={habitatOptions} label={'서식지'} handleChange={handleChange} errorMessage={errors.habitat} />
-          <AddCircle onClick={toggle} />
+          {habitatOptions && <Select name={'habitat'} id={'habitat'} options={habitatOptions} label={'서식지'} handleChange={handleChange} errorMessage={errors.habitat} value={habitatInfo?.name} />}
+          <AddCircle onClick={habitatToggle} />
         </SelectContainer>
         <SelectContainer>
-          <Select name={'category'} id={'category'} options={speciesOptions} label={'동물 카테고리'} handleChange={handleChange} errorMessage={errors.category} />
-          <AddCircle />
+          {speciesOptions && (
+            <Select name={'species'} id={'species'} options={speciesOptions} label={'동물 카테고리'} handleChange={handleChange} errorMessage={errors.species} value={speciesInfo?.name} />
+          )}
+          <AddCircle onClick={speciesToggle} />
         </SelectContainer>
         <ButtonContainer>
           <Button borderColor={'none'} onClick={handleMoreInfoClick}>
@@ -74,8 +62,11 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
           </Button>
         </ButtonContainer>
       </Form>
-      <Modal hide={toggle} isShowing={isShowing}>
-        <SelectMake placeholder={'종류'} title={'animal'} />
+      <Modal hide={speciesToggle} isShowing={speciesIsShowing}>
+        <SpeciesMakeModal hide={speciesToggle} />
+      </Modal>
+      <Modal hide={habitatToggle} isShowing={habitatIsShowing}>
+        <HabitatsMakeModal hide={habitatToggle} />
       </Modal>
     </MoreInfoBlock>
   );
