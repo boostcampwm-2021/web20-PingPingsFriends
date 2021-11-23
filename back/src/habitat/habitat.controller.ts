@@ -1,20 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
-import { query } from 'winston';
-import { IsDuplicatedDto } from './dto/is-duplicated.dto';
 
 @Controller('habitat')
 @ApiTags('서식지 API')
@@ -46,7 +34,7 @@ export class HabitatController {
     description: '유저가 서식지를 추가한다.',
   })
   createHabitat(@Body() createHabitatDto: CreateHabitatDto) {
-    return this.habitatService.createHabitat(createHabitatDto, 1);
+    return this.habitatService.createHabitat(createHabitatDto, 3);
   }
 
   @Get()
