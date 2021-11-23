@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import useModal, { ModalEvent } from './useModal';
+import { Route } from 'react-router-dom';
 
 const ModalDiv = styled.div`
   ${flexBox('center', 'center')};
@@ -21,23 +22,35 @@ const ContentsDiv = styled.div`
 
 interface ModalProps {
   children: React.ReactNode;
-  isShowing: boolean;
-  hide: (event: ModalEvent) => void;
+  isShowing?: boolean;
+  hide?: (event: ModalEvent) => void;
+  routePath?: string;
 }
 
-const Modal = ({ children, isShowing, hide }: ModalProps) => {
+const Modal = ({ children, isShowing, hide, routePath }: ModalProps) => {
   const { $portal, contentRef } = useModal();
 
-  return isShowing
-    ? ReactDOM.createPortal(
+  return routePath ? (
+    <Route path={routePath}>
+      {ReactDOM.createPortal(
         <ModalDiv className={'modal-container'} onClick={hide}>
           <ContentsDiv className={'contents'} tabIndex={1} onKeyDown={hide} ref={contentRef}>
             {children}
           </ContentsDiv>
         </ModalDiv>,
         $portal
-      )
-    : null;
+      )}
+    </Route>
+  ) : isShowing ? (
+    ReactDOM.createPortal(
+      <ModalDiv className={'modal-container'} onClick={hide}>
+        <ContentsDiv className={'contents'} tabIndex={1} onKeyDown={hide} ref={contentRef}>
+          {children}
+        </ContentsDiv>
+      </ModalDiv>,
+      $portal
+    )
+  ) : null;
 };
 
 export default Modal;

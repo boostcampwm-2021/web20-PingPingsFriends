@@ -6,6 +6,7 @@ import defaultImage from '@assets/images/default_avatar.png';
 import useReadFileURL from '@hooks/useReadFileURL';
 import Button from '@components/Button/Button';
 import useFlag from '@components/Register/useFlag';
+import logo from '@assets/images/logo2.png';
 
 const ProfileImage = () => {
   const [profile, setProfile] = useState<File | null>(null);
@@ -37,7 +38,7 @@ const ProfileImage = () => {
   return (
     <ProfileImageBlock>
       <Header>
-        <div className={'logo'}>핑핑이와 친구들</div>
+        <img className={'logo'} src={logo} alt={'로고'} />
         <div className={'title'}>프로필 사진 등록하기</div>
       </Header>
       <Form>
@@ -70,7 +71,8 @@ const ProfileImageBlock = styled.div`
 const Header = styled.div`
   ${flexBox('space-between', 'flex-start', 'column')};
   .logo {
-    font-size: 18px;
+    height: 80px;
+    object-fit: cover;
   }
   .title {
     margin: 15px 0;

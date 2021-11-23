@@ -37,7 +37,9 @@ const useSideNavi = (userHabitatId: number) => {
     const queryMap = queryString(location.search);
     if ('habitat' in queryMap) {
       setCurHabitatId(+queryMap['habitat']);
+      return;
     }
+    setCurHabitatId(userHabitatId);
   }, [location]);
 
   const handleNextHabitat = () => {

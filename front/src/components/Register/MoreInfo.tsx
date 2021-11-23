@@ -6,6 +6,7 @@ import { InfoData } from '@components/Register/Register';
 import { ErrorType } from '@hooks/useForm';
 import Select from '@common/Select/Select';
 import Button from '@components/Button/Button';
+import logo from '@assets/images/logo2.png';
 
 interface MoreInfoProps {
   values: InfoData;
@@ -24,7 +25,7 @@ const MoreInfo = ({ values, flag, handleMoreInfoClick, errors, handleChange }: M
   return (
     <MoreInfoBlock>
       <Header>
-        <div className={'logo'}>핑핑이와 친구들</div>
+        <img className={'logo'} src={logo} alt={'로고'} />
         <div className={'title'}>추가 정보 입력하기</div>
       </Header>
       <Form>
@@ -55,7 +56,8 @@ const MoreInfoBlock = styled.div`
 const Header = styled.div`
   ${flexBox('space-between', 'flex-start', 'column')};
   .logo {
-    font-size: 18px;
+    height: 80px;
+    object-fit: cover;
   }
   .title {
     margin: 15px 0;
@@ -72,4 +74,5 @@ const Form = styled.form`
 const ButtonContainer = styled.div`
   ${flexBox('space-between', 'center')};
   width: 100%;
+  margin-top: 0;
 `;

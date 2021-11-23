@@ -17,26 +17,28 @@ import { formatDate } from '@lib/utils/time';
 
 export interface FeedProps {
   feedId: number;
+  userId: number;
   nickname: string;
   imageURLs: string[];
   text: string;
   createdTime: string;
   numOfHearts: string;
   is_heart: string;
+  avatarImage: string | undefined;
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart }: FeedProps) => {
+const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
-  const { isShowing: isDetailShowing, toggle: toggleDetailModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
-  const items = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
   const ago = formatDate(createdTime);
+  const items = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
+  const { toggle, routePath } = useModal(`detail/${feedId}`);
 
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
-        <Avatar size={'30px'} />
+        <Avatar size={'30px'} imgSrc={avatarImage} />
         <span>{nickname}</span>
         <DropBox start="right" offset={10} top={55} width={150} items={items}>
           <VertBtnSvg className="vert_btn button" />
@@ -47,7 +49,7 @@ const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHeart
       </FeedContents>
       <FeedInfoDiv>
         <HeartButton like={like} toggleLike={toggleLike} />
-        <CommentBtnSvg className={'button'} onClick={toggleDetailModal} />
+        <CommentBtnSvg className={'button'} onClick={toggle} />
         <span>13</span>
         <span className="time">{ago} 전</span>
       </FeedInfoDiv>
@@ -55,8 +57,8 @@ const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHeart
       <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
         <DeleteModal hide={toggleDeleteModal} />
       </Modal>
-      <Modal isShowing={isDetailShowing} hide={toggleDetailModal}>
-        <DetailModal feedId={feedId} nickname={nickname} text={text} imageURLs={imageURLs} hide={toggleDetailModal} ago={ago} like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
+      <Modal hide={toggle} routePath={routePath}>
+        <DetailModal feedId={feedId} nickname={nickname} text={text} imageURLs={imageURLs} hide={toggle} ago={ago} like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
       </Modal>
     </FeedContainerDiv>
   );

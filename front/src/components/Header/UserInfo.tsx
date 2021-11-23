@@ -20,13 +20,9 @@ const UserInfoBlock = styled.div`
   position: relative;
 `;
 
-interface UserInfoProps {
-  username?: string;
-}
-
-const UserInfo = ({ username = '핑핑이' }: UserInfoProps) => {
+const UserInfo = () => {
   const history = useHistory();
-  const { isShowing, toggle } = useModal();
+  const { isShowing, toggle, routePath } = useModal('login');
   const userState = useUserState();
   const userDispatch = useUserDispatch();
 
@@ -53,7 +49,7 @@ const UserInfo = ({ username = '핑핑이' }: UserInfoProps) => {
       <DropBox start={'right'} offset={0} top={parseInt(MagicNumber.HEADER_HEIGHT)} width={150} items={userState.data?.userId === -1 ? dropboxMenu : loginedDropboxMenu}>
         <HamburgerMenuSvg className={'button'} />
       </DropBox>
-      <Modal isShowing={isShowing} hide={toggle}>
+      <Modal isShowing={isShowing} hide={toggle} routePath={routePath}>
         <LoginModal hide={toggle} />
       </Modal>
     </UserInfoBlock>

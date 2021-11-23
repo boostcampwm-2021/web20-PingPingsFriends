@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
-export const DEFAULT_AVATAR = `default_avatar.png`;
+export const DEFAULT_AVATAR = `/default_avatar.png`;
 
 const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
   width: ${(props) => props.size};

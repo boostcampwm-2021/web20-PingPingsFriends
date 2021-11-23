@@ -5,6 +5,7 @@ import Input from '@common/Input/Input';
 import { UserData } from '@components/Register/Register';
 import { ErrorType } from '@hooks/useForm';
 import Button from '@components/Button/Button';
+import logo from '@assets/images/logo2.png';
 
 interface AccountInfoProps {
   values: UserData;
@@ -20,7 +21,7 @@ const AccountInfo = ({ values, handleChange, errors, flag, handleAccountClick }:
   return (
     <AccountInfoBlock>
       <Header>
-        <div className={'logo'}>핑핑이와 친구들</div>
+        <img className={'logo'} src={logo} alt={'로고'} />
         <div className={'title'}>계정 만들기</div>
       </Header>
       <Form>
@@ -50,7 +51,8 @@ const AccountInfoBlock = styled.div`
 const Header = styled.div`
   ${flexBox('space-between', 'flex-start', 'column')};
   .logo {
-    font-size: 18px;
+    height: 80px;
+    object-fit: cover;
   }
   .title {
     margin: 15px 0;

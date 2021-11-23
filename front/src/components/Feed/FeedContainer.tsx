@@ -9,6 +9,9 @@ import ScrollContainer from '@components/Feed/ScrollBoxContainer';
 import ViewPort from '@components/Feed/ViewPort';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useGetDiv } from '@hooks/useGetDiv';
+import useModal from '@common/Modal/useModal';
+import DetailContainer from '@components/DetailModal/DetailContainer';
+import useDetailFeed from '@components/Feed/useDetailFeed';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
@@ -23,6 +26,12 @@ const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   gap: 20px;
   overflow-y: scroll;
   z-index: 1;
+  .test {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+  }
 `;
 
 interface FeedScrollBoxProps {
@@ -43,10 +52,14 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
 const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
   const { feeds, offset, height, handleScroll } = useScroll(curHabitatId);
   const [root, rootRef] = useGetDiv();
+  const { toggle } = useModal('/detail/:id');
+
   const lazy = useIntersectionObserver(callback, {
     root: root,
     rootMargin: '300px 0px',
   });
+  const detail = useDetailFeed(feeds);
+
   return (
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={rootRef}>
       <ScrollContainer height={height}>
@@ -54,18 +67,21 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
           {feeds.map((feed) => (
             <Feed
               key={feed.post_id}
-              feedId={feed.user_id}
+              userId={feed.user_id}
+              feedId={feed.post_id}
               nickname={feed.nickname}
               imageURLs={feed.contents_url_array}
               text={feed.human_content}
               createdTime={feed.created_at}
               numOfHearts={feed.numOfHearts}
               is_heart={feed.is_heart}
+              avatarImage={feed.user_image_url}
               lazy={lazy}
             />
           ))}
         </ViewPort>
       </ScrollContainer>
+      {detail && <DetailContainer detailFeed={detail} toggle={toggle} />}
     </FeedContainerDiv>
   );
 };

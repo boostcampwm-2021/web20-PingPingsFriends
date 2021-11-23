@@ -9,11 +9,9 @@ const useHabitatInfo = (habitatId: number) => {
     fetch(`/api/habitat/${habitatId}`, { headers: { Accept: 'application/json' } })
       .then((res) => res.json())
       .then((data: HabitatInfo) => {
-        console.log(data);
         setHabitatInfo(data);
       })
       .catch((err) => {
-        console.log(err);
         setHabitatInfo(undefined);
       });
   }, [habitatId]);
