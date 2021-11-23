@@ -23,12 +23,13 @@ export interface FeedProps {
   text: string;
   createdTime: string;
   numOfHearts: number;
+  numOfComments: number;
   is_heart: number;
-  avatarImage: string | undefined;
+  avatarImage: string | null;
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage }: FeedProps) => {
+const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
@@ -50,7 +51,7 @@ const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHeart
       <FeedInfoDiv>
         <HeartButton like={like} toggleLike={toggleLike} />
         <CommentBtnSvg className={'button'} onClick={toggle} />
-        <span>13</span>
+        <span>{numOfComments}</span>
         <span className="time">{ago} 전</span>
       </FeedInfoDiv>
       <FeedTextDiv>{text}</FeedTextDiv>

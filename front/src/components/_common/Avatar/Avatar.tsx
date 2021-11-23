@@ -14,14 +14,14 @@ const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
 `;
 
 interface AvatarProps {
-  imgSrc?: string;
+  imgSrc?: string | null;
   size: string;
 }
 
 const Avatar = ({ imgSrc = DEFAULT_AVATAR, size }: AvatarProps) => {
   return (
     <AvatarBlock size={size}>
-      <img src={imgSrc} alt="아바타 이미지" />
+      <img src={imgSrc ? imgSrc : DEFAULT_AVATAR} alt="아바타 이미지" />
     </AvatarBlock>
   );
 };

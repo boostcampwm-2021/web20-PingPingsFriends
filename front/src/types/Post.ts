@@ -9,6 +9,7 @@ export interface Post {
   user_image_url: null | string;
   post_contents_urls: string;
   contents_url_array: string[];
+  numOfComments: number;
   numOfHearts: number;
   is_heart: number;
 }
