@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { UserFeeds } from '@src/types/User';
 import styled from 'styled-components';
 import { prettyScroll } from '@src/lib/styles/mixin';
-import MagicNumber from '@src/lib/styles/magic';
+import FeedCell from './FeedCell';
 
 interface UserFeedProps {
   userId: number | undefined;
@@ -10,8 +10,10 @@ interface UserFeedProps {
 
 const UserFeed = ({ userId }: UserFeedProps) => {
   const [feeds, setFeeds] = useState<UserFeeds>([]);
+
   useEffect(() => {
     const fetchUserFeed = async () => {
+      if (!userId) return;
       const res: Response = await fetch(`/api/posts/users/${userId}`);
       if (res.ok) {
         const data: UserFeeds = await res.json();
@@ -23,9 +25,7 @@ const UserFeed = ({ userId }: UserFeedProps) => {
   return (
     <FeedGridDiv>
       {feeds.map(({ postId, url }) => (
-        <FeedCell key={postId}>
-          <img src={url} key={postId} alt={'feed img'} />
-        </FeedCell>
+        <FeedCell key={postId} feedId={postId} url={url} />
       ))}
     </FeedGridDiv>
   );
@@ -41,14 +41,4 @@ const FeedGridDiv = styled.div`
   width: 100%;
   overflow-y: scroll;
   height: calc(100% - 180px);
-`;
-
-const FeedCell = styled.div`
-  width: 150px;
-  height: 150px;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 `;
