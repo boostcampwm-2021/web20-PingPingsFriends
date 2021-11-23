@@ -49,7 +49,7 @@ export class PostController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreatePostDto })
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption()))
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
     @UploadedFiles() files: FileDto[],
@@ -105,7 +105,7 @@ export class PostController {
   @ApiBody({ type: PatchPostRequestDto })
   @ApiCreatedResponse({ type: Boolean })
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption()))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
