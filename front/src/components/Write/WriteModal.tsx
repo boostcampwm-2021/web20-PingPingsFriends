@@ -9,7 +9,6 @@ import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.s
 import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useUserState } from '@src/contexts/UserContext';
-import Config from '@lib/constants/config';
 
 interface WriteModalProps {
   hide: ToggleHandler;
@@ -74,7 +73,7 @@ const WriteModal = ({ hide }: WriteModalProps) => {
 
   if (userState.data?.userId !== -1) {
     return (
-      <WriteForm method={'POST'} action={Config.BACK_HOST + '/api/posts'} id={'write'} onSubmit={handleFormSubmit}>
+      <WriteForm method={'POST'} action={'/api/posts'} id={'write'} onSubmit={handleFormSubmit}>
         <ContentsDiv>
           <FileInsertLabel htmlFor="input-contents">
             <AddContentsSvg />

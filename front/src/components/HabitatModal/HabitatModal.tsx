@@ -4,7 +4,6 @@ import { Palette } from '@lib/styles/Palette';
 import HabitatsContainer from './HabitatsContainer';
 import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
-import Config from '@lib/constants/config';
 import { HabitatLists } from '@src/types/Habitat';
 
 interface HabitatModalProps {
@@ -26,7 +25,7 @@ const HabitatModal = ({ hide }: HabitatModalProps) => {
     fetchHabitats();
 
     async function fetchHabitats() {
-      const response: Response = await fetch(`${Config.BACK_HOST}/api/habitat`);
+      const response: Response = await fetch(`/api/habitat`);
       const habitats: HabitatLists = await response.json();
       setHabitatInfos(habitats);
       return Promise;

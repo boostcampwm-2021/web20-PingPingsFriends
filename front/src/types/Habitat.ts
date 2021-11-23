@@ -14,7 +14,7 @@ type RecentUserInfo = {
 };
 type Leader = {
   userId: number;
-  nickname: string;
+  nickName: string;
   url: null | string;
 };
 export interface HabitatInfo {

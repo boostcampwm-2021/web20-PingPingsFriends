@@ -4,7 +4,6 @@ import MainPage from './pages/MainPage';
 import UserPage from './pages/UserPage';
 import RegisterPage from './pages/RegisterPage';
 import ExplorePage from './pages/ExplorePage';
-import TestPage from './pages/TestPage';
 import GlobalStyle from '@lib/styles/GlobalStyle';
 import '@lib/styles/fonts.css';
 import { UserProvider } from '@src/contexts/UserContext';
@@ -14,9 +13,6 @@ function App() {
     <>
       <GlobalStyle />
       <Switch>
-        <Route path="/test">
-          <TestPage />
-        </Route>
         <Route path="/register">
           <RegisterPage />
         </Route>

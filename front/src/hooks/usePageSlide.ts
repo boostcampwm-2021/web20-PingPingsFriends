@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { InfoData, UserData } from '@components/Register/Register';
-import Config from '@lib/constants/config';
 
 enum TEXT {
   NEXT = '다음',
@@ -48,7 +47,7 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: Use
       headers.append('Accept', 'application/json');
       headers.append('Content-Type', 'application/json');
 
-      const response: Response = await fetch(`${Config.BACK_HOST}/api/users/register`, {
+      const response: Response = await fetch(`/api/users/register`, {
         method: 'POST',
         headers,
         body,

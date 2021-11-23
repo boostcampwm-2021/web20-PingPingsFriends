@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Config from '@lib/constants/config';
 import { useHistory, useLocation } from 'react-router-dom';
 import queryString from '@lib/utils/queryString';
 
@@ -11,7 +10,7 @@ const useSideNavi = (userHabitatId: number) => {
   const location = useLocation();
 
   useEffect(() => {
-    fetch(Config.BACK_HOST + `/api/habitat/random?currentId=${curHabitatId}`)
+    fetch(`/api/habitat/random?currentId=${curHabitatId}`)
       .then((res) => res.json())
       .then((data: number[]) => {
         data.splice(historyIdx, 0, userHabitatId);
@@ -21,7 +20,7 @@ const useSideNavi = (userHabitatId: number) => {
 
   useEffect(() => {
     if (historyIdx === 1 || historyIdx === habitatList.length - 2) {
-      fetch(Config.BACK_HOST + `/api/habitat/random?currentId=${curHabitatId}`)
+      fetch(`/api/habitat/random?currentId=${curHabitatId}`)
         .then((res) => res.json())
         .then((data: number[]) => {
           if (historyIdx === 1) {

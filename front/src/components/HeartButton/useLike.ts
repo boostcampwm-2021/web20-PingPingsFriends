@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Config from '@lib/constants/config';
 
 export interface LikeProps {
   like: boolean;
@@ -15,13 +14,13 @@ export const useLike: UseLikeType = (isHeartString, feedId) => {
   const toggleLike = () => {
     if (like) {
       setLike(false);
-      fetch(`${Config.BACK_HOST}/api/hearts/${feedId}`, {
+      fetch(`/api/hearts/${feedId}`, {
         method: 'POST',
       });
       return;
     }
     setLike(true);
-    fetch(`${Config.BACK_HOST}/api/hearts/${feedId}`, {
+    fetch(`/api/hearts/${feedId}`, {
       method: 'DELETE',
     });
   };

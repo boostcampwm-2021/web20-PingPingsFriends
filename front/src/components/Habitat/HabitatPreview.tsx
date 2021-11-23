@@ -122,7 +122,7 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
                     <p>최근 활동 {compareTime(new Date(), new Date(habitatInfo.lastActTime))}</p>
                   </DetailDiv>
                   <TitleDiv radius={radius}>
-                    <p className="habitat_king">우두머리: {habitatInfo.leader?.nickname}</p>
+                    <p className="habitat_king">우두머리: {habitatInfo.leader?.nickName}</p>
                     <p className="habitat_name">{habitatInfo.habitat.name}</p>
                   </TitleDiv>
                 </>

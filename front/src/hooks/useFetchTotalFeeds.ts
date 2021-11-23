@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Posts, PostsResponse } from '@src/types/Post';
-import Config from '@lib/constants/config';
 
 const useFetchTotalFeeds = (curHabitatId: number): [Posts, Dispatch<SetStateAction<number | null>>] => {
   const [feeds, setFeeds] = useState<Posts>([] as Posts);
@@ -17,7 +16,7 @@ const useFetchTotalFeeds = (curHabitatId: number): [Posts, Dispatch<SetStateActi
 
     async function fetchData() {
       try {
-        const response: Response = await fetch(`${Config.BACK_HOST}/api/posts/habitats/${curHabitatId}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`);
+        const response: Response = await fetch(`/api/posts/habitats/${curHabitatId}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`);
         const data: PostsResponse = await response.json();
 
         if (!data.posts.length) {
