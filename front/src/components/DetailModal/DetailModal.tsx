@@ -18,7 +18,7 @@ interface DetailModalProps extends LikeProps {
   text: string;
   feedId: number;
   ago: string;
-  numOfHearts: string;
+  numOfHearts: number;
 }
 
 const DetailModal = ({ feedId, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {

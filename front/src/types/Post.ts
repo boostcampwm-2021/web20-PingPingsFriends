@@ -9,8 +9,8 @@ export interface Post {
   user_image_url: null | string;
   post_contents_urls: string;
   contents_url_array: string[];
-  numOfHearts: string;
-  is_heart: string;
+  numOfHearts: number;
+  is_heart: number;
 }
 
 export type Posts = Post[];

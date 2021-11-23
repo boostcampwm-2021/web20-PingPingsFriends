@@ -22,8 +22,8 @@ export interface FeedProps {
   imageURLs: string[];
   text: string;
   createdTime: string;
-  numOfHearts: string;
-  is_heart: string;
+  numOfHearts: number;
+  is_heart: number;
   avatarImage: string | undefined;
   lazy?: (node: HTMLDivElement) => void;
 }
