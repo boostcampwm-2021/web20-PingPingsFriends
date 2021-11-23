@@ -25,7 +25,6 @@ import {
   ApiConsumes,
   ApiCreatedResponse,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -33,7 +32,6 @@ import { GetPostResponseDto } from './dto/getPostResponse.dto';
 import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import FileDto from 'common/dto/transformFileDto';
-import { GetPostListResponseDto } from './dto/getPostListResponse.dto';
 
 @ApiTags('게시물 API')
 @Controller('posts')
