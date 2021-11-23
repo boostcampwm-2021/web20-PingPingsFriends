@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { InfoData, UserData } from '@components/Register/Register';
+import { useRegisterState } from '@src/contexts/RegisterContext';
 
 enum TEXT {
   NEXT = '다음',
@@ -9,15 +9,16 @@ enum TEXT {
 }
 type SlideDirection = 'right' | 'left' | '';
 
-const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: UserData, infoData: InfoData) => {
+const usePageSlide = () => {
   const history = useHistory();
   const [direction, setDirection] = useState<SlideDirection>('');
+  const registerState = useRegisterState();
 
   const handleAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
 
-    if (target.innerHTML === TEXT.NEXT && accountFlag) {
+    if (target.innerHTML === TEXT.NEXT && target.classList.contains('active')) {
       setDirection('right');
       return;
     }
@@ -34,14 +35,8 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: Use
       return;
     }
 
-    if (target.innerHTML === TEXT.REGISTER && moreInfoFlag) {
-      const body: BodyInit = JSON.stringify({
-        username: userData.username,
-        password: userData.password,
-        nickname: infoData.nickname,
-        habitatId: 1,
-        speciesId: 1,
-      });
+    if (target.innerHTML === TEXT.REGISTER && target.classList.contains('active')) {
+      const body: BodyInit = JSON.stringify(registerState);
 
       const headers = new Headers();
       headers.append('Accept', 'application/json');

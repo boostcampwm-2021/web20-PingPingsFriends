@@ -2,21 +2,26 @@ import React from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import Input from '@common/Input/Input';
-import { UserData } from '@components/Register/Register';
-import { ErrorType } from '@hooks/useForm';
 import Button from '@components/Button/Button';
 import logo from '@assets/images/logo2.png';
+import { RegisterState } from '@src/contexts/RegisterContext';
+import useForm, { Validation } from '@components/Register/useForm';
 
 interface AccountInfoProps {
-  values: UserData;
-  handleChange: React.ChangeEventHandler<HTMLInputElement>;
-  errors: ErrorType<UserData>;
-  flag: boolean;
   handleAccountClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const AccountInfo = ({ values, handleChange, errors, flag, handleAccountClick }: AccountInfoProps) => {
-  const { username, password, passwordConfirm } = values;
+const validations: Validation<RegisterState>[] = [
+  { value: 'username', check: (values) => values['username'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
+  { value: 'username', check: (values) => values['username'].length === 0, message: '아이디를 입력하세요.' },
+  { value: 'password', check: (values) => values['password'].length < 8, message: '비밀번호는 8자 이상이어야합니다.' },
+  { value: 'password', check: (values) => values['password'].length === 0, message: '비밀번호를 입력하세요.' },
+  { value: 'passwordConfirm', check: (values) => values['passwordConfirm'] !== values['password'], message: '입력하신 비밀번호와 일치하지 않습니다' },
+];
+
+const AccountInfo = ({ handleAccountClick }: AccountInfoProps) => {
+  const { registerState, errors, handleChange, flag } = useForm(validations);
+  const { username, password, passwordConfirm } = registerState;
 
   return (
     <AccountInfoBlock>
