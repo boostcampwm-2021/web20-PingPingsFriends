@@ -20,7 +20,7 @@ const useForm = (validations: Validation<RegisterState>[]) => {
     if (target.value[target.value.length - 1] === ' ') {
       return;
     }
-    registerDispatch({ type: 'CHANGE', payload: { eventName: target.name, value: target.value } });
+    registerDispatch({ type: 'CHANGE', payload: { [target.name]: target.value } });
   };
 
   useEffect(() => {

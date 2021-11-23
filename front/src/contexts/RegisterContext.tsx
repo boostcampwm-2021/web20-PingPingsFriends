@@ -5,15 +5,22 @@ export interface RegisterState {
   password: string;
   passwordConfirm: string;
   nickname: string;
-  habitat: string;
-  category: string;
+  habitat: string | null;
+  species: string | null;
+  speciesInfo?: {
+    name: string;
+    sound: string;
+  };
+  habitatInfo?: {
+    name: string;
+    color: string;
+  };
 }
 
 interface Action {
-  type: 'CHANGE';
+  type: 'CHANGE' | 'ADD_SPECIES' | 'ADD_HABITAT';
   payload: {
-    value: string;
-    eventName: string;
+    [propsName: string]: string;
   };
 }
 
@@ -22,14 +29,20 @@ export const initialState: RegisterState = {
   password: '',
   passwordConfirm: '',
   nickname: '',
-  habitat: '',
-  category: '',
+  habitat: null,
+  species: null,
 };
 
 const registerReducer = (state: RegisterState, { type, payload }: Action): RegisterState => {
   switch (type) {
     case 'CHANGE': {
-      return { ...state, [payload.eventName]: payload.value };
+      return { ...state, ...payload };
+    }
+    case 'ADD_SPECIES': {
+      return { ...state, speciesInfo: payload as { name: string; sound: string }, species: null };
+    }
+    case 'ADD_HABITAT': {
+      return { ...state, habitatInfo: payload as { name: string; color: string }, habitat: null };
     }
     default: {
       return state;
