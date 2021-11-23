@@ -5,10 +5,10 @@ import { useHistory } from 'react-router-dom';
 import { ToggleHandler } from '@common/Modal/useModal';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useGetDiv } from '@hooks/useGetDiv';
-import { HabitatLists } from '@src/types/Habitat';
+import { HabitatList } from '@src/types/Habitat';
 
 interface HabitatsContainerProps {
-  habitatInfos: HabitatLists;
+  habitatInfos: HabitatList;
   hide: ToggleHandler;
 }
 
