@@ -13,6 +13,8 @@ import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
+import { query } from 'winston';
+import { IsDuplicatedDto } from './dto/is-duplicated.dto';
 
 @Controller('habitat')
 @ApiTags('서식지 API')
@@ -27,6 +29,15 @@ export class HabitatController {
   @ApiCreatedResponse({ description: '랜덤서식지10개 배열반환.' })
   getRandomHabitat(@Query('currentId', ParseIntPipe) currentId: number) {
     return this.habitatService.getRandomHabitat(currentId);
+  }
+
+  @Get('isDuplicated')
+  @ApiOperation({
+    summary: '서식지 이름 중복 체크 API',
+    description: '서식지 이름 중복 여부 반환',
+  })
+  isDuplicate(@Query('name') name: string) {
+    return this.habitatService.isDuplicate(name);
   }
 
   @Post()
