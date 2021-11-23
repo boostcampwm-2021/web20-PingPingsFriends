@@ -23,7 +23,7 @@ const UserFeed = ({ userId }: UserFeedProps) => {
   return (
     <FeedGridDiv>
       {feeds.map(({ postId, url }) => (
-        <FeedCell>
+        <FeedCell key={postId}>
           <img src={url} key={postId} alt={'feed img'} />
         </FeedCell>
       ))}
