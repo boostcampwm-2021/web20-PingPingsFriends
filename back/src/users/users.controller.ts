@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -43,7 +45,7 @@ export class UsersController {
 
   @Get()
   @ApiOperation({
-    summary: '유저 조회',
+    summary: '유저 리스트 조회',
     description: '모든 유저를 조회하는 api입니다.',
   })
   @ApiCreatedResponse({
@@ -54,6 +56,15 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get(':userId')
+  @ApiOperation({
+    summary: '유저 정보 조회',
+    description: '유저의 정보를 조회하는 api입니다.',
+  })
+  async findOne(@Param('userId', ParseIntPipe) userId: number) {
+    return await this.usersService.findUser(userId);
+  }
+
   @Post('register')
   @ApiOperation({
     summary: '회원 가입',
@@ -62,7 +73,7 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: RegisterUserDto })
   @UseInterceptors(FileInterceptor('upload', multerUserOption))
-  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image: FileDto) {
+  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image?: FileDto) {
     return this.usersService.create(createUserDto, image);
   }
 
@@ -77,8 +88,7 @@ export class UsersController {
     type: User,
   })
   @UseGuards(AuthGuard('local'))
-  async login(@Request() req) {
-    console.log(req.user.id);
+  async login(@Request() req: any) {
     const { accessToken } = await this.authService.login(req.user);
     const user = await this.usersService.findUser(req.user.id);
 

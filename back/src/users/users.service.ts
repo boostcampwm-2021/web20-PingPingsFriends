@@ -21,6 +21,11 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto, image?: FileDto) {
+    const { name, sound, speciesId } = createUserDto;
+
+    if ((name || sound) && speciesId) return false;
+    if (!(name || sound) && !speciesId) return false;
+
     const foundUser = await this.userRepository.findOne({ username: createUserDto.username });
     if (foundUser) return false;
 
