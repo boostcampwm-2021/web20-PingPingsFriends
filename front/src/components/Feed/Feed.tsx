@@ -12,6 +12,7 @@ import { makeDropBoxMenu } from '@common/DropBox/makeDropBoxMenu';
 import Modal from '@common/Modal/Modal';
 import DeleteModal from '@components/DeleteModal/DeleteModal';
 import DetailModal from '@components/DetailModal/DetailModal';
+import WriteModal from '@components/Write/WriteModal';
 import useModal from '@common/Modal/useModal';
 import { formatDate } from '@lib/utils/time';
 import { useUserState } from '@src/contexts/UserContext';
@@ -31,9 +32,13 @@ export interface FeedProps {
 
 const Feed = ({ feedId, userId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
+  const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
-  const items = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
+  const items = makeDropBoxMenu([
+    { text: '글 수정', handler: toggleEditModal },
+    { text: '글 삭제', handler: toggleDeleteModal },
+  ]);
   const { toggle, routePath } = useModal(`detail/${feedId}`);
   const userState = useUserState();
 
@@ -59,7 +64,10 @@ const Feed = ({ feedId, userId, nickname, imageURLs, text, lazy, createdTime, nu
       </FeedInfoDiv>
       <FeedTextDiv>{text}</FeedTextDiv>
       <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
-        <DeleteModal hide={toggleDeleteModal} />
+        <DeleteModal hide={toggleDeleteModal} feedId={feedId} />
+      </Modal>
+      <Modal isShowing={isEditShowing} hide={toggleEditModal}>
+        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, feedId: feedId, text: text }} />
       </Modal>
       <Modal hide={toggle} routePath={routePath}>
         <DetailModal
