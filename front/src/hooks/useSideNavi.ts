@@ -10,12 +10,14 @@ const useSideNavi = (userHabitatId: number) => {
   const [curHabitatId, setCurHabitatId] = useState(+queryString(location.search)['habitat'] || userHabitatId);
 
   useEffect(() => {
-    fetch(`/api/habitat/random?currentId=${curHabitatId}`)
+    if (!userHabitatId) return;
+    fetch(`/api/habitat/random?currentId=${userHabitatId}`)
       .then((res) => res.json())
       .then((data: number[]) => {
         data.splice(historyIdx, 0, userHabitatId);
         setHabitatList(data);
       });
+    setCurHabitatId(userHabitatId);
   }, [userHabitatId]);
 
   useEffect(() => {
