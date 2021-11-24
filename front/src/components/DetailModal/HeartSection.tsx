@@ -10,14 +10,14 @@ const HeartDiv = styled.div`
 `;
 
 interface HeartSectionProps extends LikeProps {
-  numOfHearts: number;
+  numOfHearts: string;
 }
 
 const HeartSection = ({ like, toggleLike, numOfHearts }: HeartSectionProps) => {
   return (
     <HeartDiv>
       <HeartButton like={like} toggleLike={toggleLike} />
-      <span>{numOfHearts + (like ? 1 : 0)} likes</span>
+      <span>{+numOfHearts + (like ? 1 : 0)} likes</span>
     </HeartDiv>
   );
 };

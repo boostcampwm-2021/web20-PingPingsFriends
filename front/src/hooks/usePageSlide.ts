@@ -1,23 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useRegisterState } from '@src/contexts/RegisterContext';
+import { InfoData, UserData } from '@components/Register/Register';
 
+enum TEXT {
+  NEXT = '다음',
+  BACK = '뒤로 가기',
+  REGISTER = '가입',
+}
 type SlideDirection = 'right' | 'left' | '';
 
-const usePageSlide = () => {
+const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: UserData, infoData: InfoData) => {
   const history = useHistory();
   const [direction, setDirection] = useState<SlideDirection>('');
-  const registerState = useRegisterState();
 
   const handleAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
 
-    if (target.classList.contains('next-button') && target.classList.contains('active')) {
+    if (target.innerHTML === TEXT.NEXT && accountFlag) {
       setDirection('right');
       return;
     }
-    if (target.classList.contains('back-button')) {
+    if (target.innerHTML === TEXT.BACK) {
       history.push('/');
     }
   };
@@ -25,13 +29,19 @@ const usePageSlide = () => {
   const handleMoreInfoClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
-    if (target.classList.contains('back-button')) {
+    if (target.innerHTML === TEXT.BACK) {
       setDirection('left');
       return;
     }
 
-    if (target.classList.contains('register-button') && target.classList.contains('active')) {
-      const body: BodyInit = JSON.stringify(registerState);
+    if (target.innerHTML === TEXT.REGISTER && moreInfoFlag) {
+      const body: BodyInit = JSON.stringify({
+        username: userData.username,
+        password: userData.password,
+        nickname: infoData.nickname,
+        habitatId: 1,
+        speciesId: 1,
+      });
 
       const headers = new Headers();
       headers.append('Accept', 'application/json');

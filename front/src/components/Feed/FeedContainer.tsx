@@ -8,7 +8,7 @@ import useScroll from '@hooks/useScroll';
 import ScrollContainer from '@components/Feed/ScrollBoxContainer';
 import ViewPort from '@components/Feed/ViewPort';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useElementRef } from '@hooks/useElementRef';
+import { useGetDiv } from '@hooks/useGetDiv';
 import useModal from '@common/Modal/useModal';
 import DetailContainer from '@components/DetailModal/DetailContainer';
 import useDetailFeed from '@components/Feed/useDetailFeed';
@@ -51,17 +51,17 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
 
 const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
   const { feeds, offset, height, handleScroll } = useScroll(curHabitatId);
-  const [observerElement, observerRef] = useElementRef();
+  const [root, rootRef] = useGetDiv();
   const { toggle } = useModal('/detail/:id');
 
   const lazy = useIntersectionObserver(callback, {
-    root: observerElement,
+    root: root,
     rootMargin: '300px 0px',
   });
   const detail = useDetailFeed(feeds);
 
   return (
-    <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>
+    <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={rootRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
           {feeds.map((feed) => (
@@ -74,9 +74,8 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
               text={feed.human_content}
               createdTime={feed.created_at}
               numOfHearts={feed.numOfHearts}
-              numOfComments={feed.numOfComments}
               is_heart={feed.is_heart}
-              avatarImage={feed.user_image_url}
+              avatarImage={feed.user_image_url ?? undefined}
               lazy={lazy}
             />
           ))}

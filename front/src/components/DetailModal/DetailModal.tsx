@@ -19,7 +19,7 @@ interface DetailModalProps extends LikeProps {
   feedId: number;
   userId: number;
   ago: string;
-  numOfHearts: number;
+  numOfHearts: string;
   userImgURL: string | null;
 }
 

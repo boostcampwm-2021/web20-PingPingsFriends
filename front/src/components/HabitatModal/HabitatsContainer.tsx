@@ -4,17 +4,17 @@ import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { useHistory } from 'react-router-dom';
 import { ToggleHandler } from '@common/Modal/useModal';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useElementRef } from '@hooks/useElementRef';
-import { HabitatList } from '@src/types/Habitat';
+import { useGetDiv } from '@hooks/useGetDiv';
+import { HabitatLists } from '@src/types/Habitat';
 
 interface HabitatsContainerProps {
-  habitatInfos: HabitatList;
+  habitatInfos: HabitatLists;
   hide: ToggleHandler;
 }
 
 const HabitatsContainer = ({ habitatInfos }: HabitatsContainerProps) => {
   const history = useHistory();
-  const [observerElement, observerRef] = useElementRef();
+  const [root, rootRef] = useGetDiv();
 
   const observeHabitats: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
@@ -26,11 +26,11 @@ const HabitatsContainer = ({ habitatInfos }: HabitatsContainerProps) => {
   };
 
   const options = {
-    root: observerElement,
+    root: root,
     rootMargin: '200px 0px',
   };
 
-  const bottomRef = useIntersectionObserver(observeHabitats, options);
+  const observerRef = useIntersectionObserver(observeHabitats, options);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
@@ -38,13 +38,13 @@ const HabitatsContainer = ({ habitatInfos }: HabitatsContainerProps) => {
   };
 
   return (
-    <HabitatsContainerDiv ref={observerRef}>
+    <HabitatsContainerDiv ref={rootRef}>
       {habitatInfos.map((habitatInfo) => (
         <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick}>
           {habitatInfo.name}
         </HabitatBlockDiv>
       ))}
-      <div ref={bottomRef} />
+      <div ref={observerRef} />
     </HabitatsContainerDiv>
   );
 };

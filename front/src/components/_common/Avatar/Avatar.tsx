@@ -15,16 +15,16 @@ const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
 `;
 
 interface AvatarProps {
-  imgSrc?: string | null;
+  imgSrc?: string;
   size: string;
   userId?: number;
 }
 
-const Avatar = ({ imgSrc, size, userId }: AvatarProps) => {
+const Avatar = ({ imgSrc = DEFAULT_AVATAR, size, userId }: AvatarProps) => {
   return (
     <AvatarBlock size={size}>
       <Link to={userId && userId !== -1 ? `/user/${userId}` : ''}>
-        <img src={imgSrc ?? DEFAULT_AVATAR} alt="아바타 이미지" />
+        <img src={imgSrc} alt="아바타 이미지" />
       </Link>
     </AvatarBlock>
   );

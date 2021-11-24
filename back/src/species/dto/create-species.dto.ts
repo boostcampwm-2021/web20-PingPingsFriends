@@ -4,9 +4,9 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateSpeciesDto {
   @ApiProperty()
   @IsNotEmpty()
-  sound: string;
+  name: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  name: string;
+  sound: string;
 }

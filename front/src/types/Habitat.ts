@@ -4,7 +4,7 @@ export interface Habitat {
   color: string;
   leaderId: string | number;
 }
-export type HabitatList = Habitat[];
+export type HabitatLists = Habitat[];
 
 type RecentUserInfo = {
   userId: string;
