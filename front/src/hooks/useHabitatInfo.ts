@@ -6,6 +6,7 @@ const useHabitatInfo = (habitatId: number) => {
 
   useEffect(() => {
     if (habitatId === undefined) return;
+    setHabitatInfo(undefined);
     fetch(`/api/habitat/${habitatId}`, { headers: { Accept: 'application/json' } })
       .then((res) => res.json())
       .then((data: HabitatInfo) => {
