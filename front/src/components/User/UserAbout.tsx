@@ -18,9 +18,9 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
       <TextDiv>
         {userInfo ? (
           <>
-            <p className={'nickname'}>{userInfo?.nickname}</p>
-            <p>{userInfo?.speciesId}</p>
-            <p>서식지:{userInfo?.habitatId}</p>
+            <p className={'nickname'}>{userInfo.nickname}</p>
+            <p>{userInfo.speciesId}</p>
+            <p>서식지:{userInfo.habitatId}</p>
           </>
         ) : (
           '존재하지 않는 사용자입니다'
