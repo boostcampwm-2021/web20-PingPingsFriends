@@ -3,11 +3,11 @@ import { useHistory, useLocation } from 'react-router-dom';
 import queryString from '@lib/utils/queryString';
 
 const useSideNavi = (userHabitatId: number) => {
-  const [curHabitatId, setCurHabitatId] = useState(userHabitatId);
   const [habitatList, setHabitatList] = useState<number[]>([]);
   const [historyIdx, setHistoryIdx] = useState<number>(3);
   const history = useHistory();
   const location = useLocation();
+  const [curHabitatId, setCurHabitatId] = useState(+queryString(location.search)['habitat'] || userHabitatId);
 
   useEffect(() => {
     fetch(`/api/habitat/random?currentId=${curHabitatId}`)

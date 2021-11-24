@@ -1,27 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { InfoData, UserData } from '@components/Register/Register';
+import { useRegisterState } from '@src/contexts/RegisterContext';
 
-enum TEXT {
-  NEXT = '다음',
-  BACK = '뒤로 가기',
-  REGISTER = '가입',
-}
 type SlideDirection = 'right' | 'left' | '';
 
-const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: UserData, infoData: InfoData) => {
+const usePageSlide = () => {
   const history = useHistory();
   const [direction, setDirection] = useState<SlideDirection>('');
+  const registerState = useRegisterState();
 
   const handleAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
 
-    if (target.innerHTML === TEXT.NEXT && accountFlag) {
+    if (target.classList.contains('next-button') && target.classList.contains('active')) {
       setDirection('right');
       return;
     }
-    if (target.innerHTML === TEXT.BACK) {
+    if (target.classList.contains('back-button')) {
       history.push('/');
     }
   };
@@ -29,19 +25,13 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: Use
   const handleMoreInfoClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
-    if (target.innerHTML === TEXT.BACK) {
+    if (target.classList.contains('back-button')) {
       setDirection('left');
       return;
     }
 
-    if (target.innerHTML === TEXT.REGISTER && moreInfoFlag) {
-      const body: BodyInit = JSON.stringify({
-        username: userData.username,
-        password: userData.password,
-        nickname: infoData.nickname,
-        habitatId: 1,
-        speciesId: 1,
-      });
+    if (target.classList.contains('register-button') && target.classList.contains('active')) {
+      const body: BodyInit = JSON.stringify(registerState);
 
       const headers = new Headers();
       headers.append('Accept', 'application/json');

@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
-import { Heart } from 'src/hearts/entities/heart.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
 import { Connection } from 'typeorm';
 import { convertStringToNumber } from 'utils/value-converter.util';
@@ -43,21 +42,14 @@ export class PostService {
     }
   }
 
-  async findAllByUserId(userId: number, lastId?: number) {
-    return await this.postRepository
-      .createQueryBuilder('post')
-      .select('post.id', 'postId')
-      .innerJoin('post.postContents', 'postContents')
-      .innerJoin('postContents.content', 'content')
-      .addSelect('min(content.url)', 'url')
-      .addSelect(
-        (qb) => qb.select('count(*)').from(Heart, 'heart').where('heart.postId = post.id'),
-        'numOfHearts'
-      )
-      .where('post.userId = :userId', { userId })
-      .groupBy('post.id')
-      .orderBy('post.id', 'DESC')
-      .getRawMany();
+  async findAllByUserId(userId: number, lastId?: number): Promise<UserPostDto[]> {
+    const results = await this.postRepository.findAllByUserId(userId, lastId);
+
+    results.forEach((result: UserPostDto) =>
+      convertStringToNumber(result, 'numOfHearts', 'numOfComments')
+    );
+
+    return results;
   }
 
   async getFirstPage(habitatId: number, userId: number) {
@@ -96,8 +88,8 @@ export class PostService {
 
   private getBaseQuery() {
     return `
-    select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.url as user_image_url
-    , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.mime_type) as post_contents_types
+    select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.contents_id, c.url as user_image_url
+    , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.contents_id) as post_contents_ids
     , (select count(*) from heart where post_id = p.post_id) as numOfHearts
     , (select count(*) from comment where post_id = p.post_id) as numOfComments
     , (select count(*) from heart where post_id = p.post_id and user_id = ?) as is_heart
@@ -201,13 +193,13 @@ export class PostService {
     try {
       const contentsIds = post.postContents.map((postContent) => postContent.contentsId);
 
-      contentRepository.delete(contentsIds);
+      await contentRepository.delete(contentsIds);
 
-      if (post.comments.length) commentRepository.remove(post.comments);
+      if (post.comments.length) await commentRepository.remove(post.comments);
 
-      postRepository.delete(post.id);
+      await postRepository.delete(post.id);
 
-      queryRunner.commitTransaction();
+      await queryRunner.commitTransaction();
 
       return true;
     } catch (err) {

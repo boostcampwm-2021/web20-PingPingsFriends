@@ -12,8 +12,10 @@ import { makeDropBoxMenu } from '@common/DropBox/makeDropBoxMenu';
 import Modal from '@common/Modal/Modal';
 import DeleteModal from '@components/DeleteModal/DeleteModal';
 import DetailModal from '@components/DetailModal/DetailModal';
+import WriteModal from '@components/Write/WriteModal';
 import useModal from '@common/Modal/useModal';
 import { formatDate } from '@lib/utils/time';
+import { useUserState } from '@src/contexts/UserContext';
 
 export interface FeedProps {
   feedId: number;
@@ -22,27 +24,35 @@ export interface FeedProps {
   imageURLs: string[];
   text: string;
   createdTime: string;
-  numOfHearts: string;
-  is_heart: string;
-  avatarImage: string | undefined;
+  numOfHearts: number;
+  numOfComments: number;
+  is_heart: number;
+  avatarImage: string | null;
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage }: FeedProps) => {
+const Feed = ({ feedId, userId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
+  const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
-  const items = makeDropBoxMenu([{ text: '글 수정' }, { text: '글 삭제', handler: toggleDeleteModal }]);
+  const items = makeDropBoxMenu([
+    { text: '글 수정', handler: toggleEditModal },
+    { text: '글 삭제', handler: toggleDeleteModal },
+  ]);
   const { toggle, routePath } = useModal(`detail/${feedId}`);
+  const userState = useUserState();
 
   return (
     <FeedContainerDiv>
       <FeedHeaderDiv>
-        <Avatar size={'30px'} imgSrc={avatarImage} />
+        <Avatar size={'30px'} imgSrc={avatarImage} userId={userId} />
         <span>{nickname}</span>
-        <DropBox start="right" offset={10} top={55} width={150} items={items}>
-          <VertBtnSvg className="vert_btn button" />
-        </DropBox>
+        {userState.data?.userId === userId && (
+          <DropBox start="right" offset={10} top={55} width={150} items={items}>
+            <VertBtnSvg className="vert_btn button" />
+          </DropBox>
+        )}
       </FeedHeaderDiv>
       <FeedContents>
         <Carousel imageURLs={imageURLs} lazy={lazy} />
@@ -50,15 +60,30 @@ const Feed = ({ feedId, nickname, imageURLs, text, lazy, createdTime, numOfHeart
       <FeedInfoDiv>
         <HeartButton like={like} toggleLike={toggleLike} />
         <CommentBtnSvg className={'button'} onClick={toggle} />
-        <span>13</span>
+        <span>{numOfComments}</span>
         <span className="time">{ago} 전</span>
       </FeedInfoDiv>
       <FeedTextDiv>{text}</FeedTextDiv>
       <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
-        <DeleteModal hide={toggleDeleteModal} />
+        <DeleteModal hide={toggleDeleteModal} feedId={feedId} />
+      </Modal>
+      <Modal isShowing={isEditShowing} hide={toggleEditModal}>
+        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, feedId: feedId, text: text }} />
       </Modal>
       <Modal hide={toggle} routePath={routePath}>
-        <DetailModal feedId={feedId} nickname={nickname} text={text} imageURLs={imageURLs} hide={toggle} ago={ago} like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
+        <DetailModal
+          userId={userId}
+          userImgURL={avatarImage ?? null}
+          feedId={feedId}
+          nickname={nickname}
+          text={text}
+          imageURLs={imageURLs}
+          hide={toggle}
+          ago={ago}
+          like={like}
+          toggleLike={toggleLike}
+          numOfHearts={numOfHearts}
+        />
       </Modal>
     </FeedContainerDiv>
   );

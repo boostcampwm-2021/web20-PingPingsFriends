@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 type GetFeed = [Element, (node: HTMLDivElement) => void];
 
-export const useGetDiv = (): GetFeed => {
+export const useElementRef = (): GetFeed => {
   const [div, setDiv] = useState<Element | null>(null);
 
   const ref = useCallback((node: HTMLDivElement): void => {
