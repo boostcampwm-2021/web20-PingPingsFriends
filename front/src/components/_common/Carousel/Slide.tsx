@@ -32,7 +32,7 @@ const Slide = ({ src, rect, lazy }: SlideProps) => {
           <source src={src} type={'video/mp4'} />
         </Video>
       ) : (
-        <SlideImg src={lazy ? '/default_avatar.png' : src.replace('.webp', '-feed.webp')} onError={handleErrorImg} data-src={src.replace('.webp', '-feed.webp')} rect={rect} alt="피드 이미지" />
+        <SlideImg src={lazy ? '/default_avatar.png' : src} onError={handleErrorImg} data-src={src} rect={rect} alt="피드 이미지" />
       )}
     </div>
   );
