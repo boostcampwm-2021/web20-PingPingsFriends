@@ -31,6 +31,8 @@ const DetailContainer = ({ detailFeed, toggle }: DetailContainerProps) => {
       <div className={'contents'}>
         <DetailModal
           feedId={detailFeed.post_id}
+          userId={detailFeed.user_id}
+          userImgURL={detailFeed.user_image_url}
           imageURLs={detailFeed.contents_url_array}
           text={detailFeed.human_content}
           nickname={detailFeed.nickname}

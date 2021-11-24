@@ -76,7 +76,7 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
               numOfHearts={feed.numOfHearts}
               numOfComments={feed.numOfComments}
               is_heart={feed.is_heart}
-              avatarImage={feed.user_image_url}
+              avatarImage={feed.user_image_url ?? undefined}
               lazy={lazy}
             />
           ))}

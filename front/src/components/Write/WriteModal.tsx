@@ -9,12 +9,20 @@ import { ReactComponent as CancelBtnSvg } from '../../assets/icons/cancel_btn3.s
 import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useUserState } from '@src/contexts/UserContext';
+import { useHistory } from 'react-router';
+
+interface InitState {
+  contents: string[];
+  text: string;
+  feedId: number;
+}
 
 interface WriteModalProps {
   hide: ToggleHandler;
+  initState?: InitState;
 }
 
-const WriteModal = ({ hide }: WriteModalProps) => {
+const WriteModal = ({ hide, initState }: WriteModalProps) => {
   const MAX_CONTENTS = 8;
   const MAX_TEXT = 500;
   const [contents, setContents] = useState<File[]>([]);
@@ -26,6 +34,7 @@ const WriteModal = ({ hide }: WriteModalProps) => {
     setContents([...contents, ...inputContents].slice(0, 8));
   };
   const userState = useUserState();
+  const history = useHistory();
 
   const removeContents = (targetIdx: number) => {
     const newContents = contents.filter((file, idx) => idx !== targetIdx);
@@ -49,12 +58,17 @@ const WriteModal = ({ hide }: WriteModalProps) => {
       if (!userState.data) {
         return;
       }
-      const response: Response = await fetch(form.action, { method: 'POST', headers: { Authorization: `Bearer ${userState.data.accessToken}` }, body: data });
+      let response: Response;
+      if (initState) {
+        response = await fetch(`/api/posts/${initState.feedId}`, { method: 'PATCH', headers: { Authorization: `Bearer ${userState.data.accessToken}` } });
+      } else response = await fetch(form.action, { method: 'POST', headers: { Authorization: `Bearer ${userState.data.accessToken}` }, body: data });
+
       const result = await response.json();
 
       if (result) {
         // 글쓰기 성공
-        hide('off');
+        if (initState) history.go(0);
+        else hide('off');
       } else {
         // 글쓰기 실패
       }
@@ -63,6 +77,23 @@ const WriteModal = ({ hide }: WriteModalProps) => {
     }
   };
 
+  useEffect(() => {
+    if (!initState) return;
+    const urlToFile = async (url: string) => {
+      const res: Response = await fetch(url);
+      const buf: ArrayBuffer = await res.arrayBuffer();
+      const file: File = new File([buf], url);
+      return file;
+    };
+
+    const setInitContents = async () => {
+      const initContents = await Promise.all(initState.contents.map((url) => urlToFile(url)));
+      setContents(initContents);
+    };
+
+    setText(initState.text);
+    // setInitContents();
+  }, [initState]);
   useEffect(() => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   }, [contents]);

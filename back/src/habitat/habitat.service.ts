@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
 import { PostRepository } from 'src/post/post.repository';
 import { UserRepository } from 'src/users/user.repository';
@@ -13,7 +13,9 @@ export class HabitatService {
     private readonly userRepository: UserRepository
   ) {}
 
-  createHabitat(createHabitatDto: CreateHabitatDto, leaderId: number) {
+  async createHabitat(createHabitatDto: CreateHabitatDto, leaderId: number) {
+    if (await this.isDuplicate(createHabitatDto.name))
+      throw new HttpException('Error: 중복된 서식지 이름입니다.', HttpStatus.BAD_REQUEST);
     return this.habitatRepository.createHabitat(createHabitatDto, leaderId);
   }
 
@@ -42,5 +44,10 @@ export class HabitatService {
   async getRandomHabitat(currentId: number) {
     const result = await this.habitatRepository.selectRandomHabitat(currentId);
     return result.map(({ id }) => id);
+  }
+
+  async isDuplicate(name: string) {
+    const result = await this.habitatRepository.findOne({ name });
+    return result ? true : false;
   }
 }
