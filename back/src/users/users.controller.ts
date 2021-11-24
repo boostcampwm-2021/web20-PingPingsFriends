@@ -104,15 +104,8 @@ export class UsersController {
   })
   @UseGuards(AuthGuard('local'))
   async login(@Req() req, @Res({ passthrough: true }) res: Response) {
-    console.log(req.cookies);
-    const { accessToken, refreshToken, refreshTokenExpireAt } = await this.authService.login(
-      req.user
-    );
-    const user = await this.usersService.createRefreshToken(
-      req.user.id,
-      refreshToken,
-      refreshTokenExpireAt
-    );
+    const { accessToken, refreshToken } = await this.authService.login(req.user);
+    const user = await this.usersService.createRefreshToken(req.user.id, refreshToken);
     res.cookie('refreshToken', refreshToken);
     return { accessToken, user };
   }
