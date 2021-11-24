@@ -7,6 +7,7 @@ import { ReactComponent as EditSvg } from '@assets/icons/edit.svg';
 import { ReactComponent as CancelBtnSvg } from '@assets/icons/cancel_btn3.svg';
 import { ReactComponent as CheckBtnSvg } from '@assets/icons/check_circle.svg';
 import { Palette } from '@src/lib/styles/Palette';
+import { useUserState } from '@src/contexts/UserContext';
 
 const CommentDiv = styled.div<{ isEdited: boolean }>`
   ${flexBox('flex-start', 'flex-start')};
@@ -71,19 +72,17 @@ const DeleteHoverDiv = styled.div`
 interface CommentProps {
   nickname: string;
   comment: string;
-  avatar?: string;
-  userId: string;
+  avatar: string | null;
+  userId: number;
+  createdAt: string;
   toggleEditMode: (text: string) => void;
 }
 
 type Mode = 'edit' | 'delete' | 'normal';
 
 const Comment = ({ nickname, comment, avatar, userId, toggleEditMode }: CommentProps) => {
-  const myId = 'me';
-  // const [editMode, setEditMode] = useState(false);
-  // const [isConfirm, setConfirm] = useState(false);
   const [mode, setMode] = useState<Mode>('normal');
-
+  const { data } = useUserState();
   const handleEditBtnClick = () => {
     setMode(mode === 'edit' ? 'normal' : 'edit');
     // setEditMode(!editMode);
@@ -101,12 +100,12 @@ const Comment = ({ nickname, comment, avatar, userId, toggleEditMode }: CommentP
 
   return (
     <CommentDiv isEdited={mode === 'edit'}>
-      <Avatar size={'30px'} />
+      <Avatar size={'30px'} imgSrc={avatar} />
       <TextDiv>
         <span>{nickname}</span>
         <p>{comment}</p>
       </TextDiv>
-      {myId === userId && (
+      {data?.userId === userId && (
         <ControlDiv>
           <EditSvg onClick={handleEditBtnClick} />
           <DeleteSvg onClick={handleDeleteBtnClick} />
