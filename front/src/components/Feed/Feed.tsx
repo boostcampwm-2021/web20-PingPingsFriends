@@ -28,10 +28,11 @@ export interface FeedProps {
   numOfComments: number;
   is_heart: number;
   avatarImage: string | null;
+  contentIds: number[];
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, userId, nickname, imageURLs, text, lazy, createdTime, numOfHearts, is_heart, avatarImage, numOfComments }: FeedProps) => {
+const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, text, lazy, createdTime, numOfHearts, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
@@ -68,7 +69,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, text, lazy, createdTime, nu
         <DeleteModal hide={toggleDeleteModal} feedId={feedId} />
       </Modal>
       <Modal isShowing={isEditShowing} hide={toggleEditModal}>
-        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, feedId: feedId, text: text }} />
+        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, contentIds: contentIds, feedId: feedId, text: text }} />
       </Modal>
       <Modal hide={toggle} routePath={routePath}>
         <DetailModal
