@@ -32,6 +32,7 @@ import { GetPostResponseDto } from './dto/getPostResponse.dto';
 import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
 import FileDto from 'common/dto/transformFileDto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt-auth.guard';
 
 @ApiTags('게시물 API')
 @Controller('posts')
@@ -54,7 +55,7 @@ export class PostController {
     @Req() req
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return await this.postService.create(createPostDto, contentsInfos, req.user?.userId);
+    return await this.postService.create(createPostDto, contentsInfos, req.user.userId);
   }
 
   @Get('habitats/:habitatId')
@@ -62,12 +63,15 @@ export class PostController {
     summary: '게시글 리스트 조회',
     description: '페이지 별 게시글 리스트를 조회하는 api입니다.',
   })
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'lastPostId', type: 'number', required: false })
+  @UseGuards(OptionalJwtAuthGuard)
   async findAll(
     @Param('habitatId', ParseIntPipe) habitatId: number,
+    @Req() req,
     @Query('lastPostId', ParseOptionalIntPipe) lastPostId?: number
   ) {
-    return await this.postService.findAll(habitatId, lastPostId);
+    return await this.postService.findAll(habitatId, req.user, lastPostId);
   }
 
   @Get('users/:userId')
@@ -89,8 +93,10 @@ export class PostController {
     description: '특정 게시글을 조회하는 api입니다.',
   })
   @ApiCreatedResponse({ type: GetPostResponseDto })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.postService.findOne(id);
+  @ApiBearerAuth('access-token')
+  @UseGuards(OptionalJwtAuthGuard)
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    return this.postService.findOne(id, req.user);
   }
 
   @Patch(':id')

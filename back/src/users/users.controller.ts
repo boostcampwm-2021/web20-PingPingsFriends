@@ -67,8 +67,17 @@ export class UsersController {
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Req() req) {
+  async getUserInfo(@Req() req) {
     return await this.usersService.getUserInfo(req.user.userId);
+  }
+
+  @Get(':userId')
+  @ApiOperation({
+    summary: '유저 정보 조회',
+    description: '유저의 정보를 조회하는 api입니다.',
+  })
+  async findOne(@Param('userId', ParseIntPipe) userId: number) {
+    return await this.usersService.findUserInfo(userId);
   }
 
   @Post('register')
