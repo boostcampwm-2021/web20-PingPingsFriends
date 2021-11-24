@@ -29,8 +29,8 @@ const FeedCell = ({ url, feedId }: FeedCellProps) => {
   };
 
   return (
-    <CellDiv onClick={handleClick}>
-      <img src={url} alt={'feed thumbnail'} />
+    <CellDiv>
+      <img src={url.replace('.webp', '-feed.webp')} alt={'feed thumbnail'} onClick={handleClick} />
       <Modal hide={toggle} isShowing={isShowing}>
         {feedInfo ? (
           <DetailModal

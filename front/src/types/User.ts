@@ -4,12 +4,21 @@ interface Content {
   mimeType: string;
 }
 
+interface Species {
+  name: string;
+}
+
+interface Habitat {
+  id: number;
+  name: string;
+}
+
 export interface User {
   id: number;
   username: string;
   nickname: string;
-  habitatId: number | null;
-  speciesId: null | number;
+  habitat: Habitat | null;
+  species: Species | null;
   content: null | Content;
 }
 

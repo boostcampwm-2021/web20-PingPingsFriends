@@ -12,7 +12,6 @@ import { Post } from './entities/post.entity';
 import { PostRepository } from './post.repository';
 
 const LIMIT_NUMBER = 10;
-const USER_ID = 12;
 
 @Injectable()
 export class PostService {
@@ -26,15 +25,16 @@ export class PostService {
     return await this.postRepository.createPost(createPostDto, contentsInfos, userId);
   }
 
-  async findAll(habitatId: number, lastPostId?: number) {
+  async findAll(habitatId: number, user: any, lastPostId?: number) {
+    const userId = user ? user.userId : user;
     if (!lastPostId) {
-      const result = await this.getFirstPage(habitatId, USER_ID);
+      const result = await this.getFirstPage(habitatId, userId);
       result.posts.forEach((post) =>
         convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
       );
       return result;
     } else {
-      const result = await this.getNextPage(habitatId, USER_ID, lastPostId);
+      const result = await this.getNextPage(habitatId, userId, lastPostId);
       result.posts.forEach((post) =>
         convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
       );
@@ -52,7 +52,7 @@ export class PostService {
     return results;
   }
 
-  async getFirstPage(habitatId: number, userId: number) {
+  async getFirstPage(habitatId: number, userId: number | false) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
     let whereSql = `where p.habitat_id = ? 
@@ -67,7 +67,7 @@ export class PostService {
     return { posts };
   }
 
-  async getNextPage(habitatId: number, userId: number, oldLastPostId: number) {
+  async getNextPage(habitatId: number, userId: number | false, oldLastPostId: number) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
     let whereSql = `where p.habitat_id = ?
@@ -109,11 +109,12 @@ export class PostService {
     `;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user: any) {
+    const userId = user ? user.userId : user;
     let baseSql = this.getBaseQuery();
     let whereSql = `where p.post_id = ?;
     `;
-    return (await this.connection.query(baseSql + whereSql, [USER_ID, id]))[0];
+    return (await this.connection.query(baseSql + whereSql, [userId, id]))[0];
   }
 
   async update(

@@ -11,10 +11,6 @@ const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined }) => {
   const [totalFeed, setLastFeedId] = useFetchTotalFeeds(habitatInfo!.habitat.id);
   const [isReady, setReady] = useState(false);
 
-  useEffect(() => {
-    console.log(totalFeed);
-  }, [totalFeed]);
-
   return (
     <ExploreDiv ref={divRef} color={habitatInfo?.habitat.color} onAnimationEnd={() => setReady(true)}>
       {isReady &&
