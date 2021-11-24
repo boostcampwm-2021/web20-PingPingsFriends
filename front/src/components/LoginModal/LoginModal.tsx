@@ -41,7 +41,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
           nickname: data.user.nickname,
           habitatId: data.user.habitatId,
           speciesId: data.user.speciesId,
-          url: data.user.content.url,
+          url: data.user.content?.url,
           accessToken: data.accessToken,
         };
         userDispatch({ type: 'GET_USER_SUCCESS', data: newState });

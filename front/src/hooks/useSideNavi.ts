@@ -10,12 +10,14 @@ const useSideNavi = (userHabitatId: number) => {
   const [curHabitatId, setCurHabitatId] = useState(+queryString(location.search)['habitat'] || userHabitatId);
 
   useEffect(() => {
-    fetch(`/api/habitat/random?currentId=${curHabitatId}`)
+    if (!userHabitatId) return;
+    fetch(`/api/habitat/random?currentId=${userHabitatId}`)
       .then((res) => res.json())
       .then((data: number[]) => {
         data.splice(historyIdx, 0, userHabitatId);
         setHabitatList(data);
       });
+    setCurHabitatId(userHabitatId);
   }, [userHabitatId]);
 
   useEffect(() => {
@@ -43,13 +45,14 @@ const useSideNavi = (userHabitatId: number) => {
   }, [location]);
 
   const handleNextHabitat = () => {
+    if (historyIdx + 1 === habitatList.length) return;
     history.push(`/?habitat=${habitatList[historyIdx + 1]}`);
     setHistoryIdx(historyIdx + 1);
   };
 
   const handlePrevHabitat = () => {
+    if (historyIdx - 1 === 0) return;
     history.push(`/?habitat=${habitatList[historyIdx - 1]}`);
-    setCurHabitatId(habitatList[historyIdx - 1]);
     setHistoryIdx(historyIdx - 1);
   };
 

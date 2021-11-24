@@ -37,7 +37,7 @@ const UserInfo = () => {
     {
       text: '로그아웃',
       handler: () => {
-        userDispatch({ type: 'GET_USER_SUCCESS', data: initialState.data! });
+        userDispatch({ type: 'LOGOUT_USER' });
       },
     },
   ]);

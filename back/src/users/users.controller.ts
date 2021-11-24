@@ -60,13 +60,15 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':userId')
+  @Get('info')
   @ApiOperation({
     summary: '유저 정보 조회',
     description: '유저의 정보를 조회하는 api입니다.',
   })
-  async findOne(@Param('userId', ParseIntPipe) userId: number) {
-    return await this.usersService.findUserInfo(userId);
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async findOne(@Req() req) {
+    return await this.usersService.getUserInfo(req.user.userId);
   }
 
   @Post('register')
@@ -103,8 +105,7 @@ export class UsersController {
       refreshTokenExpireAt
     );
     res.cookie('refreshToken', refreshToken);
-    console.log(res.getHeaders());
-    return { accessToken, user, refreshToken };
+    return { accessToken, user };
   }
 
   @Patch('contents')
