@@ -43,13 +43,14 @@ const useSideNavi = (userHabitatId: number) => {
   }, [location]);
 
   const handleNextHabitat = () => {
+    if (historyIdx + 1 === habitatList.length) return;
     history.push(`/?habitat=${habitatList[historyIdx + 1]}`);
     setHistoryIdx(historyIdx + 1);
   };
 
   const handlePrevHabitat = () => {
+    if (historyIdx - 1 === 0) return;
     history.push(`/?habitat=${habitatList[historyIdx - 1]}`);
-    setCurHabitatId(habitatList[historyIdx - 1]);
     setHistoryIdx(historyIdx - 1);
   };
 
