@@ -11,12 +11,17 @@ const useSideNavi = (userHabitatId: number) => {
 
   useEffect(() => {
     if (!userHabitatId) return;
-    fetch(`/api/habitat/random?currentId=${userHabitatId}`)
-      .then((res) => res.json())
-      .then((data: number[]) => {
-        data.splice(historyIdx, 0, userHabitatId);
-        setHabitatList(data);
-      });
+    else if (habitatList.length) {
+      const newList = habitatList.splice(historyIdx, 0, userHabitatId);
+      setHabitatList(newList);
+    } else {
+      fetch(`/api/habitat/random?currentId=${userHabitatId}`)
+        .then((res) => res.json())
+        .then((data: number[]) => {
+          data.splice(historyIdx, 0, userHabitatId);
+          setHabitatList(data);
+        });
+    }
     setCurHabitatId(userHabitatId);
   }, [userHabitatId]);
 
