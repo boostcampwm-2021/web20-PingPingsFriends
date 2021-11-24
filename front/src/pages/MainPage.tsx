@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Header from '@components/Header/Header';
 import FeedContainer from '@components/Feed/FeedContainer';
 import FeedFAB from '@components/Feed/FeedFAB';
@@ -11,16 +11,11 @@ import { flexBox } from '@lib/styles/mixin';
 import useHabitatInfo from '@hooks/useHabitatInfo';
 import MagicNumber from '@src/lib/styles/magic';
 import { useUserState } from '@src/contexts/UserContext';
-
-const useValidateUser = () => {
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) return;
-  console.log(accessToken);
-};
+import useValidateUser from '@src/hooks/useValidateUser';
 
 const MainPage = () => {
-  useValidateUser();
   const userState = useUserState();
+  useValidateUser(userState);
 
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);

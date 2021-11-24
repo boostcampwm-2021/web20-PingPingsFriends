@@ -9,7 +9,7 @@ export interface User {
   url: string;
   accessToken?: string;
 }
-interface UserState {
+export interface UserState {
   loading: boolean;
   data: User | null;
   error: any | null;
