@@ -45,7 +45,7 @@ const UserInfo = () => {
   return (
     <UserInfoBlock>
       <div className={'username'}>{userState.data?.nickname}</div>
-      <Avatar size={'30px'} imgSrc={userState.data?.url} />
+      <Avatar size={'30px'} imgSrc={userState.data?.url} userId={userState.data?.userId} />
       <DropBox start={'right'} offset={0} top={parseInt(MagicNumber.HEADER_HEIGHT)} width={150} items={userState.data?.userId === -1 ? dropboxMenu : loginedDropboxMenu}>
         <HamburgerMenuSvg className={'button'} />
       </DropBox>

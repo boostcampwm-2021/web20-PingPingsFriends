@@ -17,11 +17,13 @@ interface DetailModalProps extends LikeProps {
   nickname: string;
   text: string;
   feedId: number;
+  userId: number;
   ago: string;
   numOfHearts: string;
+  userImgURL: string | null;
 }
 
-const DetailModal = ({ feedId, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {
+const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {
   const [editMode, setEditMode] = useState(false);
   const [inputText, setInputText] = useState('');
   const toggleEditMode = (text: string) => {
@@ -45,7 +47,7 @@ const DetailModal = ({ feedId, imageURLs, nickname, text, ago, like, toggleLike,
       <CommunicateDiv>
         <FeedInfoDiv>
           <FeedAuthorDiv>
-            <Avatar size={'35px'} />
+            <Avatar size={'35px'} userId={userId} imgSrc={userImgURL ?? undefined} />
             <span className={'nickname'}>{nickname}</span>
             <span className={'time'}>{ago} 전</span>
           </FeedAuthorDiv>
