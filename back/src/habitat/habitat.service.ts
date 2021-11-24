@@ -26,11 +26,12 @@ export class HabitatService {
   async getHabitatInfo(habitatId: number) {
     const habitat = await this.habitatRepository.findOneOrFail(habitatId);
     const [userCnt, postCnt, recentUsers, leader] = await Promise.all([
-      this.userRepository.count({ habitat }),
-      this.postRepository.count({ habitat }),
-      this.postRepository.selectTopPostUserInfo(3),
+      this.userRepository.count({ habitatId }), // 서식지에 속해있는 유저 조회
+      this.postRepository.count({ habitatId }), // 서식지에 속해있는 post 조회
+      this.postRepository.selectTopPostUserInfo(3, habitatId), //
       this.userRepository.selectUserInfo(habitat.leaderId),
     ]);
+    console.log(userCnt, postCnt, recentUsers, leader);
     return {
       habitat,
       leader: leader.length ? leader[0] : null,

@@ -35,15 +35,15 @@ export class PostRepository extends Repository<Post> {
     return await this.save(post);
   }
 
-  async selectTopPostUserInfo(take: number) {
+  async selectTopPostUserInfo(take: number, habitatId: number) {
     return this.query(
       `SELECT p.created_at as createdAt ,u.nickname as nickName ,c.url FROM post p 
     JOIN user u ON u.user_id = p.user_id
     LEFT JOIN contents c ON c.contents_id = u.contents_id
     WHERE p.habitat_id = ?
-    ORDER BY p.created_at desc
+    ORDER BY p.post_id desc
     LIMIT 3`,
-      [3]
+      [habitatId]
     );
   }
 
