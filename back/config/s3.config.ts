@@ -14,27 +14,40 @@ const s3 = new AWS.S3({
   },
 });
 
-export const multerUserOption = {
-  storage: multerS3({
-    s3,
-    shouldTransform: true,
-    transforms: [
-      {
-        id: 'profile',
-        key: function (request, file, cb) {
-          cb(null, `${uuidv1().toString()}-profile.webp`);
+export const multerUserOption = () => {
+  const uuidKey = uuidv1().toString();
+
+  return {
+    storage: multerS3({
+      s3,
+      shouldTransform: true,
+      transforms: [
+        {
+          id: 'origin',
+          key: function (request, file, cb) {
+            cb(null, `${uuidKey}.webp`);
+          },
+          transform: function (req, file, cb) {
+            cb(null, sharp({ animated: true }).webp({ quality: 90 }));
+          },
         },
-        transform: function (req, file, cb) {
-          cb(null, sharp().resize({ width: 100, height: 100 }).webp({ quality: 80 }));
+        {
+          id: 'profile',
+          key: function (request, file, cb) {
+            cb(null, `${uuidv1().toString()}-profile.webp`);
+          },
+          transform: function (req, file, cb) {
+            cb(null, sharp().resize({ width: 100, height: 100 }).webp({ quality: 80 }));
+          },
         },
+      ],
+      bucket: 'spongebob-bucket',
+      acl: 'public-read',
+      contentType: function (req, file, cb) {
+        cb(null, 'image/webp');
       },
-    ],
-    bucket: 'spongebob-bucket',
-    acl: 'public-read',
-    contentType: function (req, file, cb) {
-      cb(null, 'image/webp');
-    },
-  }),
+    }),
+  };
 };
 
 export const multerTransFormOption = () => {
@@ -45,6 +58,15 @@ export const multerTransFormOption = () => {
       shouldTransform: true,
       transforms: [
         {
+          id: 'origin',
+          key: function (request, file, cb) {
+            cb(null, `${uuidKey}.webp`);
+          },
+          transform: function (req, file, cb) {
+            cb(null, sharp({ animated: true }).webp({ quality: 90 }));
+          },
+        },
+        {
           id: 'feed',
           key: function (request, file, cb) {
             cb(null, `${uuidKey}-feed.webp`);
@@ -54,15 +76,6 @@ export const multerTransFormOption = () => {
               null,
               sharp({ animated: true }).resize({ width: 470, height: 500 }).webp({ quality: 80 })
             );
-          },
-        },
-        {
-          id: 'origin',
-          key: function (request, file, cb) {
-            cb(null, `${uuidKey}.webp`);
-          },
-          transform: function (req, file, cb) {
-            cb(null, sharp({ animated: true }).webp({ quality: 90 }));
           },
         },
       ],

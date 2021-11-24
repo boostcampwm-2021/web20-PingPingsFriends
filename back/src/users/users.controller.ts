@@ -76,8 +76,8 @@ export class UsersController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: RegisterUserDto })
-  @UseInterceptors(FileInterceptor('upload', multerUserOption))
-  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image?: FileDto) {
+  @UseInterceptors(FileInterceptor('upload', multerUserOption()))
+  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image: FileDto) {
     return this.usersService.create(createUserDto, image);
   }
 
@@ -116,7 +116,7 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('upload', multerUserOption))
+  @UseInterceptors(FileInterceptor('upload', multerUserOption()))
   updateImage(@UploadedFile() image: FileDto, @Req() req: any) {
     return this.usersService.updateImage(image, req.user);
   }

@@ -1,0 +1,21 @@
+version: "3"
+services:
+  db: 
+    image: mysql:5.7.36 
+    restart: always
+    command: --lower_case_table_names=1 # 대소문자 구분
+    container_name: testdb-root 
+    ports:
+      - "3308:3306" # (컨테이너 외부:컨테이너 내부) 
+    environment: # -e 옵션
+      - MYSQL_DATABASE=sns
+      - MYSQL_ROOT_PASSWORD=1234 
+      - TZ=Asia/Seoul
+
+    command: # 명령어 실행
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - testdb-root-volume:/var/lib/mysql
+volumes:
+  testdb-root-volume:
