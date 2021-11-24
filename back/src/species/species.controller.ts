@@ -17,14 +17,7 @@ export class SpeciesController {
   create(@Body() createSpeciesDto: CreateSpeciesDto) {
     return this.speciesService.create(createSpeciesDto);
   }
-  @Get('isDuplicated')
-  @ApiOperation({
-    summary: '동물 카테고리 이름 중복 체크 API',
-    description: '동물 카테고리 이름 중복 여부 반환',
-  })
-  isDuplicate(@Query('name') name: string) {
-    return this.speciesService.isDuplicate(name);
-  }
+
   // @Get()
   // @ApiOperation({
   //   summary: '동물 카테고리 조회 API',

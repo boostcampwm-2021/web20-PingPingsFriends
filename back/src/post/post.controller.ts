@@ -25,13 +25,15 @@ import {
   ApiConsumes,
   ApiCreatedResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { GetPostResponseDto } from './dto/getPostResponse.dto';
 import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
+import { AuthGuard } from '@nestjs/passport';
 import FileDto from 'common/dto/transformFileDto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { GetPostListResponseDto } from './dto/getPostListResponse.dto';
 
 @ApiTags('게시물 API')
 @Controller('posts')
@@ -46,15 +48,15 @@ export class PostController {
   @ApiBearerAuth('access-token')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreatePostDto })
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption()))
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
     @UploadedFiles() files: FileDto[],
     @Req() req
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return await this.postService.create(createPostDto, contentsInfos, req.user?.userId);
+    return await this.postService.create(createPostDto, contentsInfos, req.user.userId);
   }
 
   @Get('habitats/:habitatId')
@@ -102,8 +104,8 @@ export class PostController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: PatchPostRequestDto })
   @ApiCreatedResponse({ type: Boolean })
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption()))
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
@@ -119,7 +121,7 @@ export class PostController {
     description: '게시물을 삭제하는 api입니다.',
   })
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @ApiCreatedResponse({ type: Boolean })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postService.remove(id);

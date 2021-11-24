@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -19,22 +29,13 @@ export class HabitatController {
     return this.habitatService.getRandomHabitat(currentId);
   }
 
-  @Get('isDuplicated')
-  @ApiOperation({
-    summary: '서식지 이름 중복 체크 API',
-    description: '서식지 이름 중복 여부 반환',
-  })
-  isDuplicate(@Query('name') name: string) {
-    return this.habitatService.isDuplicate(name);
-  }
-
   @Post()
   @ApiOperation({
     summary: '서식지 추가 API',
     description: '유저가 서식지를 추가한다.',
   })
   createHabitat(@Body() createHabitatDto: CreateHabitatDto) {
-    return this.habitatService.createHabitat(createHabitatDto, 3);
+    return this.habitatService.createHabitat(createHabitatDto, 1);
   }
 
   @Get()

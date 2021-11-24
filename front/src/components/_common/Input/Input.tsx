@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 
-const InputContainer = styled.div`
+const InputContainer = styled.div<{ widthStyle?: number }>`
   position: relative;
-  width: 250px;
+  width: ${({ widthStyle }) => (widthStyle ? widthStyle : 250)}px;
   height: 45px;
 `;
 
@@ -46,15 +46,16 @@ interface InputProps {
   handleChange?: React.ChangeEventHandler<HTMLInputElement>;
   type?: 'text' | 'password';
   errorMessage?: string;
+  width?: number;
 }
 
-const Input = ({ type = 'text', placeholder, value, handleChange, name, errorMessage }: InputProps) => {
+const Input = ({ type = 'text', placeholder, value, handleChange, name, errorMessage, width }: InputProps) => {
   const [error, setError] = useState('');
   const handleBlur = () => {
     setError(errorMessage!);
   };
   return (
-    <InputContainer>
+    <InputContainer widthStyle={width}>
       <StyledInput error={error} name={name} type={type} required value={value} onChange={handleChange} onBlur={handleBlur} />
       <StyledPlaceHolderDiv>{placeholder}</StyledPlaceHolderDiv>
       <ErrorMessageDiv>{error}</ErrorMessageDiv>

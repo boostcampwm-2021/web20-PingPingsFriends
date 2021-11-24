@@ -13,8 +13,8 @@ import MagicNumber from '@src/lib/styles/magic';
 import { useUserState } from '@src/contexts/UserContext';
 const MainPage = () => {
   const userState = useUserState();
-
   const [userHabitatId] = useState(userState.data?.habitatId);
+
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
 
