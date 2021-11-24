@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 export const DEFAULT_AVATAR = `/default_avatar.png`;
 
 const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
@@ -16,12 +17,15 @@ const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
 interface AvatarProps {
   imgSrc?: string;
   size: string;
+  userId?: number;
 }
 
-const Avatar = ({ imgSrc = DEFAULT_AVATAR, size }: AvatarProps) => {
+const Avatar = ({ imgSrc = DEFAULT_AVATAR, size, userId }: AvatarProps) => {
   return (
     <AvatarBlock size={size}>
-      <img src={imgSrc} alt="아바타 이미지" />
+      <Link to={userId && userId !== -1 ? `/user/${userId}` : ''}>
+        <img src={imgSrc} alt="아바타 이미지" />
+      </Link>
     </AvatarBlock>
   );
 };
