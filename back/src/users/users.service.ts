@@ -17,6 +17,18 @@ export class UsersService {
     return this.userRepository.find({ relations: ['likedPost'] });
   }
 
+  async getUserInfo(userId: number) {
+    const user = await this.userRepository.findOne(userId, { relations: ['content'] });
+
+    if (!user)
+      throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
+
+    delete user.password;
+    delete user.contentsId;
+
+    return user;
+  }
+
   async findUserInfo(userId: number) {
     return await this.userRepository
       .createQueryBuilder('user')
