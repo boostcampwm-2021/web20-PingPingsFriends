@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Register from '@components/Register/Register';
 import { flexBox } from '@lib/styles/mixin';
-import { RegisterInfoProvider } from '@src/contexts/RegisterContext';
 
 const RegisterPageDiv = styled.div`
   width: 100vw;
@@ -13,9 +12,7 @@ const RegisterPageDiv = styled.div`
 const RegisterPage = () => {
   return (
     <RegisterPageDiv>
-      <RegisterInfoProvider>
-        <Register />
-      </RegisterInfoProvider>
+      <Register />
     </RegisterPageDiv>
   );
 };

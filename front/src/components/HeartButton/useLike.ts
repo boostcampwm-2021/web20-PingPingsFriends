@@ -5,10 +5,10 @@ export interface LikeProps {
   toggleLike: () => void;
 }
 
-export type UseLikeType = (isHeartString: number, feedId: number) => [like: boolean, toggleLike: () => void];
+export type UseLikeType = (isHeartString: string, feedId: number) => [like: boolean, toggleLike: () => void];
 
 export const useLike: UseLikeType = (isHeartString, feedId) => {
-  const isHeart = isHeartString !== 0;
+  const isHeart = isHeartString !== '0';
   const [like, setLike] = useState(isHeart);
 
   const toggleLike = () => {

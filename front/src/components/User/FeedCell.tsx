@@ -15,7 +15,7 @@ interface FeedCellProps {
 const FeedCell = ({ url, feedId }: FeedCellProps) => {
   const { toggle, isShowing } = useModal();
   const [feedInfo, setFeedInfo] = useState<Post | null>(null);
-  const [like, toggleLike] = useLike(feedInfo ? feedInfo.is_heart : 0, feedId);
+  const [like, toggleLike] = useLike(feedInfo ? feedInfo.is_heart : '', feedId);
 
   const handleClick = async (e: React.MouseEvent) => {
     const res: Response = await fetch(`/api/posts/${feedId}`);
