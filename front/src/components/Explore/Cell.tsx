@@ -21,7 +21,7 @@ const Cell = ({ feedInfo, url }: { feedInfo: Post; url: string }) => {
       <ExploreImg src={url} alt={feedInfo.post_id.toString()} />
       {isHover && (
         <HoverDiv>
-          <Avatar imgSrc={feedInfo.user_image_url ?? undefined} size={'50px'} />
+          <Avatar imgSrc={feedInfo.user_image_url} size={'50px'} />
           <p>{feedInfo.nickname}</p>
           <p>{formatDate(feedInfo.created_at)} 전</p>
           <div>
