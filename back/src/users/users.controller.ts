@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   Request,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,6 +22,7 @@ import {
   ApiConsumes,
   ApiBody,
   ApiBearerAuth,
+  ApiCookieAuth,
 } from '@nestjs/swagger';
 import { userResponseDto } from './dto/userResponseDto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -34,6 +36,8 @@ import { User } from './entities/user.entity';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { FileUploadDto } from 'common/dto/file-upload.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Response } from 'express';
 
 @ApiTags('유저 API')
 @Controller('users')
@@ -62,7 +66,7 @@ export class UsersController {
     description: '유저의 정보를 조회하는 api입니다.',
   })
   async findOne(@Param('userId', ParseIntPipe) userId: number) {
-    return await this.usersService.findUser(userId);
+    return await this.usersService.findUserInfo(userId);
   }
 
   @Post('register')
@@ -88,11 +92,19 @@ export class UsersController {
     type: User,
   })
   @UseGuards(AuthGuard('local'))
-  async login(@Request() req: any) {
-    const { accessToken } = await this.authService.login(req.user);
-    const user = await this.usersService.findUser(req.user.id);
-
-    return { accessToken, user };
+  async login(@Req() req, @Res({ passthrough: true }) res: Response) {
+    console.log(req.cookies);
+    const { accessToken, refreshToken, refreshTokenExpireAt } = await this.authService.login(
+      req.user
+    );
+    const user = await this.usersService.createRefreshToken(
+      req.user.id,
+      refreshToken,
+      refreshTokenExpireAt
+    );
+    res.cookie('refreshToken', refreshToken);
+    console.log(res.getHeaders());
+    return { accessToken, user, refreshToken };
   }
 
   @Patch('contents')
@@ -103,9 +115,21 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('upload', multerUserOption()))
   updateImage(@UploadedFile() image: FileDto, @Req() req: any) {
     return this.usersService.updateImage(image, req.user);
+  }
+
+  @Get('auth/refresh')
+  @ApiOperation({
+    summary: '유저 액세스 토큰 재발급',
+    description: '유저의 액세스 토큰을 재발급하는 api입니다.',
+  })
+  @ApiCookieAuth()
+  async refresh(@Req() req) {
+    const refreshToken = req.cookies['refreshToken'];
+    const accessToken = await this.authService.refreshAccessToken(refreshToken);
+    return { accessToken };
   }
 }
