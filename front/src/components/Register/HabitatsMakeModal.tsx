@@ -31,16 +31,16 @@ const HabitatsMakeModal = ({ hide }: SpeciesMakeModalProps) => {
 
   const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
-    if (target.innerHTML === '중복 체크' && target.classList.contains('active')) {
+    if (target.classList.contains('duplicate-check-button') && target.classList.contains('active')) {
       // await fetch('/api/');
       return;
     }
-    if (target.innerHTML === '만들기' && target.classList.contains('active')) {
+    if (target.classList.contains('make-button') && target.classList.contains('active')) {
       registerDispatch({ type: 'ADD_HABITAT', payload: { name: habitat, color } });
       hide('off');
       return;
     }
-    if (target.innerHTML === '취소') {
+    if (target.classList.contains('cancel-button')) {
       hide('off');
     }
   };
@@ -49,12 +49,12 @@ const HabitatsMakeModal = ({ hide }: SpeciesMakeModalProps) => {
     <TestBlock onClick={handleClick}>
       <TitleContainer>
         <Input name={'habitat'} placeholder={'서식지 이름'} value={habitat} handleChange={handleChange} />
-        <Button className={`${habitat.length ? 'active' : ''}`}>중복 체크</Button>
+        <Button className={`${habitat.length ? 'active' : ''} duplicate-check-button`}>중복 체크</Button>
       </TitleContainer>
       <Input width={360} name={'color'} placeholder={'색상'} value={color} handleChange={handleChange} />
       <ButtonContainer>
-        <Button>취소</Button>
-        <Button className={`${habitat.length && color.length ? 'active' : ''}`}>만들기</Button>
+        <Button className={'cancel-button'}>취소</Button>
+        <Button className={`${habitat.length && color.length ? 'active' : ''} make-button`}>만들기</Button>
       </ButtonContainer>
     </TestBlock>
   );
