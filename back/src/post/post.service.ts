@@ -89,7 +89,7 @@ export class PostService {
   private getBaseQuery() {
     return `
     select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.contents_id, c.url as user_image_url
-    , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.contents_id) as post_contents_ids
+    , group_concat(distinct pcc.url order by pcc.contents_id) as post_contents_urls, group_concat(distinct pcc.contents_id order by pcc.contents_id) as post_contents_ids
     , (select count(*) from heart where post_id = p.post_id) as numOfHearts
     , (select count(*) from comment where post_id = p.post_id) as numOfComments
     , (select count(*) from heart where post_id = p.post_id and user_id = ?) as is_heart
@@ -104,7 +104,7 @@ export class PostService {
   private getTailQuery() {
     return `
     group by p.post_id
-    order by p.post_id desc 
+    order by p.created_at desc 
     limit ? ;
     `;
   }
@@ -132,9 +132,7 @@ export class PostService {
       relations: ['postContents'],
     });
 
-    const updateIds = JSON.parse(patchPostRequestDto.contentIds).map(
-      (info: { id: string }, i: number) => info.id
-    );
+    const updateIds = patchPostRequestDto.contentIds.split(',').map((id: string, i: number) => id);
 
     const excludedPostContents = post.postContents.filter(
       (postContent, i) => !updateIds.includes('' + postContent.contentsId)
@@ -146,18 +144,18 @@ export class PostService {
     )
       return false;
 
-    queryRunner.startTransaction();
+    await queryRunner.startTransaction();
 
     try {
       const excludedContentIds = excludedPostContents.map((postContent) => postContent.contentsId);
-      await contentRepository.delete(excludedContentIds);
+      if (excludedContentIds.length) await contentRepository.delete(excludedContentIds);
 
       const contents = await contentRepository.save(contentsInfos);
       const postContents = contents.map((content) => ({
         postId: post.id,
         contentsId: content.id,
       }));
-      postContentRepository.insert(postContents);
+      await postContentRepository.insert(postContents);
 
       await postRepository.update(id, {
         humanContent: patchPostRequestDto.humanContent,
@@ -168,6 +166,7 @@ export class PostService {
 
       return true;
     } catch (err) {
+      console.log(err);
       await queryRunner.rollbackTransaction();
       return false;
     } finally {
