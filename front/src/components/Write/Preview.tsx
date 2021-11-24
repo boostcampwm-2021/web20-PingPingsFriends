@@ -18,7 +18,10 @@ const Preview = ({ file, idx, removeContents }: { file: File | string; idx: numb
     }
   };
   useEffect(() => {
-    if (typeof file === 'string') return;
+    if (typeof file === 'string') {
+      setLoading(true);
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       contentsURL.current = e.target?.result as string;
