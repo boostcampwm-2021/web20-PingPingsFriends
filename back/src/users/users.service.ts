@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import FileDto from 'common/dto/transformFileDto';
 import { RefreshTokenRepository } from 'src/refresh-tokens/refresh-token.repository';
 import { getPartialFileInfo } from 'utils/s3.util';
@@ -27,7 +27,7 @@ export class UsersService {
         'habitat.id',
         'habitat.name',
         'species.name',
-        'content.url',
+        'content',
       ])
       .leftJoin('user.habitat', 'habitat')
       .leftJoin('user.species', 'species')
@@ -37,9 +37,10 @@ export class UsersService {
   }
 
   async createRefreshToken(userId: number, refreshToken: string, expireAt: Date) {
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOne(userId, { relations: ['content'] });
 
-    if (!user) return false;
+    if (!user)
+      throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
 
     delete user.password;
     delete user.contentsId;
@@ -52,8 +53,8 @@ export class UsersService {
   async create(createUserDto: CreateUserDto, image?: FileDto) {
     const { name, sound, speciesId } = createUserDto;
 
-    if ((name || sound) && speciesId) return false;
-    if (!(name || sound) && !speciesId) return false;
+    if (((name || sound) && speciesId) || (!(name || sound) && !speciesId))
+      throw new HttpException('Error: 잘못된 접근입니다.', HttpStatus.BAD_REQUEST);
 
     const foundUser = await this.userRepository.findOne({ username: createUserDto.username });
     if (foundUser) return false;
