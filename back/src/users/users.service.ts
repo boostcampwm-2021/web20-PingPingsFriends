@@ -54,10 +54,11 @@ export class UsersService {
     const { name, sound, speciesId } = createUserDto;
 
     if (((name || sound) && speciesId) || (!(name || sound) && !speciesId))
-      throw new HttpException('Error: 잘못된 접근입니다.', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
 
     const foundUser = await this.userRepository.findOne({ username: createUserDto.username });
-    if (foundUser) return false;
+    if (foundUser)
+      throw new HttpException('Error: 이미 존재하는 회원입니다.', HttpStatus.BAD_REQUEST);
 
     const contentInfo = getPartialFileInfo(image);
 
