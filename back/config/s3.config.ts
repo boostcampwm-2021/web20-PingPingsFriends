@@ -34,7 +34,7 @@ export const multerUserOption = () => {
         {
           id: 'profile',
           key: function (request, file, cb) {
-            cb(null, `${uuidv1().toString()}-profile.webp`);
+            cb(null, `${uuidKey}-profile.webp`);
           },
           transform: function (req, file, cb) {
             cb(null, sharp().resize({ width: 100, height: 100 }).webp({ quality: 80 }));
