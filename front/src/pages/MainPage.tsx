@@ -11,9 +11,16 @@ import { flexBox } from '@lib/styles/mixin';
 import useHabitatInfo from '@hooks/useHabitatInfo';
 import MagicNumber from '@src/lib/styles/magic';
 import { useUserState } from '@src/contexts/UserContext';
+
+const useValidateUser = () => {
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) return;
+  console.log(accessToken);
+};
+
 const MainPage = () => {
+  useValidateUser();
   const userState = useUserState();
-  // const [userHabitatId] = useState(userState.data?.habitatId);
 
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
