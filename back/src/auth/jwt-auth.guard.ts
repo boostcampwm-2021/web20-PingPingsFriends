@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
@@ -6,11 +6,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err: any, user: any, info: any) {
     if (info) {
       if (info.name === 'JsonWebTokenError') {
-        console.log('조작된 토큰');
+        throw new HttpException('Error: 잘못된 접근입니다.', HttpStatus.UNAUTHORIZED);
       } else if (info.name === 'TokenExpiredError') {
-        console.log('만료된 토큰');
+        throw new HttpException('Error: 인증 기간이 만료되었습니다.', HttpStatus.UNAUTHORIZED);
       } else if (info.name === 'Error') {
-        console.log('로그인이 안 되어 있음(토큰이 없음)');
+        throw new HttpException('Error: 승인되지 않은 사용자입니다.', HttpStatus.UNAUTHORIZED);
       }
     }
     if (err) {
