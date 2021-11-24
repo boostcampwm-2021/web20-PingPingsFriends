@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Posts } from '@src/types/Post';
 import useFetchTotalFeeds from '@hooks/useFetchTotalFeeds';
-import useThrottle from '@hooks/useThrottle';
+import makeThrottle from '@lib/utils/makeThrottle';
 
 type UseScrollType = (curHabitatId: number) => {
   offset: number;
@@ -14,12 +14,12 @@ const ITEM_HEIGHT = 650;
 const FIX_FEED = 5;
 
 const useScroll: UseScrollType = (curHabitatId: number) => {
-  const throttleFunction = useThrottle();
+  const throttleScroll = makeThrottle();
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as Element;
 
-    throttleFunction(() => setScroll({ ...scroll, top: target.scrollTop }));
+    throttleScroll(() => setScroll({ ...scroll, top: target.scrollTop }));
   };
 
   const [startIndex, setStartIndex] = useState(0);
