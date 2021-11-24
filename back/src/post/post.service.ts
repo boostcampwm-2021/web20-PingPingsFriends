@@ -89,7 +89,7 @@ export class PostService {
   private getBaseQuery() {
     return `
     select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.contents_id, c.url as user_image_url
-    , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.mime_type) as post_contents_types
+    , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.contents_id) as post_contents_ids
     , (select count(*) from heart where post_id = p.post_id) as numOfHearts
     , (select count(*) from comment where post_id = p.post_id) as numOfComments
     , (select count(*) from heart where post_id = p.post_id and user_id = ?) as is_heart
