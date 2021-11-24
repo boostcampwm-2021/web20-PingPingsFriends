@@ -20,7 +20,7 @@ const validations: Validation<RegisterState>[] = [
 ];
 
 const AccountInfo = ({ handleAccountClick }: AccountInfoProps) => {
-  const { registerState, errors, handleChange, flag } = useForm(validations);
+  const { registerState, errors, handleChange, activeFlag } = useForm(validations);
   const { username, password, passwordConfirm } = registerState;
 
   return (
@@ -34,10 +34,10 @@ const AccountInfo = ({ handleAccountClick }: AccountInfoProps) => {
         <Input name={'password'} type={'password'} placeholder={'비밀번호'} value={password} handleChange={handleChange} errorMessage={errors.password} />
         <Input name={'passwordConfirm'} type={'password'} placeholder={'비밀번호 확인'} value={passwordConfirm} handleChange={handleChange} errorMessage={errors.passwordConfirm} />
         <ButtonContainer>
-          <Button borderColor={'none'} onClick={handleAccountClick}>
+          <Button borderColor={'none'} onClick={handleAccountClick} className={'back-button'}>
             뒤로 가기
           </Button>
-          <Button className={`${flag && 'active'}`} onClick={handleAccountClick}>
+          <Button className={`${activeFlag && 'active'} next-button`} onClick={handleAccountClick}>
             다음
           </Button>
         </ButtonContainer>

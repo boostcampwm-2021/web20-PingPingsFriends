@@ -30,16 +30,16 @@ const SpeciesMakeModal = ({ hide }: SpeciesMakeModalProps) => {
 
   const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
-    if (target.innerHTML === '중복 체크' && target.classList.contains('active')) {
+    if (target.classList.contains('duplicate-check-button') && target.classList.contains('active')) {
       // await fetch('/api/');
       return;
     }
-    if (target.innerHTML === '만들기' && target.classList.contains('active')) {
+    if (target.classList.contains('make-button') && target.classList.contains('active')) {
       registerDispatch({ type: 'ADD_SPECIES', payload: { name: species, sound } });
       hide('off');
       return;
     }
-    if (target.innerHTML === '취소') {
+    if (target.classList.contains('cancel-button')) {
       hide('off');
     }
   };
@@ -48,13 +48,13 @@ const SpeciesMakeModal = ({ hide }: SpeciesMakeModalProps) => {
     <TestBlock onClick={handleClick}>
       <TitleContainer>
         <Input name={'species'} placeholder={'동물 종류'} value={species} handleChange={handleChange} />
-        <Button className={`${species.length ? 'active' : ''}`}>중복 체크</Button>
+        <Button className={`${species.length ? 'active' : ''} duplicate-check-button`}>중복 체크</Button>
       </TitleContainer>
       <Input width={360} name={'sound'} placeholder={'울음소리'} value={sound} handleChange={handleChange} />
 
       <ButtonContainer>
-        <Button>취소</Button>
-        <Button className={`${species.length && sound.length ? 'active' : ''}`}>만들기</Button>
+        <Button className={'cancel-button'}>취소</Button>
+        <Button className={`${species.length && sound.length ? 'active' : ''} make-button`}>만들기</Button>
       </ButtonContainer>
     </TestBlock>
   );

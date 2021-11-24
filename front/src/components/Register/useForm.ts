@@ -13,14 +13,14 @@ const useForm = (validations: Validation<RegisterState>[]) => {
   const registerState = useRegisterState();
   const registerDispatch = useRegisterDispatch();
   const [errors, setErrors] = useState<ErrorType<RegisterState>>({});
-  const [flag, setFlag] = useState(false);
+  const [activeFlag, setActiveFlag] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target;
     if (target.value[target.value.length - 1] === ' ') {
       return;
     }
-    registerDispatch({ type: 'CHANGE', payload: { [target.name]: target.value } });
+    registerDispatch({ type: 'CHANGE_VALUE', payload: { [target.name]: target.value } });
   };
 
   useEffect(() => {
@@ -34,10 +34,10 @@ const useForm = (validations: Validation<RegisterState>[]) => {
   }, [registerState]);
 
   useEffect(() => {
-    setFlag(!Object.keys(errors).length);
+    setActiveFlag(!Object.keys(errors).length);
   }, [errors]);
 
-  return { registerState, errors, handleChange, flag };
+  return { registerState, errors, handleChange, activeFlag };
 };
 
 export default useForm;

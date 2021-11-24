@@ -16,15 +16,16 @@ const HabitatsMakeModal = ({ hide }: SpeciesMakeModalProps) => {
   const registerDispatch = useRegisterDispatch();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value[e.target.value.length - 1] === ' ') {
+    const { target } = e;
+    if (target.value[target.value.length - 1] === ' ') {
       return;
     }
-    if (e.target.name === 'habitat') {
-      setHabitat(e.target.value);
+    if (target.name === 'habitat') {
+      setHabitat(target.value);
       return;
     }
-    if (e.target.name === 'color') {
-      setColor(e.target.value);
+    if (target.name === 'color') {
+      setColor(target.value);
     }
   };
 

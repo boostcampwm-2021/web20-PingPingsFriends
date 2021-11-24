@@ -2,11 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRegisterState } from '@src/contexts/RegisterContext';
 
-enum TEXT {
-  NEXT = '다음',
-  BACK = '뒤로 가기',
-  REGISTER = '가입',
-}
 type SlideDirection = 'right' | 'left' | '';
 
 const usePageSlide = () => {
@@ -18,11 +13,11 @@ const usePageSlide = () => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
 
-    if (target.innerHTML === TEXT.NEXT && target.classList.contains('active')) {
+    if (target.classList.contains('next-button') && target.classList.contains('active')) {
       setDirection('right');
       return;
     }
-    if (target.innerHTML === TEXT.BACK) {
+    if (target.classList.contains('back-button')) {
       history.push('/');
     }
   };
@@ -30,12 +25,12 @@ const usePageSlide = () => {
   const handleMoreInfoClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
-    if (target.innerHTML === TEXT.BACK) {
+    if (target.classList.contains('back-button')) {
       setDirection('left');
       return;
     }
 
-    if (target.innerHTML === TEXT.REGISTER && target.classList.contains('active')) {
+    if (target.classList.contains('register-button') && target.classList.contains('active')) {
       const body: BodyInit = JSON.stringify(registerState);
 
       const headers = new Headers();

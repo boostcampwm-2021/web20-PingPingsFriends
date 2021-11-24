@@ -1,5 +1,8 @@
 import React, { createContext, useReducer, useContext } from 'react';
 
+type SpeciesInfo = { name: string; sound: string };
+type HabitatInfo = { name: string; color: string };
+
 export interface RegisterState {
   username: string;
   password: string;
@@ -7,18 +10,12 @@ export interface RegisterState {
   nickname: string;
   habitat: string | null;
   species: string | null;
-  speciesInfo?: {
-    name: string;
-    sound: string;
-  };
-  habitatInfo?: {
-    name: string;
-    color: string;
-  };
+  speciesInfo?: SpeciesInfo;
+  habitatInfo?: HabitatInfo;
 }
 
 interface Action {
-  type: 'CHANGE' | 'ADD_SPECIES' | 'ADD_HABITAT';
+  type: 'CHANGE_VALUE' | 'ADD_SPECIES' | 'ADD_HABITAT';
   payload: {
     [propsName: string]: string;
   };
@@ -35,14 +32,14 @@ export const initialState: RegisterState = {
 
 const registerReducer = (state: RegisterState, { type, payload }: Action): RegisterState => {
   switch (type) {
-    case 'CHANGE': {
+    case 'CHANGE_VALUE': {
       return { ...state, ...payload };
     }
     case 'ADD_SPECIES': {
-      return { ...state, speciesInfo: payload as { name: string; sound: string }, species: null };
+      return { ...state, speciesInfo: payload as SpeciesInfo, species: null };
     }
     case 'ADD_HABITAT': {
-      return { ...state, habitatInfo: payload as { name: string; color: string }, habitat: null };
+      return { ...state, habitatInfo: payload as HabitatInfo, habitat: null };
     }
     default: {
       return state;

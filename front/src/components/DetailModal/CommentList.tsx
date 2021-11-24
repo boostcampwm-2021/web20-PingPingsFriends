@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Comment from './Comment';
 import { Comments } from '@src/types/Comment';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useGetDiv } from '@hooks/useGetDiv';
+import { useElementRef } from '@hooks/useElementRef';
 
 const ScrollBox = styled.div`
   ${prettyScroll()};
@@ -22,7 +22,7 @@ interface CommentListProps {
 const CommentList = ({ toggleEditMode }: CommentListProps) => {
   const [comments, setComments] = useState<Comments>([]);
   const [lastComment, setLastComment] = useState(0);
-  const [root, ref] = useGetDiv();
+  const [observerElement, observerRef] = useElementRef();
 
   useEffect(() => {
     getComment();
@@ -48,12 +48,12 @@ const CommentList = ({ toggleEditMode }: CommentListProps) => {
   };
 
   const bottomRef = useIntersectionObserver(callback, {
-    root: root,
+    root: observerElement,
     rootMargin: '150px 0px',
   });
 
   return (
-    <ScrollBox ref={ref}>
+    <ScrollBox ref={observerRef}>
       {comments.map(({ user, content, userId, id, createdAt }) => (
         <Comment toggleEditMode={toggleEditMode} userId={userId} key={id} nickname={user.nickname} comment={content} avatar={user.content?.url} createdAt={createdAt} />
       ))}

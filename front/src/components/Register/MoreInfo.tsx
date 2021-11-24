@@ -22,8 +22,8 @@ interface MoreInfoProps {
 
 const validations: Validation<RegisterState>[] = [
   { value: 'nickname', check: (values) => values['nickname'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
-  { value: 'habitat', check: (values) => values['habitat']?.length === 0, message: '서식지를 선택해야합니다.' },
-  { value: 'species', check: (values) => values['species']?.length === 0, message: '동물을 선택해야합니다.' },
+  { value: 'habitat', check: (values) => values['habitat'] === null, message: '서식지를 선택해야합니다.' },
+  { value: 'species', check: (values) => values['species'] === null, message: '동물을 선택해야합니다.' },
 ];
 
 const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
@@ -32,7 +32,7 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
   const { toggle: habitatToggle, isShowing: habitatIsShowing } = useModal();
   const { toggle: speciesToggle, isShowing: speciesIsShowing } = useModal();
 
-  const { registerState, handleChange, errors, flag } = useForm(validations);
+  const { registerState, handleChange, errors, activeFlag } = useForm(validations);
   const { nickname, speciesInfo, habitatInfo } = registerState;
 
   return (
@@ -54,10 +54,10 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
           <AddCircle onClick={speciesToggle} />
         </SelectContainer>
         <ButtonContainer>
-          <Button borderColor={'none'} onClick={handleMoreInfoClick}>
+          <Button borderColor={'none'} onClick={handleMoreInfoClick} className={'back-button'}>
             뒤로 가기
           </Button>
-          <Button className={`${flag && 'active'}`} onClick={handleMoreInfoClick}>
+          <Button className={`${activeFlag && 'active'} register-button`} onClick={handleMoreInfoClick}>
             가입
           </Button>
         </ButtonContainer>
