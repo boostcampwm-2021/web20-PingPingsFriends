@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Posts } from '@src/types/Post';
 import useFetchTotalFeeds from '@hooks/useFetchTotalFeeds';
+import useThrottle from '@hooks/useThrottle';
 
 type UseScrollType = (curHabitatId: number) => {
   offset: number;
@@ -11,13 +12,16 @@ type UseScrollType = (curHabitatId: number) => {
 
 const ITEM_HEIGHT = 650;
 const FIX_FEED = 5;
-const PAD_NUMBER = 2;
 
 const useScroll: UseScrollType = (curHabitatId: number) => {
+  const throttleFunction = useThrottle();
+
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as Element;
-    setScroll({ ...scroll, top: target.scrollTop });
+
+    throttleFunction(() => setScroll({ ...scroll, top: target.scrollTop }));
   };
+
   const [startIndex, setStartIndex] = useState(0);
   const [feeds, setFeeds] = useState<Posts>([]);
   const [scroll, setScroll] = useState({
@@ -25,7 +29,6 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
     offset: 0,
     height: 0,
   });
-
   const [totalPosts, setLastFeedId] = useFetchTotalFeeds(curHabitatId);
   const { top, offset, height } = scroll;
 
@@ -40,11 +43,6 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
   }, [totalPosts]);
 
   useEffect(() => {
-    if (top + ITEM_HEIGHT * PAD_NUMBER >= height && feeds.length > 0) {
-      setLastFeedId(feeds[feeds.length - 1].post_id);
-      return;
-    }
-
     setStartIndex(Math.floor(top / ITEM_HEIGHT));
   }, [top]);
 
@@ -58,6 +56,15 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
       offset: nextOffset < 0 ? 0 : nextOffset,
     });
   }, [startIndex]);
+
+  useEffect(() => {
+    if (!(feeds.length && totalPosts.length)) {
+      return;
+    }
+    if (feeds[feeds.length - 1].post_id === totalPosts[totalPosts.length - 1].post_id) {
+      setLastFeedId(feeds[feeds.length - 1].post_id);
+    }
+  }, [feeds]);
 
   return { feeds, offset, height, handleScroll };
 };
