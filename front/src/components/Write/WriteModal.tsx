@@ -92,7 +92,6 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
     if (!initState) return;
     setContents(initState.contents);
     setText(initState.text);
-    console.log(initState.contentIds);
   }, [initState]);
   useEffect(() => {
     if (fileInputRef.current) fileInputRef.current.value = '';
