@@ -46,6 +46,9 @@ export class User {
   @Column({ name: 'contents_id', nullable: true })
   contentsId: number;
 
+  @Column({ name: 'refresh_token', nullable: true, length: 200 })
+  refreshToken: string;
+
   @ApiProperty({ type: () => Content })
   @OneToOne(() => Content, (content) => content.user, { cascade: ['insert'] })
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })

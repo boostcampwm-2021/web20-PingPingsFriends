@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import FileDto from 'common/dto/transformFileDto';
-import { RefreshTokenRepository } from 'src/refresh-tokens/refresh-token.repository';
 import { getPartialFileInfo } from 'utils/s3.util';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -8,10 +7,7 @@ import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly refreshTokenRepository: RefreshTokenRepository
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find({ relations: ['likedPost'] });
@@ -48,16 +44,17 @@ export class UsersService {
       .getOne();
   }
 
-  async createRefreshToken(userId: number, refreshToken: string, expireAt: Date) {
-    const user = await this.userRepository.findOne(userId, { relations: ['content'] });
+  async createRefreshToken(userId: number, refreshToken: string) {
+    let user = await this.userRepository.findOne(userId, { relations: ['content'] });
 
     if (!user)
       throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
 
+    user.refreshToken = refreshToken;
+    user = await this.userRepository.save(user);
+
     delete user.password;
     delete user.contentsId;
-
-    await this.refreshTokenRepository.saveRefreshToken(user.id, refreshToken, expireAt);
 
     return user;
   }
