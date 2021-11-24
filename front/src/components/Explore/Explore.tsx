@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { HabitatInfo } from '@src/types/Habitat';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
