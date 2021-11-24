@@ -22,10 +22,12 @@ interface WriteModalProps {
   initState?: InitState;
 }
 
+type Content = File | string;
+
 const WriteModal = ({ hide, initState }: WriteModalProps) => {
   const MAX_CONTENTS = 8;
   const MAX_TEXT = 500;
-  const [contents, setContents] = useState<File[]>([]);
+  const [contents, setContents] = useState<Content[]>([]);
   const [text, setText] = useState('');
   const [isValid, setValid] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -79,20 +81,8 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
 
   useEffect(() => {
     if (!initState) return;
-    const urlToFile = async (url: string) => {
-      const res: Response = await fetch(url);
-      const buf: ArrayBuffer = await res.arrayBuffer();
-      const file: File = new File([buf], url);
-      return file;
-    };
-
-    const setInitContents = async () => {
-      const initContents = await Promise.all(initState.contents.map((url) => urlToFile(url)));
-      setContents(initContents);
-    };
-
+    setContents(initState.contents);
     setText(initState.text);
-    // setInitContents();
   }, [initState]);
   useEffect(() => {
     if (fileInputRef.current) fileInputRef.current.value = '';
@@ -117,7 +107,7 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
             <SwipeBox width="80%" height="100%" gap="10px">
               <>
                 {contents.map((file, idx) => (
-                  <Preview key={file.lastModified} file={file} idx={idx} removeContents={removeContents} />
+                  <Preview key={idx} file={file} idx={idx} removeContents={removeContents} />
                 ))}
               </>
             </SwipeBox>
