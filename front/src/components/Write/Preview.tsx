@@ -7,6 +7,50 @@ const CELL_BORDER_RADIUS = '10px';
 const CELL_WIDTH = '180px';
 const CELL_HEIGHT = '180px';
 
+const Preview = ({ file, idx, removeContents }: { file: File | string; idx: number; removeContents: (targetIdx: number) => void }) => {
+  const [isLoading, setLoading] = useState(false);
+  const contentsURL = useRef('');
+  const handleRemoveClick = (e: React.MouseEvent) => {
+    const target = e.target as Element;
+    if (target.closest('.remove_btn')) {
+      const selectedFile = (target.closest('.preview_cell') as HTMLElement).dataset.id;
+      removeContents(Number(selectedFile));
+    }
+  };
+  useEffect(() => {
+    if (typeof file === 'string') {
+      setLoading(true);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      contentsURL.current = e.target?.result as string;
+      setLoading(true);
+    };
+    reader.readAsDataURL(file);
+  }, [file]);
+
+  return (
+    <CellDiv className={'preview_cell'} data-id={idx} onClick={handleRemoveClick}>
+      {isLoading ? (
+        <>
+          <CancelBtnSvg className={'button remove_btn'} />
+          {typeof file === 'string' ? (
+            <img src={file} alt={'upload img'} />
+          ) : file.type.includes('image') ? (
+            <img src={contentsURL.current} alt={file.name} />
+          ) : (
+            <video src={contentsURL.current} controls></video>
+          )}
+        </>
+      ) : (
+        'loading'
+      )}
+    </CellDiv>
+  );
+};
+export default Preview;
+
 const CellDiv = styled.div`
   width: ${CELL_WIDTH};
   height: ${CELL_HEIGHT};
@@ -33,37 +77,3 @@ const CellDiv = styled.div`
     z-index: 1;
   }
 `;
-
-const Preview = ({ file, idx, removeContents }: { file: File; idx: number; removeContents: (targetIdx: number) => void }) => {
-  const [isLoading, setLoading] = useState(false);
-  const contentsURL = useRef('');
-  const handleRemoveClick = (e: React.MouseEvent) => {
-    const target = e.target as Element;
-    if (target.closest('.remove_btn')) {
-      const selectedFile = (target.closest('.preview_cell') as HTMLElement).dataset.id;
-      removeContents(Number(selectedFile));
-    }
-  };
-  useEffect(() => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      contentsURL.current = e.target?.result as string;
-      setLoading(true);
-    };
-    reader.readAsDataURL(file);
-  }, [file]);
-
-  return (
-    <CellDiv className={'preview_cell'} data-id={idx} onClick={handleRemoveClick}>
-      {isLoading ? (
-        <>
-          <CancelBtnSvg className={'button remove_btn'} />
-          {file.type.includes('image') ? <img src={contentsURL.current} alt={file.name} /> : <video src={contentsURL.current} controls></video>}
-        </>
-      ) : (
-        'loading'
-      )}
-    </CellDiv>
-  );
-};
-export default Preview;

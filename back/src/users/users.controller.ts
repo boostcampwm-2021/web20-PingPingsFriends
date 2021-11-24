@@ -60,6 +60,17 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('info')
+  @ApiOperation({
+    summary: '유저 정보 조회',
+    description: '유저의 정보를 조회하는 api입니다.',
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async getUserInfo(@Req() req) {
+    return await this.usersService.getUserInfo(req.user.userId);
+  }
+
   @Get(':userId')
   @ApiOperation({
     summary: '유저 정보 조회',
@@ -76,8 +87,8 @@ export class UsersController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: RegisterUserDto })
-  @UseInterceptors(FileInterceptor('upload', multerUserOption))
-  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image?: FileDto) {
+  @UseInterceptors(FileInterceptor('upload', multerUserOption()))
+  register(@Body(ParseUsernamePipe) createUserDto: CreateUserDto, @UploadedFile() image: FileDto) {
     return this.usersService.create(createUserDto, image);
   }
 
@@ -103,8 +114,7 @@ export class UsersController {
       refreshTokenExpireAt
     );
     res.cookie('refreshToken', refreshToken);
-    console.log(res.getHeaders());
-    return { accessToken, user, refreshToken };
+    return { accessToken, user };
   }
 
   @Patch('contents')
@@ -116,7 +126,7 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('upload', multerUserOption))
+  @UseInterceptors(FileInterceptor('upload', multerUserOption()))
   updateImage(@UploadedFile() image: FileDto, @Req() req: any) {
     return this.usersService.updateImage(image, req.user);
   }

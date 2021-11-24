@@ -18,18 +18,16 @@ const Cell = ({ feedInfo, url }: { feedInfo: Post; url: string }) => {
         setHover(false);
       }}
     >
-      <ExploreImg src={url} alt={feedInfo.post_id.toString()} />
-      {isHover && (
-        <HoverDiv>
-          <Avatar imgSrc={feedInfo.user_image_url} size={'50px'} />
-          <p>{feedInfo.nickname}</p>
-          <p>{formatDate(feedInfo.created_at)} 전</p>
-          <div>
-            <HeartSvg />
-            <span>{feedInfo.numOfHearts}</span>
-          </div>
-        </HoverDiv>
-      )}
+      <ExploreImg src={url.replace('.webp', '-feed.webp')} alt={feedInfo.post_id.toString()} />
+      <HoverDiv isHover={isHover}>
+        <Avatar imgSrc={feedInfo.user_image_url ?? undefined} size={'50px'} />
+        <p>{feedInfo.nickname}</p>
+        <p>{formatDate(feedInfo.created_at)} 전</p>
+        <div>
+          <HeartSvg />
+          <span>{feedInfo.numOfHearts}</span>
+        </div>
+      </HoverDiv>
     </CellDiv>
   );
 };
@@ -48,10 +46,10 @@ const CellDiv = styled.div`
 const ExploreImg = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 `;
 
-const HoverDiv = styled.div`
+const HoverDiv = styled.div<{ isHover: boolean }>`
   ${flexBox('center', 'center', 'column')};
   font-size: 30px;
   color: white;
@@ -63,4 +61,5 @@ const HoverDiv = styled.div`
   backdrop-filter: blur(10px);
   background-color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
+  opacity: ${(props) => (props.isHover ? 1 : 0)};
 `;

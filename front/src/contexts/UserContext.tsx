@@ -9,13 +9,13 @@ export interface User {
   url: string;
   accessToken?: string;
 }
-interface UserState {
+export interface UserState {
   loading: boolean;
   data: User | null;
   error: any | null;
 }
 interface Action {
-  type: 'GET_USER' | 'GET_USER_SUCCESS' | 'GET_USER_ERROR';
+  type: 'GET_USER' | 'GET_USER_SUCCESS' | 'GET_USER_ERROR' | 'LOGOUT_USER';
   data?: User;
   error?: any;
 }
@@ -38,16 +38,23 @@ const loadingState: UserState = {
   error: null,
 };
 
-const success = (data: User): UserState => ({
-  loading: false,
-  data,
-  error: null,
-});
+const success = (data: User): UserState => {
+  localStorage.setItem('access_token', data.accessToken!);
+  return {
+    loading: false,
+    data,
+    error: null,
+  };
+};
 const error = (error: Error): UserState => ({
   loading: false,
   data: initialState.data,
   error: error,
 });
+const logout = (): UserState => {
+  localStorage.removeItem('access_token');
+  return initialState;
+};
 
 const userReducer = (state: UserState, action: Action): UserState => {
   switch (action.type) {
@@ -57,6 +64,8 @@ const userReducer = (state: UserState, action: Action): UserState => {
       return success(action.data as User);
     case 'GET_USER_ERROR':
       return error(action.error as Error);
+    case 'LOGOUT_USER':
+      return logout();
     default:
       throw new Error(`Unknown error`);
   }

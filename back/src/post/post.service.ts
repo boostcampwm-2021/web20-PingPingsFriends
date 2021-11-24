@@ -12,7 +12,6 @@ import { Post } from './entities/post.entity';
 import { PostRepository } from './post.repository';
 
 const LIMIT_NUMBER = 10;
-const USER_ID = 12;
 
 @Injectable()
 export class PostService {
@@ -26,15 +25,16 @@ export class PostService {
     return await this.postRepository.createPost(createPostDto, contentsInfos, userId);
   }
 
-  async findAll(habitatId: number, lastPostId?: number) {
+  async findAll(habitatId: number, user: any, lastPostId?: number) {
+    const userId = user ? user.userId : user;
     if (!lastPostId) {
-      const result = await this.getFirstPage(habitatId, USER_ID);
+      const result = await this.getFirstPage(habitatId, userId);
       result.posts.forEach((post) =>
         convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
       );
       return result;
     } else {
-      const result = await this.getNextPage(habitatId, USER_ID, lastPostId);
+      const result = await this.getNextPage(habitatId, userId, lastPostId);
       result.posts.forEach((post) =>
         convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
       );
@@ -52,7 +52,7 @@ export class PostService {
     return results;
   }
 
-  async getFirstPage(habitatId: number, userId: number) {
+  async getFirstPage(habitatId: number, userId: number | false) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
     let whereSql = `where p.habitat_id = ? 
@@ -67,7 +67,7 @@ export class PostService {
     return { posts };
   }
 
-  async getNextPage(habitatId: number, userId: number, oldLastPostId: number) {
+  async getNextPage(habitatId: number, userId: number | false, oldLastPostId: number) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
     let whereSql = `where p.habitat_id = ?
@@ -88,8 +88,8 @@ export class PostService {
 
   private getBaseQuery() {
     return `
-    select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.url as user_image_url
-    , group_concat(distinct pcc.url) as post_contents_urls, group_concat(distinct pcc.mime_type) as post_contents_types
+    select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.contents_id, c.url as user_image_url
+    , group_concat(distinct pcc.url order by pcc.contents_id) as post_contents_urls, group_concat(distinct pcc.contents_id order by pcc.contents_id) as post_contents_ids
     , (select count(*) from heart where post_id = p.post_id) as numOfHearts
     , (select count(*) from comment where post_id = p.post_id) as numOfComments
     , (select count(*) from heart where post_id = p.post_id and user_id = ?) as is_heart
@@ -104,16 +104,17 @@ export class PostService {
   private getTailQuery() {
     return `
     group by p.post_id
-    order by p.post_id desc 
+    order by p.created_at desc 
     limit ? ;
     `;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user: any) {
+    const userId = user ? user.userId : user;
     let baseSql = this.getBaseQuery();
     let whereSql = `where p.post_id = ?;
     `;
-    return (await this.connection.query(baseSql + whereSql, [USER_ID, id]))[0];
+    return (await this.connection.query(baseSql + whereSql, [userId, id]))[0];
   }
 
   async update(
@@ -132,9 +133,7 @@ export class PostService {
       relations: ['postContents'],
     });
 
-    const updateIds = JSON.parse(patchPostRequestDto.contentIds).map(
-      (info: { id: string }, i: number) => info.id
-    );
+    const updateIds = patchPostRequestDto.contentIds.split(',').map((id: string, i: number) => id);
 
     const excludedPostContents = post.postContents.filter(
       (postContent, i) => !updateIds.includes('' + postContent.contentsId)
@@ -146,18 +145,18 @@ export class PostService {
     )
       return false;
 
-    queryRunner.startTransaction();
+    await queryRunner.startTransaction();
 
     try {
       const excludedContentIds = excludedPostContents.map((postContent) => postContent.contentsId);
-      await contentRepository.delete(excludedContentIds);
+      if (excludedContentIds.length) await contentRepository.delete(excludedContentIds);
 
       const contents = await contentRepository.save(contentsInfos);
       const postContents = contents.map((content) => ({
         postId: post.id,
         contentsId: content.id,
       }));
-      postContentRepository.insert(postContents);
+      await postContentRepository.insert(postContents);
 
       await postRepository.update(id, {
         humanContent: patchPostRequestDto.humanContent,
@@ -168,6 +167,7 @@ export class PostService {
 
       return true;
     } catch (err) {
+      console.log(err);
       await queryRunner.rollbackTransaction();
       return false;
     } finally {

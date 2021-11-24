@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { HabitatInfo } from '@src/types/Habitat';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
@@ -10,10 +10,6 @@ const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const [totalFeed, setLastFeedId] = useFetchTotalFeeds(habitatInfo!.habitat.id);
   const [isReady, setReady] = useState(false);
-
-  useEffect(() => {
-    console.log(totalFeed);
-  }, [totalFeed]);
 
   return (
     <ExploreDiv ref={divRef} color={habitatInfo?.habitat.color} onAnimationEnd={() => setReady(true)}>

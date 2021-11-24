@@ -24,7 +24,7 @@ const Avatar = ({ imgSrc, size, userId }: AvatarProps) => {
   return (
     <AvatarBlock size={size}>
       <Link to={userId && userId !== -1 ? `/user/${userId}` : ''}>
-        <img src={imgSrc ? imgSrc.replace('.webp', '-profile.webp') : DEFAULT_AVATAR} alt="아바타 이미지" />
+        <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
       </Link>
     </AvatarBlock>
   );
