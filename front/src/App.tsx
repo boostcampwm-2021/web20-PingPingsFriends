@@ -19,14 +19,16 @@ function App() {
         <Route path="/explore">
           <ExplorePage />
         </Route>
-        <UserProvider>
-          <Route path="/user">
+        <Route path="/user/:id">
+          <UserProvider>
             <UserPage />
-          </Route>
-          <Route path="/">
+          </UserProvider>
+        </Route>
+        <Route path="/">
+          <UserProvider>
             <MainPage />
-          </Route>
-        </UserProvider>
+          </UserProvider>
+        </Route>
       </Switch>
     </>
   );
