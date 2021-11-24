@@ -13,8 +13,8 @@ const databaseConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   // autoLoadEntities: true,
   synchronize: false,
-  logging: false,
-  timezone: 'KST',
+  logging: true,
+  timezone: '+00:00',
 };
 
 export default databaseConfig;
