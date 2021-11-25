@@ -50,7 +50,6 @@ const useSideNavi = (userHabitatId: number) => {
     const data: number[] = await res.json();
     data.splice(INIT_HISTORY_INDEX, 0, habitatId);
     historyDispatch({ type: 'INIT_RANDOM_HABITAT', data });
-    history.push(`/?habitat=${habitatId}`);
   };
 
   useEffect(() => {
@@ -67,6 +66,7 @@ const useSideNavi = (userHabitatId: number) => {
       }
     } else {
       initRandomList(userHabitatId);
+      history.push(`/?habitat=${userHabitatId}`);
     }
   }, [location]);
 
