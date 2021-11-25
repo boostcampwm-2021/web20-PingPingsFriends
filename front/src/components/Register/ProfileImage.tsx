@@ -8,12 +8,14 @@ import Button from '@components/Button/Button';
 import useFlag from '@components/Register/useFlag';
 import logo from '@assets/images/logo2.png';
 import { RegisterState, useRegisterState } from '@src/contexts/RegisterContext';
+import { useHistory } from 'react-router-dom';
 
 const ProfileImage = () => {
   const [profile, setProfile] = useState<File | null>(null);
   const imageURL = useReadFileURL({ file: profile });
   const flag = useFlag(imageURL);
   const registerState = useRegisterState();
+  const history = useHistory();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (e.target.id === 'profile') {
@@ -35,31 +37,37 @@ const ProfileImage = () => {
     });
     if (registerState.habitatInfo) {
       data.append('habitatName', registerState.habitatInfo.name);
-      data.append('color', registerState.habitatInfo.color);
+      data.append('habitatColor', registerState.habitatInfo.color);
     }
     if (registerState.speciesInfo) {
       data.append('speciesName', registerState.speciesInfo.name);
-      data.append('sound', registerState.speciesInfo.sound);
+      data.append('speciesSound', registerState.speciesInfo.sound);
     }
 
-    // const headers = new Headers();
-    // headers.append('Accept', 'application/json');
-    // headers.append('Content-Type', 'application/json');
-
     if (target.classList.contains('cancel-button')) {
-      const response = await fetch('/api/users/register', { method: 'POST', body: data });
-      const result = await response.json();
-      console.log(result);
+      try {
+        const response = await fetch('/api/users/register', { method: 'POST', body: data });
+        await response.json();
 
+        history.push('/');
+      } catch (e) {
+        console.log(e);
+        history.push('/register');
+      }
       return;
     }
     if (flag && target.classList.contains('confirm-button')) {
       data.append('upload', profile!);
 
-      const response = await fetch('/api/users/register', { method: 'POST', body: data });
-      const result = await response.json();
-      console.log(result);
-      return;
+      try {
+        const response = await fetch('/api/users/register', { method: 'POST', body: data });
+        await response.json();
+
+        history.push('/');
+      } catch (e) {
+        console.log(e);
+        history.push('/register');
+      }
     }
   };
 
