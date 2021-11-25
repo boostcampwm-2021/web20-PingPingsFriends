@@ -35,6 +35,10 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
   const { top, offset, height } = scroll;
 
   useEffect(() => {
+    setScroll({ top: 0, offset: 0, height: 0 });
+  }, [curHabitatId]);
+
+  useEffect(() => {
     const startIndex = Math.floor(top / ITEM_HEIGHT);
 
     setScroll({ ...scroll, height: totalPosts.length * ITEM_HEIGHT });
