@@ -10,7 +10,22 @@ export class UsersService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({ relations: ['likedPost'] });
+    return this.userRepository.find();
+  }
+
+  async check(username?: string, nickname?: string) {
+    const orCheck = username || nickname;
+    const andCheck = username && nickname;
+
+    if (!orCheck || andCheck)
+      throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
+
+    let user: User;
+    if (username) user = await this.userRepository.findOne({ username });
+    if (nickname) user = await this.userRepository.findOne({ nickname });
+
+    if (user) return true;
+    else return false;
   }
 
   async getUserInfo(userId: number) {
