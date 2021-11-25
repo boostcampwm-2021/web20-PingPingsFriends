@@ -22,7 +22,7 @@ interface PlaceProps {
 }
 
 const Place = ({ habitat, toggle }: PlaceProps) => {
-  return <PlaceBlock onClick={toggle}> {habitat} </PlaceBlock>;
+  return <PlaceBlock onClick={toggle}> {habitat ?? '공허'} </PlaceBlock>;
 };
 
 export default Place;

@@ -12,12 +12,13 @@ import { useLike } from '@components/HeartButton/useLike';
 import { makeDropBoxMenu } from '@common/DropBox/makeDropBoxMenu';
 import Modal from '@common/Modal/Modal';
 import DeleteModal from '@components/DeleteModal/DeleteModal';
-import DetailModal from '@components/DetailModal/DetailModal';
 import WriteModal from '@components/Write/WriteModal';
 import useModal from '@common/Modal/useModal';
 import { formatDate } from '@lib/utils/time';
 import { useUserState } from '@src/contexts/UserContext';
 import { Palette } from '@src/lib/styles/Palette';
+import { useHistory, useLocation } from 'react-router';
+import queryString from '@src/lib/utils/queryString';
 
 export interface FeedProps {
   feedId: number;
@@ -44,9 +45,10 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
     { text: '글 수정', handler: toggleEditModal },
     { text: '글 삭제', handler: toggleDeleteModal },
   ]);
-  const { toggle, routePath } = useModal(`detail/${feedId}`);
   const userState = useUserState();
   const [isTranslate, setTranslate] = useState(false);
+  const history = useHistory();
+  const location = useLocation();
 
   return (
     <FeedContainerDiv>
@@ -64,7 +66,12 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
       </FeedContents>
       <FeedInfoDiv isTranslate={isTranslate}>
         <HeartButton like={like} toggleLike={toggleLike} />
-        <CommentBtnSvg className={'button'} onClick={toggle} />
+        <CommentBtnSvg
+          className={'button'}
+          onClick={() => {
+            history.push(`/modal/detail/${feedId}/?habitat=${queryString(location.search)['habitat']}`);
+          }}
+        />
         <span>{numOfComments}</span>
         <TranslateBtnSvg className={'button translate'} onClick={() => setTranslate(!isTranslate)} />
         <span className="time">{ago} 전</span>
@@ -75,21 +82,6 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
       </Modal>
       <Modal isShowing={isEditShowing} hide={toggleEditModal}>
         <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, contentIds: contentIds, feedId: feedId, text: humanText }} />
-      </Modal>
-      <Modal hide={toggle} routePath={routePath}>
-        <DetailModal
-          userId={userId}
-          userImgURL={avatarImage ?? null}
-          feedId={feedId}
-          nickname={nickname}
-          text={humanText}
-          imageURLs={imageURLs}
-          hide={toggle}
-          ago={ago}
-          like={like}
-          toggleLike={toggleLike}
-          numOfHearts={numOfHearts}
-        />
       </Modal>
     </FeedContainerDiv>
   );

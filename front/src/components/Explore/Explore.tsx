@@ -5,20 +5,24 @@ import { Palette } from '@lib/styles/Palette';
 import useFetchTotalFeeds from '@hooks/useFetchTotalFeeds';
 import Cell from './Cell';
 import { prettyScroll } from '@src/lib/styles/mixin';
+import Warning from '@common/Indicator/Warning';
 
-const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined }) => {
+const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined | null }) => {
   const divRef = useRef<HTMLDivElement>(null);
-  const [totalFeed, setLastFeedId] = useFetchTotalFeeds(habitatInfo!.habitat.id);
+  const [totalFeed, setLastFeedId] = useFetchTotalFeeds(habitatInfo?.habitat.id);
   const [isReady, setReady] = useState(false);
 
   return (
     <ExploreDiv ref={divRef} color={habitatInfo?.habitat.color} onAnimationEnd={() => setReady(true)}>
-      {isReady &&
+      {isReady && totalFeed.length ? (
         totalFeed.map((feedInfo) => {
           return feedInfo.contents_url_array.map((url, idx) => {
             return <Cell feedInfo={feedInfo} url={url} key={idx} />;
           });
-        })}
+        })
+      ) : (
+        <Warning width={'200px'} height={'200px'} />
+      )}
     </ExploreDiv>
   );
 };
