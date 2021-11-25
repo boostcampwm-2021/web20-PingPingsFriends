@@ -1,7 +1,7 @@
 const makeThrottle = (ms = 300) => {
   let id: NodeJS.Timeout;
 
-  return (callback: any) => {
+  return (callback: () => void) => {
     if (id) {
       return;
     }

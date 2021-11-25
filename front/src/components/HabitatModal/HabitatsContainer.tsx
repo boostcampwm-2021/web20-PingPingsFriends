@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { useHistory } from 'react-router-dom';
 import { ToggleHandler } from '@common/Modal/useModal';
-import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useElementRef } from '@hooks/useElementRef';
 import { HabitatList } from '@src/types/Habitat';
+import useScrollObserver from '@hooks/useScrollObserver';
 
 interface HabitatsContainerProps {
   habitatInfos: HabitatList;
@@ -30,7 +30,7 @@ const HabitatsContainer = ({ habitatInfos }: HabitatsContainerProps) => {
     rootMargin: '200px 0px',
   };
 
-  const bottomRef = useIntersectionObserver(observeHabitats, options);
+  const bottomRef = useScrollObserver(observeHabitats, options);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;

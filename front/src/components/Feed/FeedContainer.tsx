@@ -28,12 +28,6 @@ const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   gap: 20px;
   overflow-y: scroll;
   z-index: 1;
-  .test {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: black;
-  }
 `;
 
 interface FeedScrollBoxProps {

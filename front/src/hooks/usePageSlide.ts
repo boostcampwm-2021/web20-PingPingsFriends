@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useRegisterState } from '@src/contexts/RegisterContext';
 
 type SlideDirection = 'right' | 'left' | '';
 
 const usePageSlide = () => {
   const history = useHistory();
   const [direction, setDirection] = useState<SlideDirection>('');
-  const registerState = useRegisterState();
 
   const handleAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -30,27 +28,8 @@ const usePageSlide = () => {
       return;
     }
 
-    if (target.classList.contains('register-button') && target.classList.contains('active')) {
-      const body: BodyInit = JSON.stringify(registerState);
-
-      const headers = new Headers();
-      headers.append('Accept', 'application/json');
-      headers.append('Content-Type', 'application/json');
-
-      const response: Response = await fetch(`/api/users/register`, {
-        method: 'POST',
-        headers,
-        body,
-      });
-
-      console.log(response);
-
-      if (response) {
-        history.push(`/register/set-profile`);
-        return;
-      }
-      history.push(`/register`);
-      return;
+    if (target.classList.contains('next-button') && target.classList.contains('active')) {
+      history.push(`/register/set-profile`);
     }
   };
 

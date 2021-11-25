@@ -8,6 +8,7 @@ import { ReactComponent as CancelBtnSvg } from '@assets/icons/cancel_btn3.svg';
 import { ReactComponent as CheckBtnSvg } from '@assets/icons/check_circle.svg';
 import { Palette } from '@src/lib/styles/Palette';
 import { useUserState } from '@src/contexts/UserContext';
+import { formatDate } from '@lib/utils/time';
 
 const CommentDiv = styled.div<{ isEdited: boolean }>`
   ${flexBox('flex-start', 'flex-start')};
@@ -69,6 +70,13 @@ const DeleteHoverDiv = styled.div`
   }
 `;
 
+const TextHeader = styled.div`
+  ${flexBox('space-between', null)};
+  .time {
+    margin-right: 10px;
+  }
+`;
+
 interface CommentProps {
   nickname: string;
   comment: string;
@@ -80,7 +88,7 @@ interface CommentProps {
 
 type Mode = 'edit' | 'delete' | 'normal';
 
-const Comment = ({ nickname, comment, avatar, userId, toggleEditMode }: CommentProps) => {
+const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt }: CommentProps) => {
   const [mode, setMode] = useState<Mode>('normal');
   const { data } = useUserState();
   const handleEditBtnClick = () => {
@@ -102,7 +110,10 @@ const Comment = ({ nickname, comment, avatar, userId, toggleEditMode }: CommentP
     <CommentDiv isEdited={mode === 'edit'}>
       <Avatar size={'30px'} imgSrc={avatar} />
       <TextDiv>
-        <span>{nickname}</span>
+        <TextHeader>
+          <span>{nickname}</span>
+          <span className={'time'}>{formatDate(createdAt)} 전</span>
+        </TextHeader>
         <p>{comment}</p>
       </TextDiv>
       {data?.userId === userId && (
