@@ -13,15 +13,21 @@ export class RegisterUserDto {
   @ApiProperty()
   nickname: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   habitatId: number;
 
   @ApiProperty({ required: false })
   speciesId?: number;
 
   @ApiProperty({ required: false })
-  sound: string;
+  habitatName: string;
 
   @ApiProperty({ required: false })
-  name: string;
+  habitatColor: string;
+
+  @ApiProperty({ required: false })
+  speciesName: string;
+
+  @ApiProperty({ required: false })
+  speciesSound: string;
 }
