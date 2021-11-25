@@ -20,8 +20,9 @@ const MainPage = () => {
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
 
-  const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useSideNavi(userState.data?.habitatId as number);
-  const { habitatInfo } = useHabitatInfo(curHabitatId);
+  // const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useSideNavi(userState.data?.habitatId as number);
+  const { getCurHabitat, handleNextHabitat, handlePrevHabitat, historyState } = useSideNavi(userState.data?.habitatId ?? 2);
+  const { habitatInfo } = useHabitatInfo(getCurHabitat());
 
   const toggleMode = () => {
     if (feedModeRef.current) {
@@ -47,10 +48,10 @@ const MainPage = () => {
           {
             feed: (
               <>
-                <FeedContainer habitatInfo={habitatInfo} curHabitatId={curHabitatId} />
+                <FeedContainer habitatInfo={habitatInfo} curHabitatId={getCurHabitat()} />
                 <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
-                <HabitatPreview habitat={habitatList[historyIdx + 1]} onClick={handleNextHabitat} side={'right'} />
-                <HabitatPreview habitat={habitatList[historyIdx - 1]} onClick={handlePrevHabitat} side={'left'} />
+                <HabitatPreview habitat={getCurHabitat(1)} onClick={handleNextHabitat} side={'right'} />
+                <HabitatPreview habitat={getCurHabitat(-1)} onClick={handlePrevHabitat} side={'left'} />
               </>
             ),
             explore: (
