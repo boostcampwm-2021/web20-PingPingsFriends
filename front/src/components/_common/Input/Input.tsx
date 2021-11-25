@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 
@@ -8,7 +8,7 @@ const InputContainer = styled.div<{ widthStyle?: number }>`
   height: 45px;
 `;
 
-const StyledInput = styled.input<{ error: string }>`
+const StyledInput = styled.input<{ error?: string }>`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -41,24 +41,32 @@ const ErrorMessageDiv = styled.div`
 
 interface InputProps {
   placeholder: string;
-  value?: string;
+  value: string;
   name: string;
   handleChange?: React.ChangeEventHandler<HTMLInputElement>;
   type?: 'text' | 'password';
   errorMessage?: string;
   width?: number;
+  check?: (arg: string) => Promise<void>;
+  isDuplicate?: boolean;
 }
 
-const Input = ({ type = 'text', placeholder, value, handleChange, name, errorMessage, width }: InputProps) => {
+const Input = ({ type = 'text', placeholder, value, handleChange, name, errorMessage, width, check, isDuplicate }: InputProps) => {
   const [error, setError] = useState('');
   const handleBlur = () => {
     setError(errorMessage!);
+
+    if (!errorMessage && check) {
+      check(value);
+    }
   };
+
+  useEffect(() => {}, [error]);
   return (
     <InputContainer widthStyle={width}>
       <StyledInput error={error} name={name} type={type} required value={value} onChange={handleChange} onBlur={handleBlur} />
       <StyledPlaceHolderDiv>{placeholder}</StyledPlaceHolderDiv>
-      <ErrorMessageDiv>{error}</ErrorMessageDiv>
+      <ErrorMessageDiv>{error ? error : isDuplicate ? '중복 아이디입니다.' : ''}</ErrorMessageDiv>
     </InputContainer>
   );
 };

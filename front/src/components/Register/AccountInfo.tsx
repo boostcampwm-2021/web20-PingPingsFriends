@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import Input from '@common/Input/Input';
@@ -22,6 +22,14 @@ const validations: Validation<RegisterState>[] = [
 const AccountInfo = ({ handleAccountClick }: AccountInfoProps) => {
   const { registerState, errors, handleChange, activeFlag } = useForm(validations);
   const { username, password, passwordConfirm } = registerState;
+  const [isDuplicate, setIsDuplicate] = useState(false);
+
+  const handleCheckUsername = async (value: string) => {
+    // const response: Response = await fetch(`/api/users/isDuplicated?userId=${value}`);
+    // const result = await response.json();
+    // setIsDuplicate(result);
+    console.log('ss');
+  };
 
   return (
     <AccountInfoBlock>
@@ -30,7 +38,7 @@ const AccountInfo = ({ handleAccountClick }: AccountInfoProps) => {
         <div className={'title'}>계정 만들기</div>
       </Header>
       <Form>
-        <Input name={'username'} placeholder={'아이디'} value={username} handleChange={handleChange} errorMessage={errors.username} />
+        <Input name={'username'} placeholder={'아이디'} value={username} handleChange={handleChange} errorMessage={errors.username} check={handleCheckUsername} isDuplicate={isDuplicate} />
         <Input name={'password'} type={'password'} placeholder={'비밀번호'} value={password} handleChange={handleChange} errorMessage={errors.password} />
         <Input name={'passwordConfirm'} type={'password'} placeholder={'비밀번호 확인'} value={passwordConfirm} handleChange={handleChange} errorMessage={errors.passwordConfirm} />
         <ButtonContainer>

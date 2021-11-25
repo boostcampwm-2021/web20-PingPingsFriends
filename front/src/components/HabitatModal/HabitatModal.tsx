@@ -28,7 +28,6 @@ const HabitatModal = ({ hide }: HabitatModalProps) => {
       const response: Response = await fetch(`/api/habitat`);
       const habitats: HabitatList = await response.json();
       setHabitatInfos(habitats);
-      return Promise;
     }
   }, [keyword]);
 

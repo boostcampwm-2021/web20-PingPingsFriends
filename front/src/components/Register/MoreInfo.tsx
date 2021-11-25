@@ -22,8 +22,8 @@ interface MoreInfoProps {
 
 const validations: Validation<RegisterState>[] = [
   { value: 'nickname', check: (values) => values['nickname'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
-  { value: 'habitat', check: (values) => values['habitat'] === null, message: '서식지를 선택해야합니다.' },
-  { value: 'species', check: (values) => values['species'] === null, message: '동물을 선택해야합니다.' },
+  { value: 'habitat', check: (values) => values['habitat'] === null && !values['habitatInfo'], message: '서식지를 선택해야합니다.' },
+  { value: 'species', check: (values) => values['species'] === null && !values['speciesInfo'], message: '동물을 선택해야합니다.' },
 ];
 
 const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {

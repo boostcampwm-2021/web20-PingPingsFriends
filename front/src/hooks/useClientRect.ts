@@ -15,7 +15,9 @@ export const useClientRect = (): ClientRect => {
 
   const ref = useCallback((node: HTMLDivElement): void => {
     if (node !== null) {
-      setWidth({ width: node.getBoundingClientRect().width, height: node.getBoundingClientRect().height });
+      requestAnimationFrame(() => {
+        setWidth({ width: node.getBoundingClientRect().width, height: node.getBoundingClientRect().height });
+      });
     }
   }, []);
 

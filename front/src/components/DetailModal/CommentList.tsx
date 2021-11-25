@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Comment from './Comment';
 import { Comments } from '@src/types/Comment';
 import { useElementRef } from '@hooks/useElementRef';
+import useScrollObserver from '@hooks/useScrollObserver';
 
 const ScrollBox = styled.div`
   ${prettyScroll()};
@@ -21,8 +22,6 @@ interface CommentListProps {
 const CommentList = ({ feedId, toggleEditMode }: CommentListProps) => {
   const [comments, setComments] = useState<Comments>([]);
   const [lastComment, setLastComment] = useState(0);
-  const [observerElement, observerRef] = useElementRef();
-  const [bottomElement, bottomRef] = useElementRef();
 
   useEffect(() => {
     getComment();
@@ -35,6 +34,8 @@ const CommentList = ({ feedId, toggleEditMode }: CommentListProps) => {
     }
   }, [lastComment]);
 
+  const [observerElement, observerRef] = useElementRef();
+
   const options = { root: observerElement, rootMargin: '150px', threshold: 1.0 };
 
   const handleObserver = (entries: any) => {
@@ -43,12 +44,7 @@ const CommentList = ({ feedId, toggleEditMode }: CommentListProps) => {
       setLastComment(comments[comments.length - 1].id);
     }
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (bottomElement) observer.observe(bottomElement);
-    return () => observer.disconnect();
-  }, [handleObserver]);
+  const bottomRef = useScrollObserver(handleObserver, options);
 
   return (
     <ScrollBox ref={observerRef}>
