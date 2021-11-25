@@ -1,5 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import FileDto from 'common/dto/transformFileDto';
+import { Content } from 'src/contents/entities/content.entity';
+import { Habitat } from 'src/habitat/entities/habitat.entity';
+import { Species } from 'src/species/entities/species.entity';
+import { Connection } from 'typeorm';
+import { isAllTrueOrFalse } from 'utils/condition-check.util';
 import { getPartialFileInfo } from 'utils/s3.util';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -7,23 +12,30 @@ import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly connection: Connection
+  ) {}
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
+
   async check(username?: string, nickname?: string) {
     const orCheck = username || nickname;
     const andCheck = username && nickname;
+
     if (!orCheck || andCheck)
       throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
 
-    let user;
+    let user: User;
     if (username) user = await this.userRepository.findOne({ username });
     if (nickname) user = await this.userRepository.findOne({ nickname });
 
-    return !!user;
+    if (user) return true;
+    else return false;
   }
+
   async getUserInfo(userId: number) {
     const user = await this.userRepository.findOne(userId, { relations: ['content'] });
 
@@ -71,18 +83,76 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto, image?: FileDto) {
-    const { name, sound, speciesId } = createUserDto;
+    const { habitatId, habitatName, habitatColor } = createUserDto;
+    const { speciesId, speciesName, speciesSound } = createUserDto;
 
-    if (((name || sound) && speciesId) || (!(name || sound) && !speciesId))
+    if (isAllTrueOrFalse(habitatId, habitatName, habitatColor))
       throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
 
-    const foundUser = await this.userRepository.findOne({ username: createUserDto.username });
-    if (foundUser)
-      throw new HttpException('Error: 이미 존재하는 회원입니다.', HttpStatus.BAD_REQUEST);
+    if (isAllTrueOrFalse(speciesId, speciesName, speciesSound))
+      throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
 
     const contentInfo = getPartialFileInfo(image);
 
-    return await this.userRepository.saveUser(createUserDto, contentInfo);
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+
+    const userRepository = queryRunner.manager.getRepository(User);
+    const habitatRepository = queryRunner.manager.getRepository(Habitat);
+
+    const user = await userRepository.findOne({ username: createUserDto.username });
+    if (user) throw new HttpException('Error: 이미 존재하는 회원입니다.', HttpStatus.BAD_REQUEST);
+
+    const newUser = new User();
+    newUser.username = createUserDto.username;
+    newUser.nickname = createUserDto.nickname;
+    newUser.password = createUserDto.password;
+
+    if (speciesId) newUser.speciesId = speciesId;
+    else {
+      const species = new Species();
+      species.name = speciesName;
+      species.sound = speciesSound;
+      newUser.species = species;
+    }
+
+    if (contentInfo) {
+      const content = new Content();
+      content.url = contentInfo.url;
+      content.mimeType = contentInfo.mimeType;
+      newUser.content = content;
+    }
+
+    await queryRunner.startTransaction();
+
+    try {
+      if (!habitatId) {
+        const habitat = new Habitat();
+        habitat.name = habitatName;
+        habitat.color = habitatColor;
+
+        const newHabitat = await habitatRepository.save(habitat);
+        newUser.habitatId = newHabitat.id;
+
+        const newUserId = (await userRepository.save(newUser)).id;
+        newHabitat.leaderId = newUserId;
+
+        await habitatRepository.save(newHabitat);
+      } else {
+        newUser.habitatId = habitatId;
+        await userRepository.save(newUser);
+      }
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+      return false;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async updateImage(image: FileDto, user: any) {

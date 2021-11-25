@@ -8,7 +8,6 @@ import {
   Post,
   Query,
   Req,
-  Request,
   Res,
   UploadedFile,
   UseGuards,
@@ -48,27 +47,16 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService
   ) {}
-  @Get('/isDuplicated')
+
+  @Get('isDuplicated')
   @ApiOperation({
-    summary: 'ID/Nickname 유효성 검사',
-    description: '회원가입시 ID/Nickname 유효성 검사를 하는 api입니다.',
+    summary: '회원 가입 유효성 검사',
+    description: '회원 가입 유효성 검사 api입니다.',
   })
-  @ApiQuery({ name: 'username', required: false })
-  @ApiQuery({ name: 'nickname', required: false })
+  @ApiQuery({ name: 'username', required: false, type: 'string' })
+  @ApiQuery({ name: 'nickname', required: false, type: 'string' })
   async check(@Query('username') username?: string, @Query('nickname') nickname?: string) {
     return await this.usersService.check(username, nickname);
-  }
-  @Get()
-  @ApiOperation({
-    summary: '유저 리스트 조회',
-    description: '모든 유저를 조회하는 api입니다.',
-  })
-  @ApiCreatedResponse({
-    description: '성공',
-    type: [userResponseDto],
-  })
-  findAll() {
-    return this.usersService.findAll();
   }
 
   @Get('info')
@@ -89,6 +77,19 @@ export class UsersController {
   })
   async findOne(@Param('userId', ParseIntPipe) userId: number) {
     return await this.usersService.findUserInfo(userId);
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: '유저 리스트 조회',
+    description: '모든 유저를 조회하는 api입니다.',
+  })
+  @ApiCreatedResponse({
+    description: '성공',
+    type: [userResponseDto],
+  })
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Post('register')
