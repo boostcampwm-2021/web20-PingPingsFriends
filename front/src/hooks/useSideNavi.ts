@@ -57,8 +57,10 @@ const useSideNavi = (userHabitatId: number) => {
     const queryMap = queryString(location.search);
     if ('habitat' in queryMap) {
       const curHabitatId = +queryMap['habitat'];
-      if (curHabitatId === getCurHabitat()) return;
-      else if (curHabitatId === getCurHabitat(1)) historyDispatch({ type: 'GO_NEXT_HABITAT', data: [] });
+      if (curHabitatId === getCurHabitat()) {
+        if (historyState.habitatList.length) return;
+        initRandomList(curHabitatId);
+      } else if (curHabitatId === getCurHabitat(1)) historyDispatch({ type: 'GO_NEXT_HABITAT', data: [] });
       else if (curHabitatId === getCurHabitat(-1)) historyDispatch({ type: 'GO_PREV_HABITAT', data: [] });
       else {
         initRandomList(curHabitatId);

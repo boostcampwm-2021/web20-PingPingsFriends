@@ -7,14 +7,21 @@ const useHabitatInfo = (habitatId: number) => {
   useEffect(() => {
     if (habitatId === undefined) return;
     setHabitatInfo(undefined);
-    fetch(`/api/habitat/${habitatId}`, { headers: { Accept: 'application/json' } })
-      .then((res) => res.json())
-      .then((data: HabitatInfo) => {
+    const fetchHabitatInfo = async () => {
+      const res: Response = await fetch(`/api/habitat/${habitatId}`, { headers: { Accept: 'application/json' } });
+      if (res.ok) {
+        const data = await res.json();
         setHabitatInfo(data);
-      })
-      .catch((err) => {
+      } else {
         setHabitatInfo(undefined);
-      });
+      }
+    };
+    try {
+      fetchHabitatInfo();
+    } catch (err) {
+      console.log(err);
+      setHabitatInfo(undefined);
+    }
   }, [habitatId]);
 
   return { habitatInfo };
