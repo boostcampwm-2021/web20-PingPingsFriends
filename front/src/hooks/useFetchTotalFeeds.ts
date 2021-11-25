@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Posts, PostsResponse } from '@src/types/Post';
 
-const useFetchTotalFeeds = (curHabitatId: number): [Posts, Dispatch<SetStateAction<number | null>>] => {
+const useFetchTotalFeeds = (curHabitatId: number | undefined): [Posts, Dispatch<SetStateAction<number | null>>] => {
   const [feeds, setFeeds] = useState<Posts>([] as Posts);
   const [lastFeedId, setLastFeedId] = useState<number | null>(null);
   const [totalFeed, setTotalFeed] = useState<Posts>([] as Posts);

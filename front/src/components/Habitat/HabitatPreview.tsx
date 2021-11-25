@@ -7,6 +7,7 @@ import MagicNumber from '@lib/styles/magic';
 import { Palette } from '@lib/styles/Palette';
 import { compareTime } from '@lib/utils/time';
 import { ReactComponent as LoadingSvg } from '@assets/icons/loading.svg';
+import { ReactComponent as WarningSvg } from '@assets/icons/warning.svg';
 
 interface HabitatPreviewProps {
   side: string;
@@ -38,7 +39,7 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
     <>
       {radius > 100 && (
         <HabitatPreviewBlock side={side} color={habitatInfo?.habitat.color} radius={radius} onClick={handlePreviewClick}>
-          {habitatInfo !== undefined ? (
+          {habitatInfo ? (
             <>
               {radius > 150 ? (
                 <>
@@ -61,10 +62,12 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
                 <ShrinkTitleDiv>{habitatInfo.habitat.name}</ShrinkTitleDiv>
               )}
             </>
-          ) : (
+          ) : habitatInfo === undefined ? (
             <LoadingDiv>
               <LoadingSvg />
             </LoadingDiv>
+          ) : (
+            <WarningSvg style={{ width: '100px', height: '100px', margin: 'auto', fill: Palette.RED }} />
           )}
         </HabitatPreviewBlock>
       )}

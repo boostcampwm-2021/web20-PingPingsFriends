@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { HabitatInfo } from '@src/types/Habitat';
 
 const useHabitatInfo = (habitatId: number | undefined) => {
-  const [habitatInfo, setHabitatInfo] = useState<HabitatInfo | undefined>(undefined);
+  const [habitatInfo, setHabitatInfo] = useState<HabitatInfo | undefined | null>(undefined);
 
   useEffect(() => {
     if (habitatId === undefined) return;
@@ -13,14 +13,14 @@ const useHabitatInfo = (habitatId: number | undefined) => {
         const data = await res.json();
         setHabitatInfo(data);
       } else {
-        setHabitatInfo(undefined);
+        setHabitatInfo(null);
       }
     };
     try {
       fetchHabitatInfo();
     } catch (err) {
       console.log(err);
-      setHabitatInfo(undefined);
+      setHabitatInfo(null);
     }
   }, [habitatId]);
 

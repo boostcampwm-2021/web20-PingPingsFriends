@@ -35,7 +35,7 @@ const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
 `;
 
 interface FeedScrollBoxProps {
-  habitatInfo: HabitatInfo | undefined;
+  habitatInfo: HabitatInfo | undefined | null;
   curHabitatId: number;
 }
 

@@ -30,7 +30,7 @@ const HeaderBlock = styled.div`
 `;
 
 interface HeaderProps {
-  habitatInfo: HabitatInfo | undefined;
+  habitatInfo: HabitatInfo | undefined | null;
 }
 
 const Header = ({ habitatInfo }: HeaderProps) => {
