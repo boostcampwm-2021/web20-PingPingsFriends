@@ -33,7 +33,7 @@ interface CommentFormProps {
   inputText: string;
 }
 
-const CommentForm = ({ feedId, editMode, inputText, setInputText }: CommentFormProps) => {
+const CommentForm = ({ editMode, inputText, setInputText }: CommentFormProps) => {
   const [isActive, setActive] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const handleInputChange = () => {
@@ -53,7 +53,7 @@ const CommentForm = ({ feedId, editMode, inputText, setInputText }: CommentFormP
     <UserForm>
       <UserInput editMode={editMode} onChange={handleInputChange} ref={inputRef} placeholder={'댓글을 입력하세요.'} required />
       <SubmitBtn type={'submit'} isActive={isActive}>
-        {isActive ? 'OK!' : 'x'}
+        {isActive ? 'OK!' : 'X'}
       </SubmitBtn>
     </UserForm>
   );
