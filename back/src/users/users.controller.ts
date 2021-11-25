@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   Request,
   Res,
@@ -23,6 +24,7 @@ import {
   ApiBody,
   ApiBearerAuth,
   ApiCookieAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { userResponseDto } from './dto/userResponseDto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -46,7 +48,16 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService
   ) {}
-
+  @Get('/isDuplicated')
+  @ApiOperation({
+    summary: 'ID/Nickname 유효성 검사',
+    description: '회원가입시 ID/Nickname 유효성 검사를 하는 api입니다.',
+  })
+  @ApiQuery({ name: 'username', required: false })
+  @ApiQuery({ name: 'nickname', required: false })
+  async check(@Query('username') username?: string, @Query('nickname') nickname?: string) {
+    return await this.usersService.check(username, nickname);
+  }
   @Get()
   @ApiOperation({
     summary: '유저 리스트 조회',
