@@ -109,10 +109,10 @@ export class PostService {
     , (select count(*) from comment where post_id = p.post_id) as numOfComments
     , (select count(*) from heart where post_id = p.post_id and user_id = ?) as is_heart
     from post p
-    inner join user u on u.user_id = p.user_id
+    straight_join user u on u.user_id = p.user_id
     left join contents c on c.contents_id = u.contents_id
-    inner join post_contents pc on pc.post_id = p.post_id
-    inner join contents pcc on pc.contents_id = pcc.contents_id
+    straight_join post_contents pc on pc.post_id = p.post_id
+    straight_join contents pcc on pc.contents_id = pcc.contents_id
     `;
   }
 
