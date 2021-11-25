@@ -12,6 +12,7 @@ const useSideNavi = (userHabitatId: number) => {
   useEffect(() => {
     if (!userHabitatId) return;
     else if (habitatList.length) {
+      if (habitatList[historyIdx] === userHabitatId) return;
       const newList = habitatList.splice(historyIdx, 0, userHabitatId);
       setHabitatList(newList);
     } else {
@@ -43,6 +44,7 @@ const useSideNavi = (userHabitatId: number) => {
   useEffect(() => {
     const queryMap = queryString(location.search);
     if ('habitat' in queryMap) {
+      if (curHabitatId === +queryMap['habitat']) return;
       setCurHabitatId(+queryMap['habitat']);
       return;
     }
