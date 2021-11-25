@@ -17,7 +17,9 @@ const useDetailFeed = (feeds: Posts) => {
       .filter((str) => str)
       .reverse()[0];
 
-    getFeed(id);
+    const targetFeed = feeds.find(({ post_id }) => post_id === id);
+    if (targetFeed) setDetail(targetFeed);
+    else getFeed(id);
 
     async function getFeed(id: number) {
       const response: Response = await fetch(`/api/posts/${id}`);
