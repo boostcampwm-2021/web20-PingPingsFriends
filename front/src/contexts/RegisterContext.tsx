@@ -8,8 +8,8 @@ export interface RegisterState {
   password: string;
   passwordConfirm: string;
   nickname: string;
-  habitat: string | null;
-  species: string | null;
+  habitatId: string | null;
+  speciesId: string | null;
   speciesInfo?: SpeciesInfo;
   habitatInfo?: HabitatInfo;
 }
@@ -26,8 +26,8 @@ export const initialState: RegisterState = {
   password: '',
   passwordConfirm: '',
   nickname: '',
-  habitat: null,
-  species: null,
+  habitatId: null,
+  speciesId: null,
 };
 
 const registerReducer = (state: RegisterState, { type, payload }: Action): RegisterState => {
@@ -36,10 +36,10 @@ const registerReducer = (state: RegisterState, { type, payload }: Action): Regis
       return { ...state, ...payload };
     }
     case 'ADD_SPECIES': {
-      return { ...state, speciesInfo: payload as SpeciesInfo, species: null };
+      return { ...state, speciesInfo: payload as SpeciesInfo, speciesId: null };
     }
     case 'ADD_HABITAT': {
-      return { ...state, habitatInfo: payload as HabitatInfo, habitat: null };
+      return { ...state, habitatInfo: payload as HabitatInfo, habitatId: null };
     }
     default: {
       return state;

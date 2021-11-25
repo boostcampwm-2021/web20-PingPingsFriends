@@ -24,8 +24,10 @@ interface MoreInfoProps {
 
 const validations: Validation<RegisterState>[] = [
   { value: 'nickname', check: (values) => values['nickname'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
-  { value: 'habitat', check: (values) => values['habitat'] === null && !values['habitatInfo'], message: '서식지를 선택해야합니다.' },
-  { value: 'species', check: (values) => values['species'] === null && !values['speciesInfo'], message: '동물을 선택해야합니다.' },
+  { value: 'nickname', check: (values) => values['nickname'].length >= 19, message: '아이디는 20자보다 적어야합니다.' },
+  { value: 'nickname', check: (values) => !new RegExp(/^[a-z]/gi).test(values['nickname']), message: '문자로 시작해야합니다' },
+  { value: 'habitatId', check: (values) => values['habitatId'] === null && !values['habitatInfo'], message: '서식지를 선택해야합니다.' },
+  { value: 'speciesId', check: (values) => values['speciesId'] === null && !values['speciesInfo'], message: '동물을 선택해야합니다.' },
 ];
 
 const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
@@ -39,8 +41,6 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
   const [isCheck, checkUsername] = useFetchDuplicate(`nickname`);
   const inputRef = useFocus();
 
-  console.log(activeFlag);
-  console.log(isCheck);
   return (
     <MoreInfoBlock>
       <Header>
@@ -59,12 +59,14 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
           focusRef={inputRef}
         />
         <SelectContainer>
-          {habitatOptions && <Select name={'habitat'} id={'habitat'} options={habitatOptions} label={'서식지'} handleChange={handleChange} errorMessage={errors.habitat} value={habitatInfo?.name} />}
+          {habitatOptions && (
+            <Select name={'habitatId'} id={'habitatId'} options={habitatOptions} label={'서식지'} handleChange={handleChange} errorMessage={errors.habitatId} value={habitatInfo?.name} />
+          )}
           <AddCircle onClick={habitatToggle} />
         </SelectContainer>
         <SelectContainer>
           {speciesOptions && (
-            <Select name={'species'} id={'species'} options={speciesOptions} label={'동물 카테고리'} handleChange={handleChange} errorMessage={errors.species} value={speciesInfo?.name} />
+            <Select name={'speciesId'} id={'speciesId'} options={speciesOptions} label={'동물 카테고리'} handleChange={handleChange} errorMessage={errors.speciesId} value={speciesInfo?.name} />
           )}
           <AddCircle onClick={speciesToggle} />
         </SelectContainer>
