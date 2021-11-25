@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
+import { UserRepository } from 'src/users/user.repository';
 import { Connection } from 'typeorm';
 import { convertStringToNumber } from 'utils/value-converter.util';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -18,10 +19,24 @@ export class PostService {
   constructor(
     @InjectRepository(PostRepository)
     private postRepository: PostRepository,
+    private userRepository: UserRepository,
     private connection: Connection
   ) {}
 
   async create(createPostDto: CreatePostDto, contentsInfos: CreateContentDto[], userId: number) {
+    const user = await this.userRepository.findOne(userId, { relations: ['species'] });
+    if (!user) throw new HttpException('Error: 유저가 존재하지 않습니다.', HttpStatus.BAD_REQUEST);
+    const { sound } = user.species;
+    const contentArr = [];
+    const soundLength = sound.length;
+    const humanContentLength = createPostDto.animalContent.length;
+
+    Array(Math.ceil(humanContentLength / soundLength))
+      .fill(0)
+      .forEach((v) => {
+        contentArr.push(sound + '!');
+      });
+    createPostDto.animalContent = contentArr.join(' ');
     return await this.postRepository.createPost(createPostDto, contentsInfos, userId);
   }
 
