@@ -15,6 +15,8 @@ import { RegisterState } from '@src/contexts/RegisterContext';
 import useForm, { Validation } from '@components/Register/useForm';
 import useGetFetch from '@hooks/useGetFetch';
 import HabitatsMakeModal from '@components/Register/HabitatsMakeModal';
+import useFetchDuplicate from '@components/Register/useFetchDuplicate';
+import useFocus from '@hooks/useFocus';
 
 interface MoreInfoProps {
   handleMoreInfoClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -34,15 +36,28 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
 
   const { registerState, handleChange, errors, activeFlag } = useForm(validations);
   const { nickname, speciesInfo, habitatInfo } = registerState;
+  const [isCheck, checkUsername] = useFetchDuplicate(`nickname`);
+  const inputRef = useFocus();
 
+  console.log(activeFlag);
+  console.log(isCheck);
   return (
     <MoreInfoBlock>
       <Header>
         <img className={'logo'} src={logo} alt={'로고'} />
         <div className={'title'}>추가 정보 입력하기</div>
       </Header>
-      <Form>
-        <Input name={'nickname'} placeholder={'유저 아이디'} value={nickname} handleChange={handleChange} errorMessage={errors.nickname} />
+      <Form onSubmit={(e) => e.preventDefault()}>
+        <Input
+          name={'nickname'}
+          placeholder={'유저 아이디'}
+          value={nickname}
+          handleChange={handleChange}
+          errorMessage={errors.nickname}
+          check={checkUsername}
+          isDuplicate={isCheck}
+          focusRef={inputRef}
+        />
         <SelectContainer>
           {habitatOptions && <Select name={'habitat'} id={'habitat'} options={habitatOptions} label={'서식지'} handleChange={handleChange} errorMessage={errors.habitat} value={habitatInfo?.name} />}
           <AddCircle onClick={habitatToggle} />
@@ -54,11 +69,11 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
           <AddCircle onClick={speciesToggle} />
         </SelectContainer>
         <ButtonContainer>
-          <Button borderColor={'none'} onClick={handleMoreInfoClick} className={'back-button'}>
+          <Button type={'button'} borderColor={'none'} onClick={handleMoreInfoClick} className={'back-button'}>
             뒤로 가기
           </Button>
-          <Button className={`${activeFlag && 'active'} register-button`} onClick={handleMoreInfoClick}>
-            가입
+          <Button className={`${activeFlag && !isCheck && 'active'} next-button`} onClick={handleMoreInfoClick}>
+            다음
           </Button>
         </ButtonContainer>
       </Form>

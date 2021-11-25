@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 
@@ -49,22 +49,22 @@ interface InputProps {
   width?: number;
   check?: (arg: string) => Promise<void>;
   isDuplicate?: boolean;
+  focusRef?: any;
 }
 
-const Input = ({ type = 'text', placeholder, value, handleChange, name, errorMessage, width, check, isDuplicate }: InputProps) => {
+const Input = ({ type = 'text', placeholder, value, handleChange, name, errorMessage, width, check, isDuplicate, focusRef }: InputProps) => {
   const [error, setError] = useState('');
   const handleBlur = () => {
     setError(errorMessage!);
-
+    console.log('s');
     if (!errorMessage && check) {
       check(value);
     }
   };
 
-  useEffect(() => {}, [error]);
   return (
     <InputContainer widthStyle={width}>
-      <StyledInput error={error} name={name} type={type} required value={value} onChange={handleChange} onBlur={handleBlur} />
+      <StyledInput error={error} name={name} type={type} required value={value} onChange={handleChange} onBlur={handleBlur} ref={focusRef} />
       <StyledPlaceHolderDiv>{placeholder}</StyledPlaceHolderDiv>
       <ErrorMessageDiv>{error ? error : isDuplicate ? '중복 아이디입니다.' : ''}</ErrorMessageDiv>
     </InputContainer>

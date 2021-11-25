@@ -7,11 +7,13 @@ import useReadFileURL from '@hooks/useReadFileURL';
 import Button from '@components/Button/Button';
 import useFlag from '@components/Register/useFlag';
 import logo from '@assets/images/logo2.png';
+import { RegisterState, useRegisterState } from '@src/contexts/RegisterContext';
 
 const ProfileImage = () => {
   const [profile, setProfile] = useState<File | null>(null);
   const imageURL = useReadFileURL({ file: profile });
   const flag = useFlag(imageURL);
+  const registerState = useRegisterState();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (e.target.id === 'profile') {
@@ -21,17 +23,43 @@ const ProfileImage = () => {
       return;
     }
   };
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLDivElement;
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.target as HTMLButtonElement;
+    const data = new FormData();
+
+    Object.keys(registerState).forEach((key) => {
+      const value = registerState[key as keyof RegisterState];
+      if (typeof value === 'string') {
+        data.append(key, value);
+      }
+    });
+    if (registerState.habitatInfo) {
+      data.append('habitatName', registerState.habitatInfo.name);
+      data.append('color', registerState.habitatInfo.color);
+    }
+    if (registerState.speciesInfo) {
+      data.append('speciesName', registerState.speciesInfo.name);
+      data.append('sound', registerState.speciesInfo.sound);
+    }
+
+    // const headers = new Headers();
+    // headers.append('Accept', 'application/json');
+    // headers.append('Content-Type', 'application/json');
+
     if (target.classList.contains('cancel-button')) {
-      console.log('go home');
-      // history.push('/');
+      const response = await fetch('/api/users/register', { method: 'POST', body: data });
+      const result = await response.json();
+      console.log(result);
+
       return;
     }
     if (flag && target.classList.contains('confirm-button')) {
-      //todo: fetch profile-image
-      console.log('profile image fetch 보내기 & home');
-      // history.push('/');
+      data.append('upload', profile!);
+
+      const response = await fetch('/api/users/register', { method: 'POST', body: data });
+      const result = await response.json();
+      console.log(result);
+      return;
     }
   };
 
@@ -50,11 +78,13 @@ const ProfileImage = () => {
         <FileInput id="profile" type="file" accept="image/*" name="contents" form="write" onChange={handleChange} />
       </Form>
       자신을 잘 나타내는 이미지를 골라주세요
-      <ButtonContainer onClick={handleClick}>
-        <Button className={'cancel-button'} borderColor={'none'}>
+      <ButtonContainer>
+        <Button className={'cancel-button'} borderColor={'none'} onClick={handleClick}>
           다음에 할래요!
         </Button>
-        <Button className={`${flag && 'active'} confirm-button`}>설정</Button>
+        <Button className={`${flag && 'active'} confirm-button`} onClick={handleClick}>
+          설정
+        </Button>
       </ButtonContainer>
     </ProfileImageBlock>
   );

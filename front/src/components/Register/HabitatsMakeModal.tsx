@@ -8,7 +8,7 @@ import { useRegisterDispatch } from '@src/contexts/RegisterContext';
 import { Palette } from '@lib/styles/Palette';
 import ColorPicker from '@components/Register/ColorPicker';
 
-interface SpeciesMakeModalProps {
+interface HabitatsMakeModalProps {
   hide: ToggleHandler;
 }
 interface ErrorMessage {
@@ -40,7 +40,7 @@ const reducer = (state: ErrorMessage, { type, payload }: Action) => {
   }
 };
 
-const HabitatsMakeModal = ({ hide }: SpeciesMakeModalProps) => {
+const HabitatsMakeModal = ({ hide }: HabitatsMakeModalProps) => {
   const [habitat, setHabitat] = useState('');
   const [color, setColor] = useState('');
   const [{ duplicateChecked, isDuplicate, errorMessage }, dispatch] = useReducer(reducer, initialState);
