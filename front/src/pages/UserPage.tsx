@@ -12,12 +12,10 @@ import MagicNumber from '@src/lib/styles/magic';
 import { useUserState } from '@src/contexts/UserContext';
 import useValidateUser from '@src/hooks/useValidateUser';
 
-const DEFAULT_HABITAT_ID = 2;
-
 const UserPage = () => {
   const param: { id: string } = useParams();
   const [userInfo, setUserInfo] = useState<User | null>(null);
-  const { habitatInfo } = useHabitatInfo(userInfo?.habitat?.id ?? DEFAULT_HABITAT_ID);
+  const { habitatInfo } = useHabitatInfo(userInfo?.habitat?.id ?? undefined);
   const userState = useUserState();
   useValidateUser(userState);
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { HabitatInfo } from '@src/types/Habitat';
 
-const useHabitatInfo = (habitatId: number) => {
+const useHabitatInfo = (habitatId: number | undefined) => {
   const [habitatInfo, setHabitatInfo] = useState<HabitatInfo | undefined>(undefined);
 
   useEffect(() => {
