@@ -66,7 +66,7 @@ const useSideNavi = (userHabitatId: number) => {
       }
     } else {
       initRandomList(userHabitatId);
-      history.push(`/?habitat=${userHabitatId}`);
+      history.push(`${location.pathname}?habitat=${userHabitatId}`);
     }
   }, [location]);
 
