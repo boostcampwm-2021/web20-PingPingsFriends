@@ -31,14 +31,14 @@ export class HabitatService {
       this.postRepository.selectTopPostUserInfo(3, habitatId), //
       this.userRepository.selectUserInfo(habitat.leaderId),
     ]);
-    console.log(userCnt, postCnt, recentUsers, leader);
+
     return {
       habitat,
       leader: leader.length ? leader[0] : null,
       userCnt,
       postCnt,
       recentUsers,
-      lastActTime: recentUsers[0].createdAt,
+      lastActTime: recentUsers.length !== 0 ? recentUsers[0].createdAt : '',
     };
   }
 
