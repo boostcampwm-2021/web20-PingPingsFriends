@@ -6,7 +6,8 @@ import { flexBox } from '@lib/styles/mixin';
 import MagicNumber from '@lib/styles/magic';
 import { Palette } from '@lib/styles/Palette';
 import { compareTime } from '@lib/utils/time';
-import { ReactComponent as LoadingSvg } from '@assets/icons/loading.svg';
+import Loading from '@common/Indicator/Loading';
+import Warning from '@common/Indicator/Warning';
 
 interface HabitatPreviewProps {
   side: string;
@@ -38,7 +39,7 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
     <>
       {radius > 100 && (
         <HabitatPreviewBlock side={side} color={habitatInfo?.habitat.color} radius={radius} onClick={handlePreviewClick}>
-          {habitatInfo !== undefined ? (
+          {habitatInfo ? (
             <>
               {radius > 150 ? (
                 <>
@@ -61,10 +62,10 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
                 <ShrinkTitleDiv>{habitatInfo.habitat.name}</ShrinkTitleDiv>
               )}
             </>
+          ) : habitatInfo === undefined ? (
+            <Loading width={'100px'} height={'100px'} />
           ) : (
-            <LoadingDiv>
-              <LoadingSvg />
-            </LoadingDiv>
+            <Warning width={'100px'} height={'100px'} />
           )}
         </HabitatPreviewBlock>
       )}
@@ -146,20 +147,4 @@ const AvatarDiv = styled.div<Pick<HabitatPreviewProps, 'side'> & { radius: numbe
         padding-left: 1em;
       `;
   }}
-`;
-
-const LoadingDiv = styled.div`
-  margin: auto;
-
-  svg {
-    @keyframes rotate {
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-    animation: rotate 3s linear infinite;
-    fill: white;
-    width: 100px;
-    height: 100px;
-  }
 `;

@@ -41,7 +41,7 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
 
 const useSideNavi = (userHabitatId: number) => {
   const [historyState, historyDispatch] = useReducer(reducer, initHistoryState);
-  const getCurHabitat = (idx: number = 0) => historyState.habitatList[historyState.curIndex + idx] ?? 2;
+  const getCurHabitat = (idx: number = 0) => historyState.habitatList[historyState.curIndex + idx] ?? undefined;
   const history = useHistory();
   const location = useLocation();
 
@@ -50,7 +50,6 @@ const useSideNavi = (userHabitatId: number) => {
     const data: number[] = await res.json();
     data.splice(INIT_HISTORY_INDEX, 0, habitatId);
     historyDispatch({ type: 'INIT_RANDOM_HABITAT', data });
-    history.push(`/?habitat=${habitatId}`);
   };
 
   useEffect(() => {
@@ -67,6 +66,7 @@ const useSideNavi = (userHabitatId: number) => {
       }
     } else {
       initRandomList(userHabitatId);
+      history.push(`${location.pathname}?habitat=${userHabitatId}`);
     }
   }, [location]);
 
