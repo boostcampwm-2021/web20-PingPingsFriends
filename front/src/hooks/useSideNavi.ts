@@ -41,7 +41,7 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
 
 const useSideNavi = (userHabitatId: number) => {
   const [historyState, historyDispatch] = useReducer(reducer, initHistoryState);
-  const getCurHabitat = (idx: number = 0) => historyState.habitatList[historyState.curIndex + idx] ?? 2;
+  const getCurHabitat = (idx: number = 0) => historyState.habitatList[historyState.curIndex + idx] ?? undefined;
   const history = useHistory();
   const location = useLocation();
 

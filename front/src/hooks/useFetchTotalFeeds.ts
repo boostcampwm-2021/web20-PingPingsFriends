@@ -12,6 +12,7 @@ const useFetchTotalFeeds = (curHabitatId: number): [Posts, Dispatch<SetStateActi
   }, [curHabitatId]);
 
   useEffect(() => {
+    if (curHabitatId === undefined) return;
     fetchData();
 
     async function fetchData() {
