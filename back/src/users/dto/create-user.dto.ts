@@ -2,8 +2,10 @@ export class CreateUserDto {
   username: string;
   password: string;
   nickname: string;
-  habitatId: number;
+  habitatId?: number;
   speciesId?: number;
-  sound?: string;
-  name?: string;
+  habitatName?: string;
+  habitatColor?: string;
+  speciesName?: string;
+  speciesSound?: string;
 }

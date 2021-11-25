@@ -6,8 +6,8 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
-  Request,
   Res,
   UploadedFile,
   UseGuards,
@@ -23,6 +23,7 @@ import {
   ApiBody,
   ApiBearerAuth,
   ApiCookieAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { userResponseDto } from './dto/userResponseDto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -47,17 +48,15 @@ export class UsersController {
     private readonly authService: AuthService
   ) {}
 
-  @Get()
+  @Get('isDuplicated')
   @ApiOperation({
-    summary: '유저 리스트 조회',
-    description: '모든 유저를 조회하는 api입니다.',
+    summary: '회원 가입 유효성 검사',
+    description: '회원 가입 유효성 검사 api입니다.',
   })
-  @ApiCreatedResponse({
-    description: '성공',
-    type: [userResponseDto],
-  })
-  findAll() {
-    return this.usersService.findAll();
+  @ApiQuery({ name: 'username', required: false, type: 'string' })
+  @ApiQuery({ name: 'nickname', required: false, type: 'string' })
+  async check(@Query('username') username?: string, @Query('nickname') nickname?: string) {
+    return await this.usersService.check(username, nickname);
   }
 
   @Get('info')
@@ -78,6 +77,19 @@ export class UsersController {
   })
   async findOne(@Param('userId', ParseIntPipe) userId: number) {
     return await this.usersService.findUserInfo(userId);
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: '유저 리스트 조회',
+    description: '모든 유저를 조회하는 api입니다.',
+  })
+  @ApiCreatedResponse({
+    description: '성공',
+    type: [userResponseDto],
+  })
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Post('register')
