@@ -65,7 +65,8 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
               feedId={feed.post_id}
               nickname={feed.nickname}
               imageURLs={feed.contents_url_array}
-              text={feed.human_content}
+              humanText={feed.human_content}
+              animalText={feed.animal_content}
               createdTime={feed.created_at}
               numOfHearts={feed.numOfHearts}
               numOfComments={feed.numOfComments}

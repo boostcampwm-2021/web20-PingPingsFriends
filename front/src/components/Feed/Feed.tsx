@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as VertBtnSvg } from '@assets/icons/more_vert_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '@assets/icons/comment_btn.svg';
+import { ReactComponent as TranslateBtnSvg } from '@assets/icons/pet_btn.svg';
 import Avatar from '@common/Avatar/Avatar';
 import DropBox from '@common/DropBox/DropBox';
 import Carousel from '@common/Carousel/Carousel';
@@ -16,13 +17,15 @@ import WriteModal from '@components/Write/WriteModal';
 import useModal from '@common/Modal/useModal';
 import { formatDate } from '@lib/utils/time';
 import { useUserState } from '@src/contexts/UserContext';
+import { Palette } from '@src/lib/styles/Palette';
 
 export interface FeedProps {
   feedId: number;
   userId: number;
   nickname: string;
   imageURLs: string[];
-  text: string;
+  humanText: string;
+  animalText: string;
   createdTime: string;
   numOfHearts: number;
   numOfComments: number;
@@ -32,7 +35,7 @@ export interface FeedProps {
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, text, lazy, createdTime, numOfHearts, is_heart, avatarImage, numOfComments }: FeedProps) => {
+const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, animalText, lazy, createdTime, numOfHearts, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
@@ -43,6 +46,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, text, lazy, cre
   ]);
   const { toggle, routePath } = useModal(`detail/${feedId}`);
   const userState = useUserState();
+  const [isTranslate, setTranslate] = useState(false);
 
   return (
     <FeedContainerDiv>
@@ -58,18 +62,19 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, text, lazy, cre
       <FeedContents>
         <Carousel imageURLs={imageURLs} lazy={lazy} />
       </FeedContents>
-      <FeedInfoDiv>
+      <FeedInfoDiv isTranslate={isTranslate}>
         <HeartButton like={like} toggleLike={toggleLike} />
         <CommentBtnSvg className={'button'} onClick={toggle} />
         <span>{numOfComments}</span>
+        <TranslateBtnSvg className={'button translate'} onClick={() => setTranslate(!isTranslate)} />
         <span className="time">{ago} 전</span>
       </FeedInfoDiv>
-      <FeedTextDiv>{text}</FeedTextDiv>
+      <FeedTextDiv>{isTranslate ? humanText : animalText}</FeedTextDiv>
       <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
         <DeleteModal hide={toggleDeleteModal} feedId={feedId} />
       </Modal>
       <Modal isShowing={isEditShowing} hide={toggleEditModal}>
-        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, contentIds: contentIds, feedId: feedId, text: text }} />
+        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, contentIds: contentIds, feedId: feedId, text: humanText }} />
       </Modal>
       <Modal hide={toggle} routePath={routePath}>
         <DetailModal
@@ -77,7 +82,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, text, lazy, cre
           userImgURL={avatarImage ?? null}
           feedId={feedId}
           nickname={nickname}
-          text={text}
+          text={humanText}
           imageURLs={imageURLs}
           hide={toggle}
           ago={ago}
@@ -120,7 +125,7 @@ const FeedContents = styled.div`
   position: relative;
 `;
 
-const FeedInfoDiv = styled.div`
+const FeedInfoDiv = styled.div<{ isTranslate: boolean }>`
   display: flex;
   position: relative;
   gap: 5px;
@@ -130,8 +135,21 @@ const FeedInfoDiv = styled.div`
     right: 10px;
     color: #c4c4c4;
   }
+  .translate {
+    fill: ${(props) => (props.isTranslate ? Palette.PINK : Palette.LIGHT_GRAY)};
+  }
+  .translate:hover {
+    transform: scale(120%);
+  }
 `;
 
 const FeedTextDiv = styled.div`
   padding: 0 10px;
+  overflow: hidden;
+  height: 60px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+
+  /* background-color: #afafaf; */
 `;

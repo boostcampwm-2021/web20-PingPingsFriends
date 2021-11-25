@@ -18,7 +18,13 @@ const Cell = ({ feedInfo, url }: { feedInfo: Post; url: string }) => {
         setHover(false);
       }}
     >
-      <ExploreImg src={url.replace('.webp', '-feed.webp')} alt={feedInfo.post_id.toString()} />
+      <ExploreImg
+        src={url}
+        alt={url}
+        onError={(e) => {
+          e.currentTarget.src = 'default_avatar.png';
+        }}
+      />
       <HoverDiv isHover={isHover}>
         <Avatar imgSrc={feedInfo.user_image_url ?? undefined} size={'50px'} />
         <p>{feedInfo.nickname}</p>

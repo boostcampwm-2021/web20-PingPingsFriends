@@ -22,6 +22,10 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
     setRadius(getResponsiveRadius());
   };
   const { habitatInfo } = useHabitatInfo(habitat);
+  const handlePreviewClick = () => {
+    if (habitatInfo === undefined) return;
+    onClick();
+  };
 
   useEffect(() => {
     window.addEventListener('resize', changeResponsiveRadius);
@@ -33,7 +37,7 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
   return (
     <>
       {radius > 100 && (
-        <HabitatPreviewBlock side={side} color={habitatInfo?.habitat.color} radius={radius} onClick={onClick}>
+        <HabitatPreviewBlock side={side} color={habitatInfo?.habitat.color} radius={radius} onClick={handlePreviewClick}>
           {habitatInfo !== undefined ? (
             <>
               {radius > 150 ? (
