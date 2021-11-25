@@ -12,6 +12,7 @@ import { useElementRef } from '@hooks/useElementRef';
 import useModal from '@common/Modal/useModal';
 import DetailContainer from '@components/DetailModal/DetailContainer';
 import useDetailFeed from '@components/Feed/useDetailFeed';
+import Warning from '@common/Indicator/Warning';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
@@ -64,24 +65,28 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
-          {feeds.map((feed) => (
-            <Feed
-              key={feed.post_id}
-              userId={feed.user_id}
-              feedId={feed.post_id}
-              nickname={feed.nickname}
-              imageURLs={feed.contents_url_array}
-              humanText={feed.human_content}
-              animalText={feed.animal_content}
-              createdTime={feed.created_at}
-              numOfHearts={feed.numOfHearts}
-              numOfComments={feed.numOfComments}
-              is_heart={feed.is_heart}
-              avatarImage={feed.user_image_url}
-              contentIds={feed.post_contents_ids.split(',').map((str) => parseInt(str))}
-              lazy={lazy}
-            />
-          ))}
+          {feeds.length ? (
+            feeds.map((feed) => (
+              <Feed
+                key={feed.post_id}
+                userId={feed.user_id}
+                feedId={feed.post_id}
+                nickname={feed.nickname}
+                imageURLs={feed.contents_url_array}
+                humanText={feed.human_content}
+                animalText={feed.animal_content}
+                createdTime={feed.created_at}
+                numOfHearts={feed.numOfHearts}
+                numOfComments={feed.numOfComments}
+                is_heart={feed.is_heart}
+                avatarImage={feed.user_image_url}
+                contentIds={feed.post_contents_ids.split(',').map((str) => parseInt(str))}
+                lazy={lazy}
+              />
+            ))
+          ) : (
+            <Warning width={'100px'} height={'100px'} />
+          )}
         </ViewPort>
       </ScrollContainer>
       {detail && <DetailContainer detailFeed={detail} toggle={toggle} />}
