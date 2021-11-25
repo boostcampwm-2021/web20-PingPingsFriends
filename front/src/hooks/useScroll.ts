@@ -14,12 +14,14 @@ const ITEM_HEIGHT = 650;
 const FIX_FEED = 5;
 
 const useScroll: UseScrollType = (curHabitatId: number) => {
-  const throttleScroll = makeThrottle();
+  const throttleScroll = makeThrottle(350);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as Element;
 
-    throttleScroll(() => setScroll({ ...scroll, top: target.scrollTop }));
+    throttleScroll(() => {
+      setScroll((state) => ({ ...state, top: target.scrollTop }));
+    });
   };
 
   const [startIndex, setStartIndex] = useState(0);
@@ -36,7 +38,6 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
     const startIndex = Math.floor(top / ITEM_HEIGHT);
 
     setScroll({ ...scroll, height: totalPosts.length * ITEM_HEIGHT });
-
     const nextFeeds = totalPosts.slice(startIndex, startIndex + FIX_FEED);
 
     setFeeds(nextFeeds);
@@ -48,7 +49,6 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
 
   useEffect(() => {
     const nextOffset = startIndex * ITEM_HEIGHT;
-
     setFeeds(totalPosts.slice(startIndex, startIndex + FIX_FEED));
 
     setScroll({
