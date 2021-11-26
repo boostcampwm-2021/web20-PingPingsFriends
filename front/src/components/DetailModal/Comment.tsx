@@ -23,7 +23,7 @@ interface CommentProps {
 
 type Mode = 'edit' | 'delete' | 'normal';
 
-const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt, bottomRef, commentId }: CommentProps) => {
+const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt, bottomRef }: CommentProps) => {
   const [mode, setMode] = useState<Mode>('normal');
   const { data } = useUserState();
   const handleEditBtnClick = () => {
@@ -46,7 +46,7 @@ const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt,
       <TextDiv>
         <TextHeader>
           <span>{nickname}</span>
-          <span className={'time'}>{formatDate(createdAt)} 전</span>
+          <span className={'time'}>{formatDate(createdAt)}</span>
         </TextHeader>
         <p>{comment}</p>
       </TextDiv>
