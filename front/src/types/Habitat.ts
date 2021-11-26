@@ -23,5 +23,5 @@ export interface HabitatInfo {
   userCnt: number;
   postCnt: number;
   recentUsers: RecentUserInfo[];
-  lastActTime: Date;
+  lastActTime: string;
 }
