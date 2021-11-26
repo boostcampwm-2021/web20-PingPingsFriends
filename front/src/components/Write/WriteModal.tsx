@@ -10,6 +10,7 @@ import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useUserState } from '@src/contexts/UserContext';
 import { useHistory } from 'react-router';
+import { getAuthOption } from '@lib/utils/fetch';
 
 interface InitState {
   contents: string[];
@@ -70,8 +71,8 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
       }
       let response: Response;
       if (initState) {
-        response = await fetch(`/api/posts/${initState.feedId}`, { method: 'PATCH', headers: { Authorization: `Bearer ${userState.data.accessToken}` }, body: data });
-      } else response = await fetch(form.action, { method: 'POST', headers: { Authorization: `Bearer ${userState.data.accessToken}` }, body: data });
+        response = await fetch(`/api/posts/${initState.feedId}`, getAuthOption('PATCH', userState.data.accessToken, data));
+      } else response = await fetch(form.action, getAuthOption('POST', userState.data.accessToken, data));
 
       const result = await response.json();
 
