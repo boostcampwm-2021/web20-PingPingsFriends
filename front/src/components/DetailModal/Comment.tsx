@@ -23,7 +23,7 @@ interface CommentProps {
 
 type Mode = 'edit' | 'delete' | 'normal';
 
-const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt, bottomRef }: CommentProps) => {
+const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt, bottomRef, commentId }: CommentProps) => {
   const [mode, setMode] = useState<Mode>('normal');
   const { data } = useUserState();
   const handleEditBtnClick = () => {
