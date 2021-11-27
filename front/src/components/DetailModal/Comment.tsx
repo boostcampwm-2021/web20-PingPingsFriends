@@ -46,7 +46,7 @@ const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt,
       <TextDiv>
         <TextHeader>
           <span>{nickname}</span>
-          <span className={'time'}>{formatDate(createdAt)} 전</span>
+          <span className={'time'}>{formatDate(createdAt)}</span>
         </TextHeader>
         <p>{comment}</p>
       </TextDiv>
