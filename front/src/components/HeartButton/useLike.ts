@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export interface LikeProps {
   like: boolean;
-  toggleLike: () => void;
+  toggleLike: any;
 }
 
 export type UseLikeType = (isHeartString: number, feedId: number) => [like: boolean, toggleLike: () => void];
@@ -15,13 +15,13 @@ export const useLike: UseLikeType = (isHeartString, feedId) => {
     if (like) {
       setLike(false);
       fetch(`/api/hearts/${feedId}`, {
-        method: 'POST',
+        method: 'DELETE',
       });
       return;
     }
     setLike(true);
     fetch(`/api/hearts/${feedId}`, {
-      method: 'DELETE',
+      method: 'POST',
     });
   };
 
