@@ -51,7 +51,7 @@ const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ag
           <FeedAuthorDiv>
             <Avatar size={'35px'} userId={userId} imgSrc={userImgURL ?? undefined} />
             <span className={'nickname'}>{nickname}</span>
-            <span className={'time'}>{ago} 전</span>
+            <span className={'time'}>{ago}</span>
           </FeedAuthorDiv>
           <p className={'text'}>
             {text
