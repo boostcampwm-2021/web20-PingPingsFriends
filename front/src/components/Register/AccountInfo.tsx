@@ -15,7 +15,7 @@ interface AccountInfoProps {
 
 const validations: Validation<RegisterState>[] = [
   { value: 'username', check: (values) => values['username'].length >= 19, message: '아이디는 20자보다 적어야합니다.' },
-  { value: 'username', check: (values) => !new RegExp(/^[a-z]/gi).test(values['username']), message: '문자로 시작해야합니다' },
+  { value: 'username', check: (values) => !new RegExp(/^[a-z]/gi).test(values['username']), message: '영문자로 시작해야합니다' },
   { value: 'username', check: (values) => values['username'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
   { value: 'username', check: (values) => values['username'].length === 0, message: '아이디를 입력하세요.' },
   { value: 'password', check: (values) => values['password'].length < 8, message: '비밀번호는 8자 이상이어야합니다.' },
