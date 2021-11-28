@@ -132,8 +132,8 @@ export class UsersController {
   @ApiBody({ type: FileUploadDto })
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('upload', multerUserOption()))
-  updateImage(@UploadedFile() image: FileDto, @Req() req: any) {
-    return this.usersService.updateImage(image, req.user);
+  updateImage(@UploadedFile() image: FileDto, @Req() req) {
+    return this.usersService.updateImage(image, req.user.userId);
   }
 
   @Get('auth/refresh')
