@@ -4,11 +4,13 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
 import { loggerEnv } from 'config/logger.config';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(morgan(loggerEnv));
-  app.enableCors();
+  if (process.env.NODE_ENV === 'dev') app.enableCors();
   app.setGlobalPrefix('api', { exclude: ['docs'] });
   app.use(cookieParser());
   const config = new DocumentBuilder()
