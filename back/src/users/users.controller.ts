@@ -39,6 +39,7 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { FileUploadDto } from 'common/dto/file-upload.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Response } from 'express';
+import { getPartialFileInfo } from 'utils/s3.util';
 
 @ApiTags('유저 API')
 @Controller('users')
@@ -133,7 +134,8 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('upload', multerUserOption()))
   updateImage(@UploadedFile() image: FileDto, @Req() req: any) {
-    return this.usersService.updateImage(image, req.user);
+    const contentInfo = getPartialFileInfo(image);
+    return this.usersService.updateImage(contentInfo, req.user.userId);
   }
 
   @Get('auth/refresh')

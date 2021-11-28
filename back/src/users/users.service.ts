@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import FileDto from 'common/dto/transformFileDto';
+import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { Habitat } from 'src/habitat/entities/habitat.entity';
 import { Species } from 'src/species/entities/species.entity';
@@ -155,7 +156,38 @@ export class UsersService {
     }
   }
 
-  async updateImage(image: FileDto, user: any) {
-    return await this.userRepository.updateImage(image, user);
+  async updateImage(contentInfo: CreateContentDto, userId: number) {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+
+    const userRepository = queryRunner.manager.getRepository(User);
+    const contentRepository = queryRunner.manager.getRepository(Content);
+
+    const user = await userRepository.findOne(userId, { relations: ['content'] });
+    if (!user)
+      throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
+
+    await queryRunner.startTransaction();
+
+    try {
+      if (user.content) {
+        delete user.contentsId;
+        await contentRepository.remove(user.content);
+      }
+      const content = new Content();
+      content.url = contentInfo.url;
+      content.mimeType = contentInfo.mimeType;
+      user.content = content;
+      await userRepository.save(user);
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
