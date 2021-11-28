@@ -25,7 +25,6 @@ interface MoreInfoProps {
 const validations: Validation<RegisterState>[] = [
   { value: 'nickname', check: (values) => values['nickname'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
   { value: 'nickname', check: (values) => values['nickname'].length >= 19, message: '아이디는 20자보다 적어야합니다.' },
-  { value: 'nickname', check: (values) => !new RegExp(/^[a-z]/gi).test(values['nickname']), message: '문자로 시작해야합니다' },
   { value: 'habitatId', check: (values) => values['habitatId'] === null && !values['habitatInfo'], message: '서식지를 선택해야합니다.' },
   { value: 'speciesId', check: (values) => values['speciesId'] === null && !values['speciesInfo'], message: '동물을 선택해야합니다.' },
 ];
@@ -50,7 +49,7 @@ const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
       <Form onSubmit={(e) => e.preventDefault()}>
         <Input
           name={'nickname'}
-          placeholder={'유저 아이디'}
+          placeholder={'유저 닉네임'}
           value={nickname}
           handleChange={handleChange}
           errorMessage={errors.nickname}
