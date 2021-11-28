@@ -5,7 +5,7 @@ export interface LikeProps {
   toggleLike: any;
 }
 
-export type UseLikeType = (isHeartString: number, feedId: number) => [like: boolean, toggleLike: () => void];
+export type UseLikeType = (isHeartString: 0 | 1, feedId: number) => [like: boolean, toggleLike: () => void];
 
 export const useLike: UseLikeType = (isHeartString, feedId) => {
   const isHeart = isHeartString !== 0;

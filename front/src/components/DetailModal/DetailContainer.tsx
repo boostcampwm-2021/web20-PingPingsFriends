@@ -1,6 +1,5 @@
 import DetailModal from '@components/DetailModal/DetailModal';
 import { Post } from '@src/types/Post';
-import { useLike } from '@components/HeartButton/useLike';
 import { formatDate } from '@lib/utils/time';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
@@ -23,7 +22,6 @@ interface DetailContainerProps {
 }
 
 const DetailContainer = ({ detailFeed, toggle }: DetailContainerProps) => {
-  const [like, toggleLike] = useLike(detailFeed.is_heart, detailFeed.post_id);
   const ago = formatDate(detailFeed!.created_at);
 
   return (
@@ -37,9 +35,8 @@ const DetailContainer = ({ detailFeed, toggle }: DetailContainerProps) => {
           text={detailFeed.human_content}
           nickname={detailFeed.nickname}
           numOfHearts={detailFeed.numOfHearts}
-          like={like}
+          isHeart={detailFeed.is_heart}
           ago={ago}
-          toggleLike={toggleLike}
         />
       </div>
     </DetailContainerBlock>

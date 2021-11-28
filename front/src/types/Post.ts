@@ -12,7 +12,7 @@ export interface Post {
   contents_url_array: string[];
   numOfComments: number;
   numOfHearts: number;
-  is_heart: number;
+  is_heart: 0 | 1;
 }
 
 export type Posts = Post[];

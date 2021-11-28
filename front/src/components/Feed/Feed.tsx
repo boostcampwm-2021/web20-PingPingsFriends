@@ -31,7 +31,7 @@ export interface FeedProps {
   createdTime: string;
   numOfHearts: number;
   numOfComments: number;
-  is_heart: number;
+  is_heart: 0 | 1;
   avatarImage: string | null;
   contentIds: number[];
   lazy?: (node: HTMLDivElement) => void;
