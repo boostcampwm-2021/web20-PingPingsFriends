@@ -48,10 +48,10 @@ export class UsersController {
     private readonly authService: AuthService
   ) {}
 
-  @Get('isDuplicated')
+  @Get('verification')
   @ApiOperation({
-    summary: '회원 가입 유효성 검사',
-    description: '회원 가입 유효성 검사 api입니다.',
+    summary: '회원 가입 중복 검사',
+    description: '회원 가입 중복 검사 api입니다.',
   })
   @ApiQuery({ name: 'username', required: false, type: 'string' })
   @ApiQuery({ name: 'nickname', required: false, type: 'string' })
@@ -61,21 +61,21 @@ export class UsersController {
 
   @Get('info')
   @ApiOperation({
-    summary: '유저 정보 조회',
-    description: '유저의 정보를 조회하는 api입니다.',
+    summary: '헤더 유저 정보 조회',
+    description: '헤더에 표시될 유저의 정보를 조회하는 api입니다.',
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  async getUserInfo(@Req() req) {
-    return await this.usersService.getUserInfo(req.user.userId);
+  async findOne(@Req() req) {
+    return await this.usersService.findOne(req.user.userId);
   }
 
   @Get(':userId')
   @ApiOperation({
     summary: '유저 정보 조회',
-    description: '유저의 정보를 조회하는 api입니다.',
+    description: '유저 페이지에 표시될 유저의 정보를 조회하는 api입니다.',
   })
-  async findOne(@Param('userId', ParseIntPipe) userId: number) {
+  async findUserInfo(@Param('userId', ParseIntPipe) userId: number) {
     return await this.usersService.findUserInfo(userId);
   }
 

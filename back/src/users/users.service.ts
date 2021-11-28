@@ -36,7 +36,7 @@ export class UsersService {
     else return false;
   }
 
-  async getUserInfo(userId: number) {
+  async findOne(userId: number) {
     const user = await this.userRepository.findOne(userId, { relations: ['content'] });
 
     if (!user)
