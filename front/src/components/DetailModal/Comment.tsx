@@ -10,7 +10,7 @@ import { Palette } from '@src/lib/styles/Palette';
 import { useUserState } from '@src/contexts/UserContext';
 import { formatDate } from '@lib/utils/time';
 import { InputModeState, InputModeAction, CommentAction } from './useCommentList';
-import { getAuthOption } from '@src/lib/utils/fetch';
+import { getAuthOption, fetchAPI } from '@src/lib/utils/fetch';
 
 interface CommentProps {
   nickname: string;
@@ -41,21 +41,20 @@ const Comment = ({ nickname, comment, inputMode, inputModeDispatch, commentDispa
   };
 
   const handleConfirmDelete = () => {
-    inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
-    const fetchDelete = async () => {
-      const res: Response = await fetch(`/api/comments/${commentId}`, getAuthOption('DELETE', userState.data?.accessToken));
-      if (res.ok) {
+    fetchAPI(
+      `/api/comments/${commentId}`,
+      (res) => {
+        inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
         commentDispatch({ type: 'REFRESH' });
-        return;
-      } else {
+      },
+      (res) => {
         console.log(res.status);
-      }
-    };
-    try {
-      fetchDelete();
-    } catch (err) {
-      console.log(err);
-    }
+      },
+      (err) => {
+        console.log(err);
+      },
+      getAuthOption('DELETE', userState.data?.accessToken)
+    );
   };
 
   return (

@@ -2,7 +2,7 @@ import { flexBox } from '@src/lib/styles/mixin';
 import { Palette } from '@src/lib/styles/Palette';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { getAuthOption } from '@lib/utils/fetch';
+import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
 import { useUserState } from '@src/contexts/UserContext';
 import { CommentAction, InputModeState, InputModeAction } from './useCommentList';
 
@@ -41,52 +41,46 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
     }
     switch (inputMode.mode) {
       case 'write':
-        const addComment = async () => {
-          const data = {
-            post_id: feedId,
-            content: inputRef.current?.value,
-          };
-          const res: Response = await fetch(`/api/comments`, getAuthOption('POST', userState.data?.accessToken, JSON.stringify(data), { 'Content-Type': 'application/json' }));
-
-          if (res.ok) {
+        const writeBody = {
+          post_id: feedId,
+          content: inputRef.current?.value,
+        };
+        fetchAPI(
+          `/api/comments`,
+          (res) => {
             commentDispatch({ type: 'REFRESH' });
             inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
-          } else {
+          },
+          (res) => {
             console.log(res.status);
-          }
-        };
-        try {
-          addComment();
-        } catch (err) {
-          console.log(err);
-        }
+          },
+          (err) => {
+            console.log(err);
+          },
+          getAuthOption('POST', userState.data?.accessToken, JSON.stringify(writeBody), { 'Content-Type': 'application/json' })
+        );
         return;
       case 'delete':
         return;
       case 'edit':
-        inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
-        const editComment = async () => {
-          const data = {
-            post_id: feedId,
-            content: inputMode.inputText,
-          };
-          const res: Response = await fetch(
-            `/api/comments/${inputMode.focusCommentId}`,
-            getAuthOption('PATCH', userState.data?.accessToken, JSON.stringify(data), { 'Content-Type': 'application/json' })
-          );
-          if (res.ok) {
-            commentDispatch({ type: 'REFRESH' });
-            return;
-          } else {
-            console.log(res.status);
-            return;
-          }
+        const editBody = {
+          post_id: feedId,
+          content: inputMode.inputText,
         };
-        try {
-          editComment();
-        } catch (err) {
-          console.log(err);
-        }
+        fetchAPI(
+          `/api/comments/${inputMode.focusCommentId}`,
+          (res) => {
+            inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
+            commentDispatch({ type: 'REFRESH' });
+          },
+          (res) => {
+            console.log(res.status);
+          },
+          (err) => {
+            console.log(err);
+          },
+          getAuthOption('PATCH', userState.data?.accessToken, JSON.stringify(editBody), { 'Content-Type': 'application/json' })
+        );
         return;
       default:
         throw new Error('unhandled mode');
