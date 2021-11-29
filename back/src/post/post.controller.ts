@@ -119,12 +119,20 @@ export class PostController {
   @UseInterceptors(FilesInterceptor('upload', UPLOAD_LIMIT, multerTransFormOption))
   @HttpCode(200)
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) postId: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
-    @UploadedFiles() files: FileDto[]
+    @UploadedFiles() files: FileDto[],
+    @Req() req
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return await this.postService.update(id, patchPostRequestDto, contentsInfos);
+    console.log(patchPostRequestDto);
+
+    return await this.postService.update(
+      postId,
+      patchPostRequestDto,
+      contentsInfos,
+      req.user.userId
+    );
   }
 
   @Delete(':id')

@@ -5,6 +5,7 @@ import { Comment } from 'src/comments/entities/comment.entity';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
+import { User } from 'src/users/entities/user.entity';
 import { UserRepository } from 'src/users/user.repository';
 import { Connection } from 'typeorm';
 import { convertStringToNumber } from 'utils/value-converter.util';
@@ -28,19 +29,14 @@ export class PostService {
     if (!user)
       throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
 
-    const { sound } = user.species;
-    const contentArr = [];
-    const soundLength = sound.length;
-    const humanContentLength = createPostDto.animalContent.length;
+    const animalContent = translateHumanToAnimal(user, createPostDto);
 
-    Array(Math.ceil(humanContentLength / soundLength))
-      .fill(0)
-      .forEach((v) => {
-        contentArr.push(sound + '!');
-      });
-    createPostDto.animalContent = contentArr.join(' ');
-
-    return await this.postRepository.createPost(createPostDto, contentsInfos, userId);
+    return await this.postRepository.createPost(
+      createPostDto,
+      contentsInfos,
+      userId,
+      animalContent
+    );
   }
 
   async findAll(habitatId: number, user: any, lastPostId?: number) {
@@ -147,18 +143,20 @@ export class PostService {
   }
 
   async update(
-    id: number,
+    postId: number,
     patchPostRequestDto: PatchPostRequestDto,
-    contentsInfos: CreateContentDto[]
+    contentsInfos: CreateContentDto[],
+    userId: number
   ) {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
 
+    const userRepository = queryRunner.manager.getRepository(User);
     const postRepository = queryRunner.manager.getRepository(Post);
     const postContentRepository = queryRunner.manager.getRepository(PostContent);
     const contentRepository = queryRunner.manager.getRepository(Content);
 
-    const post = await postRepository.findOne(id, {
+    const post = await postRepository.findOne(postId, {
       relations: ['postContents'],
     });
 
@@ -174,6 +172,13 @@ export class PostService {
     )
       return false;
 
+    const user = await userRepository.findOne(userId, { relations: ['species'] });
+
+    if (!user)
+      throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
+
+    const animalContent = translateHumanToAnimal(user, patchPostRequestDto);
+
     await queryRunner.startTransaction();
 
     try {
@@ -187,9 +192,9 @@ export class PostService {
       }));
       await postContentRepository.insert(postContents);
 
-      await postRepository.update(id, {
+      await postRepository.update(postId, {
         humanContent: patchPostRequestDto.humanContent,
-        animalContent: patchPostRequestDto.animalContent,
+        animalContent: animalContent,
       });
 
       await queryRunner.commitTransaction();
@@ -237,4 +242,18 @@ export class PostService {
       await queryRunner.release();
     }
   }
+}
+
+function translateHumanToAnimal(user: User, dto: CreatePostDto | PatchPostRequestDto) {
+  const { sound } = user.species;
+  const contentArr = [];
+  const soundLength = sound.length;
+  const humanContentLength = dto.humanContent.length;
+
+  Array(Math.ceil(humanContentLength / soundLength))
+    .fill(0)
+    .forEach((v) => {
+      contentArr.push(sound + '!');
+    });
+  return contentArr.join(' ');
 }

@@ -10,8 +10,4 @@ export class PatchPostRequestDto extends FilesUploadDto {
   @ApiProperty()
   @IsString()
   humanContent: string;
-
-  @ApiProperty()
-  @IsString()
-  animalContent: string;
 }
