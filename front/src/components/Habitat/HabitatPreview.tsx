@@ -5,7 +5,7 @@ import useHabitatInfo from '@hooks/useHabitatInfo';
 import { flexBox } from '@lib/styles/mixin';
 import MagicNumber from '@lib/styles/magic';
 import { Palette } from '@lib/styles/Palette';
-import { compareTime } from '@lib/utils/time';
+import { formatDate } from '@lib/utils/time';
 import Loading from '@common/Indicator/Loading';
 import Warning from '@common/Indicator/Warning';
 
@@ -51,7 +51,7 @@ const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
                   <DetailDiv radius={radius}>
                     <p>{habitatInfo.userCnt} 마리의 동물들</p>
                     <p>{habitatInfo.postCnt}개의 게시글</p>
-                    <p>최근 활동 {compareTime(new Date(), new Date(habitatInfo.lastActTime))}</p>
+                    <p>최근 활동 {formatDate(habitatInfo.lastActTime)}</p>
                   </DetailDiv>
                   <TitleDiv radius={radius}>
                     <p className="habitat_king">우두머리: {habitatInfo.leader?.nickName}</p>

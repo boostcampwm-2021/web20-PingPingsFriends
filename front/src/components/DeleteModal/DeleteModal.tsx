@@ -5,6 +5,7 @@ import { flexBox } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useUserState } from '@src/contexts/UserContext';
 import { useHistory } from 'react-router';
+import { getAuthOption } from '@src/lib/utils/fetch';
 
 interface DeleteModalProps {
   hide: ToggleHandler;
@@ -22,7 +23,7 @@ const DeleteModal = ({ hide, feedId }: DeleteModalProps) => {
       return;
     }
     setDelete(true);
-    const res: Response = await fetch(`/api/posts/${feedId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${userState.data.accessToken}` } });
+    const res: Response = await fetch(`/api/posts/${feedId}`, getAuthOption('DELETE', userState.data.accessToken));
     console.log(res);
     if (res.ok) {
       history.go(0);

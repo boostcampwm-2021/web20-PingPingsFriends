@@ -36,7 +36,7 @@ export interface FeedProps {
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, animalText, lazy, createdTime, numOfHearts, is_heart, avatarImage, numOfComments }: FeedProps) => {
+const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
@@ -74,7 +74,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
         />
         <span>{numOfComments}</span>
         <TranslateBtnSvg className={'button translate'} onClick={() => setTranslate(!isTranslate)} />
-        <span className="time">{ago} 전</span>
+        <span className="time">{ago}</span>
       </FeedInfoDiv>
       <FeedTextDiv>{isTranslate ? humanText : animalText}</FeedTextDiv>
       <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>

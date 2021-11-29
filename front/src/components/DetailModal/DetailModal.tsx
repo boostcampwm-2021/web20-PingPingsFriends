@@ -10,6 +10,7 @@ import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 import HeartSection from './HeartSection';
 import { LikeProps } from '@components/HeartButton/useLike';
+import useCommentList from './useCommentList';
 
 interface DetailModalProps extends LikeProps {
   hide?: ToggleHandler;
@@ -26,6 +27,7 @@ interface DetailModalProps extends LikeProps {
 const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {
   const [editMode, setEditMode] = useState(false);
   const [inputText, setInputText] = useState('');
+  const [commentState, commentDispatch] = useCommentList();
   const toggleEditMode = (text: string) => {
     if (editMode) {
       setEditMode(false);
@@ -61,9 +63,9 @@ const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ag
             non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
           </p>
         </FeedInfoDiv>
-        <CommentList toggleEditMode={toggleEditMode} feedId={feedId} />
+        <CommentList commentState={commentState} commentDispatch={commentDispatch} toggleEditMode={toggleEditMode} feedId={feedId} />
         <HeartSection like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
-        <CommentForm inputText={inputText} setInputText={setInputText} editMode={editMode} feedId={feedId} />
+        <CommentForm inputText={inputText} commentDispatch={commentDispatch} setInputText={setInputText} editMode={editMode} feedId={feedId} />
       </CommunicateDiv>
     </DetailModalDiv>
   );

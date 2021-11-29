@@ -24,7 +24,7 @@ const useDetailFeed = (feeds: Posts) => {
     async function getFeed(id: number) {
       const response: Response = await fetch(`/api/posts/${id}`);
       const detailFeed: Post = await response.json();
-      detailFeed.contents_url_array = detailFeed.post_contents_urls.split(',');
+      detailFeed.contents_url_array = detailFeed.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp'));
       setDetail(detailFeed);
       return detailFeed;
     }
