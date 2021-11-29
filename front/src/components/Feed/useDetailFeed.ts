@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Post, Posts } from '@src/types/Post';
 import { useLocation } from 'react-router-dom';
+import { getAuthOption } from '@lib/utils/fetch';
+import { useUserState } from '@src/contexts/UserContext';
 
 const useDetailFeed = (feeds: Posts) => {
   const [detail, setDetail] = useState<Post | null>(null);
+  const userState = useUserState();
   const location = useLocation();
 
   useEffect(() => {
@@ -22,7 +25,7 @@ const useDetailFeed = (feeds: Posts) => {
     else getFeed(id);
 
     async function getFeed(id: number) {
-      const response: Response = await fetch(`/api/posts/${id}`);
+      const response: Response = await fetch(`/api/posts/${id}`, getAuthOption('GET', userState.data?.accessToken));
       const detailFeed: Post = await response.json();
       detailFeed.contents_url_array = detailFeed.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp'));
       setDetail(detailFeed);

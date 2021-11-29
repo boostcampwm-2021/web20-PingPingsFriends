@@ -19,9 +19,8 @@ const MainPage = () => {
 
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
+  const { getCurHabitat, handleNextHabitat, handlePrevHabitat, error } = useSideNavi(userState.data?.habitatId ?? 2);
 
-  // const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useSideNavi(userState.data?.habitatId as number);
-  const { getCurHabitat, handleNextHabitat, handlePrevHabitat, historyState } = useSideNavi(userState.data?.habitatId ?? 2);
   const { habitatInfo } = useHabitatInfo(getCurHabitat());
 
   const toggleMode = () => {
@@ -39,6 +38,10 @@ const MainPage = () => {
 
   const getFeedFloatingPos = () => (window.innerWidth + parseInt(MagicNumber.FEED_SECTION_WIDTH)) / 2 + 10;
   const getExploreFloatingPos = () => 0;
+
+  if (error) {
+    return <div>잘못된 경로입니다!</div>;
+  }
 
   return (
     <MainPageBlock>

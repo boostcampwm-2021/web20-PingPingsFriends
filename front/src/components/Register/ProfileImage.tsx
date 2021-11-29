@@ -7,12 +7,11 @@ import useReadFileURL from '@hooks/useReadFileURL';
 import Button from '@components/Button/Button';
 import useFlag from '@components/Register/useFlag';
 import logo from '@assets/images/logo2.png';
-import { RegisterState, useRegisterState } from '@src/contexts/RegisterContext';
+import { RegisterState, useRegisterDispatch, useRegisterState } from '@src/contexts/RegisterContext';
 import { useHistory } from 'react-router-dom';
 import Modal from '@common/Modal/Modal';
 import AlertDiv from '@common/Alert/AlertDiv';
-
-type ModalType = null | 'loading' | 'success' | 'fail';
+import { ModalType } from '@src/types/Modal';
 
 const ProfileImage = () => {
   const [profile, setProfile] = useState<File | null>(null);
@@ -20,6 +19,7 @@ const ProfileImage = () => {
   const imageURL = useReadFileURL({ file: profile });
   const flag = useFlag(imageURL);
   const registerState = useRegisterState();
+  const registerDispatch = useRegisterDispatch();
   const history = useHistory();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -27,12 +27,12 @@ const ProfileImage = () => {
       const target = e.target as HTMLInputElement;
       const file = target.files![0];
       setProfile(file);
+      setLoading(null);
       return;
     }
   };
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    setLoading('loading');
     const target = e.target as HTMLButtonElement;
     const data = new FormData();
 
@@ -54,12 +54,15 @@ const ProfileImage = () => {
     if (target.classList.contains('cancel-button')) {
       try {
         const response = await fetch('/api/users/register', { method: 'POST', body: data });
+        if (!response.ok) {
+          throw new Error('회원가입 실패');
+        }
         await response.json();
 
         setLoading('success');
       } catch (e) {
-        console.log(e);
         setLoading('fail');
+        registerDispatch({ type: 'RESET_VALUES' });
       }
       return;
     }
@@ -68,14 +71,21 @@ const ProfileImage = () => {
 
       try {
         const response = await fetch('/api/users/register', { method: 'POST', body: data });
+        if (!response.ok) {
+          throw new Error('회원가입 실패');
+        }
         await response.json();
-
         setLoading('success');
       } catch (e) {
         console.log(e);
         setLoading('fail');
+        registerDispatch({ type: 'RESET_VALUES' });
       }
     }
+  };
+
+  const handleLabelClick = () => {
+    setLoading('loading');
   };
 
   return (
@@ -85,7 +95,7 @@ const ProfileImage = () => {
         <div className={'title'}>프로필 사진 등록하기</div>
       </Header>
       <Form>
-        <FileInsertLabel htmlFor="profile" imageURL={imageURL}>
+        <FileInsertLabel htmlFor="profile" imageURL={imageURL} onClick={handleLabelClick}>
           <SvgContainer>
             <PhotoCameraSvg />
           </SvgContainer>
@@ -108,10 +118,12 @@ const ProfileImage = () => {
       )}
       {loading === 'fail' && (
         <Modal isShowing={true}>
-          <AlertDiv>다시 시도해주세요.</AlertDiv>
-          <Button borderColor={'black'} onClick={() => history.replace('/modal/register/')}>
-            확인
-          </Button>
+          <AlertDiv>
+            다시 시도해주세요.
+            <Button borderColor={'black'} onClick={() => history.replace('/register')}>
+              확인
+            </Button>
+          </AlertDiv>
         </Modal>
       )}
       {loading === 'success' && (

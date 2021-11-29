@@ -46,7 +46,7 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
 };
 
 const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
-  const { feeds, offset, height, handleScroll } = useScroll(curHabitatId);
+  const { feeds, offset, height, handleScroll, setTotalPosts, setFeeds } = useScroll(curHabitatId);
   const [observerElement, observerRef] = useElementRef();
   const { toggle } = useModal('/detail/:id');
 
@@ -55,6 +55,12 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
     rootMargin: '300px 0px',
   });
   const detail = useDetailFeed(feeds);
+
+  feeds.forEach((feed) => {
+    console.log(feed.is_heart);
+  });
+
+  console.log(feeds);
 
   return (
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>
@@ -78,6 +84,7 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
                   avatarImage={feed.user_image_url}
                   contentIds={feed.post_contents_ids.split(',').map((str) => parseInt(str))}
                   lazy={lazy}
+                  setTotalPosts={setTotalPosts}
                 />
               ))
             ) : (
@@ -90,7 +97,7 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
           )}
         </ViewPort>
       </ScrollContainer>
-      {detail && <DetailContainer detailFeed={detail} toggle={toggle} />}
+      {detail && <DetailContainer detailFeed={detail} toggle={toggle} setTotalPosts={setTotalPosts} setFeeds={setFeeds} />}
     </FeedContainerDiv>
   );
 };

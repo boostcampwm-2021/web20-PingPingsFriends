@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Posts } from '@src/types/Post';
 import useFetchTotalFeeds from '@hooks/useFetchTotalFeeds';
 import makeThrottle from '@lib/utils/makeThrottle';
@@ -8,6 +8,8 @@ type UseScrollType = (curHabitatId: number) => {
   height: number;
   feeds: Posts;
   handleScroll: (e: React.UIEvent<HTMLDivElement>) => void;
+  setTotalPosts: Dispatch<SetStateAction<Posts>>;
+  setFeeds: Dispatch<SetStateAction<Posts>>;
 };
 
 const ITEM_HEIGHT = 650;
@@ -31,7 +33,7 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
     offset: 0,
     height: 0,
   });
-  const [totalPosts, setLastFeedId] = useFetchTotalFeeds(curHabitatId);
+  const [totalPosts, setLastFeedId, setTotalPosts] = useFetchTotalFeeds(curHabitatId);
   const { top, offset, height } = scroll;
 
   useEffect(() => {
@@ -70,7 +72,7 @@ const useScroll: UseScrollType = (curHabitatId: number) => {
     }
   }, [feeds]);
 
-  return { feeds, offset, height, handleScroll };
+  return { feeds, offset, height, handleScroll, setTotalPosts, setFeeds };
 };
 
 export default useScroll;

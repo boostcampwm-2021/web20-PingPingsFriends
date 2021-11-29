@@ -15,8 +15,8 @@ export interface RegisterState {
 }
 
 interface Action {
-  type: 'CHANGE_VALUE' | 'ADD_SPECIES' | 'ADD_HABITAT';
-  payload: {
+  type: 'CHANGE_VALUE' | 'ADD_SPECIES' | 'ADD_HABITAT' | 'RESET_VALUES';
+  payload?: {
     [propsName: string]: string;
   };
 }
@@ -40,6 +40,9 @@ const registerReducer = (state: RegisterState, { type, payload }: Action): Regis
     }
     case 'ADD_HABITAT': {
       return { ...state, habitatInfo: payload as HabitatInfo, habitatId: null };
+    }
+    case 'RESET_VALUES': {
+      return initialState;
     }
     default: {
       return state;
