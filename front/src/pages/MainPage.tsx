@@ -12,6 +12,7 @@ import useHabitatInfo from '@hooks/useHabitatInfo';
 import MagicNumber from '@src/lib/styles/magic';
 import { useUserState } from '@src/contexts/UserContext';
 import useValidateUser from '@src/hooks/useValidateUser';
+import { ScrollProvider } from '@src/contexts/ScrollContext';
 
 const MainPage = () => {
   const userState = useUserState();
@@ -45,27 +46,29 @@ const MainPage = () => {
 
   return (
     <MainPageBlock>
-      <Header habitatInfo={habitatInfo} />
-      <MainContentsDiv ref={feedModeRef}>
-        {
+      <Header habitatInfo={habitatInfo} />{' '}
+      <ScrollProvider>
+        <MainContentsDiv ref={feedModeRef}>
           {
-            feed: (
-              <>
-                <FeedContainer habitatInfo={habitatInfo} curHabitatId={getCurHabitat()} />
-                <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
-                <HabitatPreview habitat={getCurHabitat(1)} onClick={handleNextHabitat} side={'right'} />
-                <HabitatPreview habitat={getCurHabitat(-1)} onClick={handlePrevHabitat} side={'left'} />
-              </>
-            ),
-            explore: (
-              <>
-                <Explore habitatInfo={habitatInfo} />
-                <FeedFAB mode={mode} getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
-              </>
-            ),
-          }[mode]
-        }
-      </MainContentsDiv>
+            {
+              feed: (
+                <>
+                  <FeedContainer habitatInfo={habitatInfo} curHabitatId={getCurHabitat()} />
+                  <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
+                  <HabitatPreview habitat={getCurHabitat(1)} onClick={handleNextHabitat} side={'right'} />
+                  <HabitatPreview habitat={getCurHabitat(-1)} onClick={handlePrevHabitat} side={'left'} />
+                </>
+              ),
+              explore: (
+                <>
+                  <Explore habitatInfo={habitatInfo} />
+                  <FeedFAB mode={mode} getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
+                </>
+              ),
+            }[mode]
+          }
+        </MainContentsDiv>{' '}
+      </ScrollProvider>
       <EmptyStyleDiv color={habitatInfo?.habitat.color} />
     </MainPageBlock>
   );

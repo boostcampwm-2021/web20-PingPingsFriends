@@ -14,6 +14,7 @@ import DetailContainer from '@components/DetailModal/DetailContainer';
 import useDetailFeed from '@components/Feed/useDetailFeed';
 import Warning from '@common/Indicator/Warning';
 import Loading from '@common/Indicator/Loading';
+import { useScrollState } from '@src/contexts/ScrollContext';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
@@ -46,7 +47,7 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
 };
 
 const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
-  const { feeds, offset, height, handleScroll, setTotalPosts, setFeeds } = useScroll(curHabitatId);
+  const { handleScroll, setTotalPosts, setFeeds } = useScroll(curHabitatId);
   const [observerElement, observerRef] = useElementRef();
   const { toggle } = useModal('/detail/:id');
 
@@ -54,13 +55,9 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
     root: observerElement,
     rootMargin: '300px 0px',
   });
+  const { feeds, offset, height } = useScrollState();
+
   const detail = useDetailFeed(feeds);
-
-  feeds.forEach((feed) => {
-    console.log(feed.is_heart);
-  });
-
-  console.log(feeds);
 
   return (
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>

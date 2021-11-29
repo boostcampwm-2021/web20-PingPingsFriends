@@ -29,7 +29,6 @@ const HeartButtonDiv = styled.div<Partial<LikeProps>>`
 `;
 
 const HeartButton = ({ like, toggleLike }: LikeProps) => {
-  console.log(like);
   return (
     <HeartButtonDiv onClick={toggleLike} like={like}>
       {like ? <FillHeartSvg /> : <EmptyHeartSvg />}
