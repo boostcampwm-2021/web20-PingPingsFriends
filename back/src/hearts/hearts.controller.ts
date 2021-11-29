@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
@@ -24,8 +25,8 @@ export class HeartsController {
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  setHeart(@Param('postId', ParseIntPipe) postId: number) {
-    return this.heartsService.setHeart(postId, 2);
+  setHeart(@Param('postId', ParseIntPipe) postId: number, @Req() req) {
+    return this.heartsService.setHeart(postId, req.user.userId);
   }
 
   @Delete(':postId') //좋아요 삭제
@@ -35,8 +36,8 @@ export class HeartsController {
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  deleteHeart(@Param('postId', ParseIntPipe) postId: number) {
-    return this.heartsService.deleteHeart(postId, 1);
+  deleteHeart(@Param('postId', ParseIntPipe) postId: number, @Req() req) {
+    return this.heartsService.deleteHeart(postId, req.user.userId);
   }
 
   @Get('count/:postId') // 좋아요 카운트
