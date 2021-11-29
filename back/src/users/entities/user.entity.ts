@@ -50,7 +50,7 @@ export class User {
   refreshToken: string;
 
   @ApiProperty({ type: () => Content })
-  @OneToOne(() => Content, (content) => content.user, { cascade: ['insert'] })
+  @OneToOne(() => Content, (content) => content.user, { cascade: ['insert'], onDelete: 'SET NULL' })
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })
   content: Content;
 
