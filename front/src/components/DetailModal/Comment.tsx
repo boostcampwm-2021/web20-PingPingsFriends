@@ -9,6 +9,8 @@ import { ReactComponent as CheckBtnSvg } from '@assets/icons/check_circle.svg';
 import { Palette } from '@src/lib/styles/Palette';
 import { useUserState } from '@src/contexts/UserContext';
 import { formatDate } from '@lib/utils/time';
+import { InputModeState, InputModeAction, CommentAction } from './useCommentList';
+import { getAuthOption } from '@src/lib/utils/fetch';
 
 interface CommentProps {
   nickname: string;
@@ -17,31 +19,47 @@ interface CommentProps {
   userId: number;
   createdAt: string;
   commentId: number;
-  toggleEditMode: (text: string) => void;
   bottomRef?: (node: HTMLDivElement) => void;
+  inputMode: InputModeState;
+  inputModeDispatch: React.Dispatch<InputModeAction>;
+  commentDispatch: React.Dispatch<CommentAction>;
 }
 
-type Mode = 'edit' | 'delete' | 'normal';
-
-const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt, bottomRef, commentId }: CommentProps) => {
-  const [mode, setMode] = useState<Mode>('normal');
-  const { data } = useUserState();
+const Comment = ({ nickname, comment, inputMode, inputModeDispatch, commentDispatch, avatar, userId, createdAt, bottomRef, commentId }: CommentProps) => {
+  const userState = useUserState();
   const handleEditBtnClick = () => {
-    setMode(mode === 'edit' ? 'normal' : 'edit');
-    toggleEditMode(comment);
+    if (inputMode.mode === 'edit' && inputMode.focusCommentId === commentId) inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
+    else inputModeDispatch({ type: 'SET_EDIT_MODE', data: { focusCommentId: commentId, inputText: comment } });
   };
 
   const handleDeleteBtnClick = () => {
-    if (mode === 'edit') toggleEditMode('');
-    setMode('delete');
+    inputModeDispatch({ type: 'SET_DELETE_MODE', data: { focusCommentId: commentId } });
   };
 
   const handleConfirmCancel = () => {
-    setMode('normal');
+    inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
+  };
+
+  const handleConfirmDelete = () => {
+    inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
+    const fetchDelete = async () => {
+      const res: Response = await fetch(`/api/comments/${commentId}`, getAuthOption('DELETE', userState.data?.accessToken));
+      if (res.ok) {
+        commentDispatch({ type: 'REFRESH' });
+        return;
+      } else {
+        console.log(res.status);
+      }
+    };
+    try {
+      fetchDelete();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
-    <CommentDiv isEdited={mode === 'edit'} ref={bottomRef}>
+    <CommentDiv isEdited={inputMode.mode === 'edit' && inputMode.focusCommentId === commentId} ref={bottomRef}>
       <Avatar size={'30px'} imgSrc={avatar} />
       <TextDiv>
         <TextHeader>
@@ -50,17 +68,17 @@ const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt,
         </TextHeader>
         <p>{comment}</p>
       </TextDiv>
-      {data?.userId === userId && (
+      {userState.data?.userId === userId && (
         <ControlDiv>
           <EditSvg onClick={handleEditBtnClick} />
           <DeleteSvg onClick={handleDeleteBtnClick} />
         </ControlDiv>
       )}
-      {mode === 'delete' && (
+      {inputMode.mode === 'delete' && inputMode.focusCommentId === commentId && (
         <DeleteHoverDiv>
           <span>삭제하시겠습니까?</span>
           <div>
-            <CheckBtnSvg className={'button'} />
+            <CheckBtnSvg className={'button'} onClick={handleConfirmDelete} />
             <CancelBtnSvg className={'button'} onClick={handleConfirmCancel} />
           </div>
         </DeleteHoverDiv>
