@@ -6,7 +6,7 @@ import Button from '@components/Button/Button';
 import logo from '@assets/images/logo2.png';
 import { RegisterState } from '@src/contexts/RegisterContext';
 import useForm, { Validation } from '@components/Register/useForm';
-import useFetchDuplicate from '@components/Register/useFetchDuplicate';
+import useFetchDuplicate from '@components/Register/useFetchVerification';
 import useFocus from '@hooks/useFocus';
 
 interface AccountInfoProps {
