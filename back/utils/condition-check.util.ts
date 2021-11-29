@@ -1,6 +1,6 @@
-export function isAllTrueOrFalse(...args): boolean {
-  const isAllTrue = args.every((v) => v);
-  const isAllFalse = args.every((v) => !v);
+export function isAllTrueOrFalse(...args: any[]): boolean {
+  const isAllTrue = !args.some((v) => !v);
+  const isAllFalse = !args.some((v) => v);
 
   if (isAllTrue || isAllFalse) return true;
   return false;
