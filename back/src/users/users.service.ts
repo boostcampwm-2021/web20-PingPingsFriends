@@ -33,8 +33,7 @@ export class UsersService {
     if (username) user = await this.userRepository.findOne({ username });
     if (nickname) user = await this.userRepository.findOne({ nickname });
 
-    if (user) return true;
-    else return false;
+    return !!user;
   }
 
   async findOne(userId: number) {

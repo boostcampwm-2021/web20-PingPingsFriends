@@ -1,5 +1,6 @@
 import { useUserDispatch, User, UserState } from '@src/contexts/UserContext';
 import { useEffect } from 'react';
+import { getAuthOption } from '@lib/utils/fetch';
 
 const useValidateUser = (userState: UserState) => {
   const userDispatch = useUserDispatch();
@@ -7,7 +8,7 @@ const useValidateUser = (userState: UserState) => {
     const accessToken = localStorage.getItem('access_token');
     if (!accessToken || accessToken === 'undefined' || userState.loading || userState.data?.userId !== -1) return;
     const validFetch = async () => {
-      const res: Response = await fetch(`/api/users/info`, { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } });
+      const res: Response = await fetch(`/api/users/info`, getAuthOption('GET', accessToken));
       if (res.ok) {
         const data = await res.json();
         const newState: User = {

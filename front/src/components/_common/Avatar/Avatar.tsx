@@ -18,14 +18,19 @@ interface AvatarProps {
   imgSrc?: string | null;
   size: string;
   userId?: number;
+  preventLink?: boolean;
 }
 
-const Avatar = ({ imgSrc, size, userId }: AvatarProps) => {
+const Avatar = ({ imgSrc, size, userId, preventLink }: AvatarProps) => {
   return (
     <AvatarBlock size={size}>
-      <Link to={userId && userId !== -1 ? `/user/${userId}` : ''}>
+      {preventLink ? (
         <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
-      </Link>
+      ) : (
+        <Link to={userId && userId !== -1 ? `/user/${userId}` : '#'}>
+          <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
+        </Link>
+      )}
     </AvatarBlock>
   );
 };

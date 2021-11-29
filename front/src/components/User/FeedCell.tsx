@@ -5,7 +5,6 @@ import useModal from '@common/Modal/useModal';
 import DetailModal from '@components/DetailModal/DetailModal';
 import { Post } from '@src/types/Post';
 import { formatDate } from '@lib/utils/time';
-import { useLike } from '@components/HeartButton/useLike';
 
 interface FeedCellProps {
   url: string;
@@ -15,7 +14,6 @@ interface FeedCellProps {
 const FeedCell = ({ url, feedId }: FeedCellProps) => {
   const { toggle, isShowing } = useModal();
   const [feedInfo, setFeedInfo] = useState<Post | null>(null);
-  const [like, toggleLike] = useLike(feedInfo ? feedInfo.is_heart : 0, feedId);
 
   const handleClick = async (e: React.MouseEvent) => {
     const res: Response = await fetch(`/api/posts/${feedId}`);
@@ -37,13 +35,12 @@ const FeedCell = ({ url, feedId }: FeedCellProps) => {
             feedId={feedInfo.post_id}
             ago={formatDate(feedInfo.created_at)}
             imageURLs={feedInfo.post_contents_urls.split(',')}
-            like={like}
             nickname={feedInfo.nickname}
             numOfHearts={feedInfo.numOfHearts}
             text={feedInfo.human_content}
             userId={feedInfo.user_id}
             userImgURL={feedInfo.user_image_url}
-            toggleLike={toggleLike}
+            isHeart={feedInfo.is_heart}
           />
         ) : null}
       </Modal>

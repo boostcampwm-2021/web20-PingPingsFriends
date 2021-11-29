@@ -7,8 +7,19 @@ import { flexBox } from '@src/lib/styles/mixin';
 import { formatDate } from '@lib/utils/time';
 import { ReactComponent as HeartSvg } from '@assets/icons/fill_heart_btn.svg';
 
-const Cell = ({ feedInfo, url }: { feedInfo: Post; url: string }) => {
+interface CellProps {
+  feedInfo: Post;
+  url: string;
+  toggle: (e: React.MouseEvent<Element> | React.KeyboardEvent<Element> | 'off', feed: Post) => void;
+}
+
+const Cell = ({ feedInfo, url, toggle }: CellProps) => {
   const [isHover, setHover] = useState(false);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    toggle(e, feedInfo);
+  };
+
   return (
     <CellDiv
       onMouseEnter={() => {
@@ -25,13 +36,12 @@ const Cell = ({ feedInfo, url }: { feedInfo: Post; url: string }) => {
           e.currentTarget.src = 'default_avatar.png';
         }}
       />
-      <HoverDiv isHover={isHover}>
+      <HoverDiv className={'hover-container'} isHover={isHover} onClick={handleClick} data-id={feedInfo.post_id}>
         <Avatar imgSrc={feedInfo.user_image_url ?? undefined} size={'50px'} />
         <p>{feedInfo.nickname}</p>
         <p>{formatDate(feedInfo.created_at)} 전</p>
         <div>
-          <HeartSvg />
-          <span>{feedInfo.numOfHearts}</span>
+          <HeartSvg />x<span>{feedInfo.numOfHearts}</span>
         </div>
       </HoverDiv>
     </CellDiv>

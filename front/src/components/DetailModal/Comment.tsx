@@ -10,21 +10,83 @@ import { Palette } from '@src/lib/styles/Palette';
 import { useUserState } from '@src/contexts/UserContext';
 import { formatDate } from '@lib/utils/time';
 
+interface CommentProps {
+  nickname: string;
+  comment: string;
+  avatar: string | null;
+  userId: number;
+  createdAt: string;
+  commentId: number;
+  toggleEditMode: (text: string) => void;
+  bottomRef?: (node: HTMLDivElement) => void;
+}
+
+type Mode = 'edit' | 'delete' | 'normal';
+
+const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt, bottomRef, commentId }: CommentProps) => {
+  const [mode, setMode] = useState<Mode>('normal');
+  const { data } = useUserState();
+  const handleEditBtnClick = () => {
+    setMode(mode === 'edit' ? 'normal' : 'edit');
+    toggleEditMode(comment);
+  };
+
+  const handleDeleteBtnClick = () => {
+    if (mode === 'edit') toggleEditMode('');
+    setMode('delete');
+  };
+
+  const handleConfirmCancel = () => {
+    setMode('normal');
+  };
+
+  return (
+    <CommentDiv isEdited={mode === 'edit'} ref={bottomRef}>
+      <Avatar size={'30px'} imgSrc={avatar} />
+      <TextDiv>
+        <TextHeader>
+          <span>{nickname}</span>
+          <span className={'time'}>{formatDate(createdAt)}</span>
+        </TextHeader>
+        <p>{comment}</p>
+      </TextDiv>
+      {data?.userId === userId && (
+        <ControlDiv>
+          <EditSvg onClick={handleEditBtnClick} />
+          <DeleteSvg onClick={handleDeleteBtnClick} />
+        </ControlDiv>
+      )}
+      {mode === 'delete' && (
+        <DeleteHoverDiv>
+          <span>삭제하시겠습니까?</span>
+          <div>
+            <CheckBtnSvg className={'button'} />
+            <CancelBtnSvg className={'button'} onClick={handleConfirmCancel} />
+          </div>
+        </DeleteHoverDiv>
+      )}
+    </CommentDiv>
+  );
+};
+
+export default Comment;
+
 const CommentDiv = styled.div<{ isEdited: boolean }>`
   ${flexBox('flex-start', 'flex-start')};
   width: 100%;
   min-height: 50px;
   gap: 5px;
-  margin-bottom: 5px;
+  padding: 5px;
+  margin: 15px 0;
   position: relative;
-  background-color: ${(props) => (props.isEdited ? Palette.PINK : '')};
+  background-color: ${(props) => (props.isEdited ? Palette.ACTIVE : '')};
+  border-radius: 8px;
   transition: background-color 0.3s ease;
 `;
 
 const TextDiv = styled.div`
   width: 100%;
   position: relative;
-  top: -5px;
 
   span {
     font-size: 12px;
@@ -35,6 +97,7 @@ const TextDiv = styled.div`
 const ControlDiv = styled.div`
   position: absolute;
   right: 0;
+  bottom: 0;
   svg {
     width: 15px;
     height: 15px;
@@ -48,9 +111,12 @@ const ControlDiv = styled.div`
 const DeleteHoverDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
   position: absolute;
+  top: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   background-color: ${Palette.RED};
+  border-radius: 8px;
   animation-duration: 0.5s;
   animation-name: slidein;
   color: white;
@@ -76,63 +142,3 @@ const TextHeader = styled.div`
     margin-right: 10px;
   }
 `;
-
-interface CommentProps {
-  nickname: string;
-  comment: string;
-  avatar: string | null;
-  userId: number;
-  createdAt: string;
-  toggleEditMode: (text: string) => void;
-}
-
-type Mode = 'edit' | 'delete' | 'normal';
-
-const Comment = ({ nickname, comment, avatar, userId, toggleEditMode, createdAt }: CommentProps) => {
-  const [mode, setMode] = useState<Mode>('normal');
-  const { data } = useUserState();
-  const handleEditBtnClick = () => {
-    setMode(mode === 'edit' ? 'normal' : 'edit');
-    // setEditMode(!editMode);
-    toggleEditMode(comment);
-  };
-
-  const handleDeleteBtnClick = () => {
-    if (mode === 'edit') toggleEditMode('');
-    setMode('delete');
-  };
-
-  const handleConfirmCancel = () => {
-    setMode('normal');
-  };
-
-  return (
-    <CommentDiv isEdited={mode === 'edit'}>
-      <Avatar size={'30px'} imgSrc={avatar} />
-      <TextDiv>
-        <TextHeader>
-          <span>{nickname}</span>
-          <span className={'time'}>{formatDate(createdAt)} 전</span>
-        </TextHeader>
-        <p>{comment}</p>
-      </TextDiv>
-      {data?.userId === userId && (
-        <ControlDiv>
-          <EditSvg onClick={handleEditBtnClick} />
-          <DeleteSvg onClick={handleDeleteBtnClick} />
-        </ControlDiv>
-      )}
-      {mode === 'delete' && (
-        <DeleteHoverDiv>
-          <span>삭제하시겠습니까?</span>
-          <div>
-            <CheckBtnSvg className={'button'} />
-            <CancelBtnSvg className={'button'} onClick={handleConfirmCancel} />
-          </div>
-        </DeleteHoverDiv>
-      )}
-    </CommentDiv>
-  );
-};
-
-export default Comment;
