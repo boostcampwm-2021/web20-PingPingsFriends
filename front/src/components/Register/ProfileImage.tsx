@@ -9,9 +9,14 @@ import useFlag from '@components/Register/useFlag';
 import logo from '@assets/images/logo2.png';
 import { RegisterState, useRegisterState } from '@src/contexts/RegisterContext';
 import { useHistory } from 'react-router-dom';
+import Modal from '@common/Modal/Modal';
+import AlertDiv from '@common/Alert/AlertDiv';
+
+type ModalType = null | 'loading' | 'success' | 'fail';
 
 const ProfileImage = () => {
   const [profile, setProfile] = useState<File | null>(null);
+  const [loading, setLoading] = useState<ModalType>(null);
   const imageURL = useReadFileURL({ file: profile });
   const flag = useFlag(imageURL);
   const registerState = useRegisterState();
@@ -25,7 +30,9 @@ const ProfileImage = () => {
       return;
     }
   };
+
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    setLoading('loading');
     const target = e.target as HTMLButtonElement;
     const data = new FormData();
 
@@ -49,10 +56,10 @@ const ProfileImage = () => {
         const response = await fetch('/api/users/register', { method: 'POST', body: data });
         await response.json();
 
-        history.push('/');
+        setLoading('success');
       } catch (e) {
         console.log(e);
-        history.push('/register');
+        setLoading('fail');
       }
       return;
     }
@@ -63,10 +70,10 @@ const ProfileImage = () => {
         const response = await fetch('/api/users/register', { method: 'POST', body: data });
         await response.json();
 
-        history.push('/');
+        setLoading('success');
       } catch (e) {
         console.log(e);
-        history.push('/register');
+        setLoading('fail');
       }
     }
   };
@@ -94,6 +101,29 @@ const ProfileImage = () => {
           설정
         </Button>
       </ButtonContainer>
+      {loading === 'loading' && (
+        <Modal isShowing={true}>
+          <AlertDiv>회원가입 중입니다.</AlertDiv>
+        </Modal>
+      )}
+      {loading === 'fail' && (
+        <Modal isShowing={true}>
+          <AlertDiv>다시 시도해주세요.</AlertDiv>
+          <Button borderColor={'black'} onClick={() => history.replace('/modal/register/')}>
+            확인
+          </Button>
+        </Modal>
+      )}
+      {loading === 'success' && (
+        <Modal isShowing={true}>
+          <AlertDiv>
+            <div>성공! 로그인창으로 이동합니다.</div>
+            <Button borderColor={'black'} onClick={() => history.replace('/modal/login/')}>
+              확인
+            </Button>
+          </AlertDiv>
+        </Modal>
+      )}
     </ProfileImageBlock>
   );
 };

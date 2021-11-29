@@ -19,6 +19,7 @@ import { useUserState } from '@src/contexts/UserContext';
 import { Palette } from '@src/lib/styles/Palette';
 import { useHistory, useLocation } from 'react-router';
 import queryString from '@src/lib/utils/queryString';
+import AlertDiv from '@common/Alert/AlertDiv';
 
 export interface FeedProps {
   feedId: number;
@@ -30,7 +31,7 @@ export interface FeedProps {
   createdTime: string;
   numOfHearts: number;
   numOfComments: number;
-  is_heart: number;
+  is_heart: 0 | 1;
   avatarImage: string | null;
   contentIds: number[];
   lazy?: (node: HTMLDivElement) => void;
@@ -39,6 +40,7 @@ export interface FeedProps {
 const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
+  const { isShowing: isHeartErrorShowing, toggle: toggleErrorModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
   const items = makeDropBoxMenu([
@@ -65,7 +67,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
         <Carousel imageURLs={imageURLs} lazy={lazy} />
       </FeedContents>
       <FeedInfoDiv isTranslate={isTranslate}>
-        <HeartButton like={like} toggleLike={toggleLike} />
+        <HeartButton like={like} toggleLike={userState.data?.userId !== -1 ? toggleLike : toggleErrorModal} />
         <CommentBtnSvg
           className={'button'}
           onClick={() => {
@@ -82,6 +84,9 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
       </Modal>
       <Modal isShowing={isEditShowing} hide={toggleEditModal}>
         <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, contentIds: contentIds, feedId: feedId, text: humanText }} />
+      </Modal>
+      <Modal isShowing={isHeartErrorShowing} hide={toggleErrorModal}>
+        <AlertDiv>먼저 로그인 해주세요!</AlertDiv>
       </Modal>
     </FeedContainerDiv>
   );

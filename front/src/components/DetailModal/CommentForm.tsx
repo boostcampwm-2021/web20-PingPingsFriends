@@ -47,6 +47,10 @@ const CommentForm = ({ editMode, inputText, setInputText, commentDispatch, feedI
   };
 
   useEffect(() => {
+    if (inputRef.current !== null) inputRef.current.focus();
+  }, [editMode]);
+
+  useEffect(() => {
     if (inputRef.current) {
       inputRef.current.value = inputText;
       if (inputText.length) setActive(true);
@@ -67,7 +71,8 @@ const CommentForm = ({ editMode, inputText, setInputText, commentDispatch, feedI
           post_id: feedId,
           content: inputRef.current?.value,
         };
-        const res: Response = await fetch(`/api/comments`, getAuthOption('POST', userState.data?.accessToken, data));
+        const res: Response = await fetch(`/api/comments`, getAuthOption('POST', userState.data?.accessToken, JSON.stringify(data), { 'Content-Type': 'application/json' }));
+
         if (res.ok) {
           commentDispatch({ type: 'REFRESH' });
         } else {

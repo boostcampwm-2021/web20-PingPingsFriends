@@ -39,7 +39,8 @@ const CommentList = ({ feedId, toggleEditMode, commentState, commentDispatch }: 
     if (lastComment === -1) {
       getComment();
       return;
-    } else if (!comments.length || lastComment === 0) return;
+    }
+    if (!comments.length || lastComment === 0) return;
     getComment();
   }, [lastComment]);
 

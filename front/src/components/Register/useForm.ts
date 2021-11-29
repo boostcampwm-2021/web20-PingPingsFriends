@@ -17,6 +17,10 @@ const useForm = (validations: Validation<RegisterState>[]) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target;
+    const inputEvent = e.nativeEvent as InputEvent;
+    if (inputEvent.data === ' ') {
+      return;
+    }
     if (target.value[target.value.length - 1] === ' ') {
       return;
     }

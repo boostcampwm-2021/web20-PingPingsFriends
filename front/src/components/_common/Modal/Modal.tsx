@@ -32,14 +32,16 @@ const Modal = ({ children, isShowing, hide, routePath }: ModalProps) => {
 
   return routePath ? (
     <Route path={routePath}>
-      {ReactDOM.createPortal(
-        <ModalDiv className={'modal-container'} onClick={hide}>
-          <ContentsDiv className={'contents'} tabIndex={1} onKeyDown={hide} ref={contentRef}>
-            {children}
-          </ContentsDiv>
-        </ModalDiv>,
-        $portal
-      )}
+      <>
+        {ReactDOM.createPortal(
+          <ModalDiv className={'modal-container'} onClick={hide}>
+            <ContentsDiv className={'contents'} tabIndex={1} onKeyDown={hide} ref={contentRef}>
+              {children}
+            </ContentsDiv>
+          </ModalDiv>,
+          $portal
+        )}
+      </>
     </Route>
   ) : isShowing ? (
     ReactDOM.createPortal(

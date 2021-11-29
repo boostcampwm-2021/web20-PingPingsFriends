@@ -68,7 +68,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
         <>
           <LoginForm action={'/api/users/login'} method={'POST'} onSubmit={handleLoginFormSubmit}>
             <LoginLabel htmlFor={'userId'}>아이디</LoginLabel>
-            <LoginInput ref={nameInputRef} id={'userId'} name={'userId'} type={'text'} placeholder={'username@mail'} required />
+            <LoginInput ref={nameInputRef} id={'userId'} name={'userId'} type={'text'} placeholder={'아이디'} required />
             <LoginLabel htmlFor={'password'}>비밀번호</LoginLabel>
             <LoginInput ref={passwordInputRef} id={'password'} name={'password'} type={'password'} placeholder={'비밀번호'} required />
             <LoginBtnDiv>

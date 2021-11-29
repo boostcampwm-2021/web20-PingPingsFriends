@@ -76,16 +76,17 @@ const CommentDiv = styled.div<{ isEdited: boolean }>`
   width: 100%;
   min-height: 50px;
   gap: 5px;
-  margin-bottom: 5px;
+  padding: 5px;
+  margin: 15px 0;
   position: relative;
-  background-color: ${(props) => (props.isEdited ? Palette.PINK : '')};
+  background-color: ${(props) => (props.isEdited ? Palette.ACTIVE : '')};
+  border-radius: 8px;
   transition: background-color 0.3s ease;
 `;
 
 const TextDiv = styled.div`
   width: 100%;
   position: relative;
-  top: -5px;
 
   span {
     font-size: 12px;
@@ -96,6 +97,7 @@ const TextDiv = styled.div`
 const ControlDiv = styled.div`
   position: absolute;
   right: 0;
+  bottom: 0;
   svg {
     width: 15px;
     height: 15px;
@@ -109,9 +111,12 @@ const ControlDiv = styled.div`
 const DeleteHoverDiv = styled.div`
   ${flexBox('center', 'center', 'column')};
   position: absolute;
+  top: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   background-color: ${Palette.RED};
+  border-radius: 8px;
   animation-duration: 0.5s;
   animation-name: slidein;
   color: white;
