@@ -2,15 +2,16 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { HeartsService } from './hearts.service';
 @Controller('hearts')
 @ApiTags('좋아요 API')
@@ -22,8 +23,10 @@ export class HeartsController {
     summary: '좋아요 추가 API',
     description: '게시글 좋아요 누르기',
   })
-  setHeart(@Param('postId', ParseIntPipe) postId: number) {
-    return this.heartsService.setHeart(postId, 2);
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  setHeart(@Param('postId', ParseIntPipe) postId: number, @Req() req) {
+    return this.heartsService.setHeart(postId, req.user.userId);
   }
 
   @Delete(':postId') //좋아요 삭제
@@ -31,8 +34,10 @@ export class HeartsController {
     summary: '좋아요 취소 API',
     description: '게시글 좋아요 취소',
   })
-  deleteHeart(@Param('postId', ParseIntPipe) postId: number) {
-    return this.heartsService.deleteHeart(postId, 1);
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  deleteHeart(@Param('postId', ParseIntPipe) postId: number, @Req() req) {
+    return this.heartsService.deleteHeart(postId, req.user.userId);
   }
 
   @Get('count/:postId') // 좋아요 카운트
@@ -53,10 +58,7 @@ export class HeartsController {
     @Param('postId', ParseIntPipe) postId: number,
     @Query() paginationQueryDto: PaginationQueryDto
   ) {
-    return this.heartsService.getAllLikedUser(
-      postId,
-      paginationQueryDto
-    );
+    return this.heartsService.getAllLikedUser(postId, paginationQueryDto);
   }
 
   // @Get(':userId/:postId')

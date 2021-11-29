@@ -24,13 +24,12 @@ import { Comment } from './entities/comment.entity';
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @ApiBearerAuth('access-token')
   @Post() //댓글 추가
-  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: '댓글 추가 API',
     description: '게시물에 댓글을 추가한다.',
   })
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   @ApiCreatedResponse({ description: '댓글 생성', type: Comment })
   create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
@@ -42,6 +41,7 @@ export class CommentsController {
     summary: '댓글 수정 API',
     description: '게시물 댓글을 수정한다.',
   })
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   update(
     @Param('commentId', ParseIntPipe) commentId: number,
@@ -56,6 +56,7 @@ export class CommentsController {
     summary: '댓글 삭제 API',
     description: '게시물 댓글을 삭제한다.',
   })
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   remove(@Param('commentId', ParseIntPipe) commentId: number, @Req() req) {
     return this.commentsService.removeComment(commentId);
