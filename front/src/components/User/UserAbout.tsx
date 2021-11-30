@@ -5,12 +5,13 @@ import { flexBox } from '@src/lib/styles/mixin';
 import Avatar from '@common/Avatar/Avatar';
 import { Palette } from '@src/lib/styles/Palette';
 import { ReactComponent as PhotoCameraSvg } from '@assets/icons/photo_camera.svg';
-import { getAuthOption } from '@lib/utils/fetch';
+import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
 import { useUserState } from '@src/contexts/UserContext';
 import Modal from '@common/Modal/Modal';
 import AlertDiv from '@common/Alert/AlertDiv';
 import { ModalType } from '@src/types/Modal';
 import Button from '@components/Button/Button';
+import { useHistory } from 'react-router';
 
 interface UserAboutProps {
   userInfo: User | null;
@@ -19,6 +20,7 @@ interface UserAboutProps {
 const UserAbout = ({ userInfo }: UserAboutProps) => {
   const { data: userData } = useUserState();
   const [loading, setLoading] = useState<ModalType>(null);
+  const history = useHistory();
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -26,17 +28,23 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
 
     const data = new FormData();
     data.append('upload', file);
-    try {
-      const response = await fetch('/api/users/contents', getAuthOption('PATCH', userData!.accessToken, data));
-      await response.json();
-      setLoading('success');
+    fetchAPI(
+      '/api/users/contents',
+      (okRes) => {
+        setLoading('success');
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    } catch (e) {
-      setLoading('fail');
-    }
+        setTimeout(() => {
+          history.go(0);
+        }, 1500);
+      },
+      (failRes) => {
+        setLoading('fail');
+      },
+      (err) => {
+        setLoading('fail');
+      },
+      getAuthOption('PATCH', userData!.accessToken, data)
+    );
   };
 
   const handleClick = () => {
@@ -89,7 +97,7 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
         <Modal isShowing={true}>
           <AlertDiv>
             <div>변경 성공!</div>
-            <Button borderColor={'black'} onClick={() => window.location.reload()} children={'확인'} />
+            <Button borderColor={'black'} onClick={() => history.go(0)} children={'확인'} />
           </AlertDiv>
         </Modal>
       )}
@@ -107,7 +115,6 @@ const UserAboutDiv = styled.div`
   border: 1px solid ${Palette.WHITE};
   border-radius: 20px;
   margin-bottom: 20px;
-  /* background-color: aliceblue; */
 `;
 
 const AvatarDiv = styled.div`
@@ -122,7 +129,6 @@ const TextDiv = styled.div`
   ${flexBox('center', 'flex-start', 'column')};
   width: 70%;
   height: 100%;
-  /* background-color: aqua; */
   font-size: 20px;
   .nickname {
     font-size: 50px;

@@ -5,6 +5,7 @@ import { Palette } from '@lib/styles/Palette';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useHistory } from 'react-router-dom';
 import { useUserDispatch, useUserState, User } from '@src/contexts/UserContext';
+import { fetchAPI, getAuthOption } from '@src/lib/utils/fetch';
 
 const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const history = useHistory();
@@ -21,20 +22,15 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const handleLoginFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     userDispatch({ type: 'GET_USER' });
-    try {
-      const bodyJson = {
-        username: nameInputRef.current?.value,
-        password: passwordInputRef.current?.value,
-      };
-      const res = await fetch('/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bodyJson),
-      });
-      if (res.ok) {
-        const data = await res.json();
+    const bodyJson = {
+      username: nameInputRef.current?.value,
+      password: passwordInputRef.current?.value,
+    };
+
+    fetchAPI(
+      '/api/users/login',
+      async (okRes) => {
+        const data = await okRes.json();
         const newState: User = {
           userId: data.user.id,
           username: data.user.username,
@@ -47,20 +43,23 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
         userDispatch({ type: 'GET_USER_SUCCESS', data: newState });
         hide('off');
         history.push('/');
-      } else {
-        switch (res.status) {
-          case 401:
+      },
+      (failRes) => {
+        switch (failRes.status) {
+          case 400:
             userDispatch({ type: 'GET_USER_ERROR', error: '아이디/비밀번호가 없거나 다릅니다.' });
             break;
           default:
             userDispatch({ type: 'GET_USER_ERROR', error: '알 수 없는 이유로 로그인에 실패하여습니다.' });
         }
         setFail(true);
-      }
-    } catch (e) {
-      userDispatch({ type: 'GET_USER_ERROR', error: e });
-      setFail(true);
-    }
+      },
+      (err) => {
+        userDispatch({ type: 'GET_USER_ERROR', error: err });
+        setFail(true);
+      },
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyJson) }
+    );
   };
 
   return (

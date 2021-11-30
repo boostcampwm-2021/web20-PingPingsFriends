@@ -1,10 +1,5 @@
 type HTTPMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
 
-interface IHeadersOptions {
-  // 필요시 더 추가
-  'Content-Type'?: 'application/json';
-}
-
 const setHeaders = (headersOptions: HeadersInit, headers: Headers) => {
   Object.keys(headersOptions).forEach((key) => {
     const value = headersOptions[key as keyof HeadersInit];
@@ -68,9 +63,8 @@ export const fetchAPI = async (fetchURL: string, okCallback: (res: Response) => 
             errorCallback(err);
           }
         );
-      } else {
-        failCallback(response);
       }
+      failCallback(response);
     }
   } catch (err) {
     errorCallback(err);
