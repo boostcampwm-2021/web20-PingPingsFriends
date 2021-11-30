@@ -11,6 +11,7 @@ import Modal from '@common/Modal/Modal';
 import useModal from '@common/Modal/useModal';
 import DetailModal from '@components/DetailModal/DetailModal';
 import { formatDate } from '@lib/utils/time';
+import { ReactComponent as ExploreSvg } from '@assets/icons/explore.svg';
 
 const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined | null }) => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -32,8 +33,10 @@ const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined | null 
             return <Cell feedInfo={feedInfo} url={url} key={idx} toggle={modalToggle} />;
           });
         })
-      ) : (
+      ) : isReady ? (
         <Warning width={'200px'} height={'200px'} />
+      ) : (
+        <ExploreSvg className={'explore'} />
       )}
       <Modal isShowing={isShowing} hide={toggle}>
         {test && (
@@ -76,5 +79,12 @@ const ExploreDiv = styled.div<{ color: string | undefined }>`
     to {
       width: 100%;
     }
+  }
+
+  .explore {
+    fill: ${Palette.RED};
+    width: 100px;
+    height: 100px;
+    margin: auto;
   }
 `;
