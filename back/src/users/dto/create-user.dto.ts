@@ -12,7 +12,6 @@ export class CreateUserDto {
   habitatId?: number;
 
   @IsOptional()
-  @IsNumber()
   speciesId?: number;
 
   @IsOptional()
