@@ -55,7 +55,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
   const scrollDispatch = useScrollDispatch();
 
   useEffect(() => {
-    scrollDispatch({ type: 'UPDATE_FEED', feedId });
+    scrollDispatch({ type: 'UPDATE_FEED', nextLike: { feedId, like: like ? 1 : 0 } });
   }, [like]);
 
   return (
@@ -98,7 +98,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
   );
 };
 
-export default React.memo(Feed);
+export default Feed;
 
 const FeedContainerDiv = styled.div`
   background-color: white;

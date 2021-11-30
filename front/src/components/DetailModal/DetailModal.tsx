@@ -33,7 +33,6 @@ const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ag
   const { commentState, commentDispatch, inputMode, inputModeDispatch } = useCommentList();
   const [like, toggleLike] = useLike(isHeart, feedId);
   const { isShowing, toggle } = useModal();
-
   return (
     <DetailModalDiv>
       <ContentsDiv>

@@ -14,10 +14,13 @@ interface scrollState {
   totalFeeds: Posts;
 }
 
-interface Action {
+export interface ScrollAction {
   type: 'CHANGE_SCROLL' | 'RESET_SCROLL' | 'CHANGE_TOTAL_FEEDS' | 'FETCH_POSTS' | 'RESET_FEEDS' | 'UPDATE_FEED';
   payload?: Partial<scrollState>;
-  feedId?: number;
+  nextLike?: {
+    feedId: number;
+    like: 0 | 1;
+  };
 }
 
 const initialState: scrollState = {
@@ -47,7 +50,7 @@ export const fetchPost: IFetchPost = async (habitat, lastFeedId, accessToken) =>
   }
 };
 
-const reducer = (state: scrollState, { type, payload, feedId }: Action) => {
+const reducer = (state: scrollState, { type, payload, nextLike }: ScrollAction) => {
   switch (type) {
     case 'CHANGE_SCROLL': {
       const scrollTop = payload!.scrollTop!;
@@ -71,11 +74,10 @@ const reducer = (state: scrollState, { type, payload, feedId }: Action) => {
       return { ...state, totalFeeds, feeds };
     }
     case 'UPDATE_FEED': {
-      const totalFeeds: Posts = state.totalFeeds.map((feed) =>
-        feed.post_id === feedId ? { ...feed, is_heart: feed.is_heart === 0 ? 1 : 0, numOfHearts: feed.numOfHearts + (feed.is_heart === 0 ? 1 : -1) } : feed
-      );
-
-      return { ...state, totalFeeds };
+      const { feedId, like } = nextLike!;
+      const totalFeeds: Posts = state.totalFeeds.map((feed) => (feed.post_id === feedId ? { ...feed, is_heart: like } : feed));
+      const feeds = totalFeeds.slice(state.startIndex, state.startIndex + FIX_FEED);
+      return { ...state, feeds, totalFeeds };
     }
     case 'RESET_SCROLL': {
       return { ...state, scrollTop: 0, offset: 0, height: 0 };
@@ -90,7 +92,7 @@ const reducer = (state: scrollState, { type, payload, feedId }: Action) => {
 };
 
 const ScrollStateContext = createContext<scrollState | null>(null);
-const ScrollDispatchContext = createContext<React.Dispatch<Action> | null>(null);
+const ScrollDispatchContext = createContext<React.Dispatch<ScrollAction> | null>(null);
 
 export const ScrollProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
