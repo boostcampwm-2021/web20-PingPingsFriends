@@ -23,10 +23,7 @@ export class UsersService {
   }
 
   async check(username?: string, nickname?: string) {
-    const orCheck = username || nickname;
-    const andCheck = username && nickname;
-
-    if (!orCheck || andCheck)
+    if (isAllTrueOrFalse(username, nickname))
       throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
 
     let user: User;
@@ -44,6 +41,7 @@ export class UsersService {
 
     delete user.password;
     delete user.contentsId;
+    delete user.refreshToken;
 
     return user;
   }

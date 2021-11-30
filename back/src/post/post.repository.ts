@@ -14,10 +14,11 @@ export class PostRepository extends Repository<Post> {
   async createPost(
     createPostDto: CreatePostDto,
     contentsInfos: CreateContentDto[],
-    userId: number
+    userId: number,
+    animalContent: string
   ): Promise<Post> {
     const post = new Post();
-    post.animalContent = createPostDto.animalContent;
+    post.animalContent = animalContent;
     post.humanContent = createPostDto.humanContent;
     post.userId = userId;
     post.habitatId = createPostDto.habitatId;

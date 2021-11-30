@@ -1,9 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PAGE_LIMIT, UPLOAD_LIMIT } from 'common/constants/nums';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 import { Content } from 'src/contents/entities/content.entity';
 import { PostContent } from 'src/post-contents/entities/post-content.entity';
+import { User } from 'src/users/entities/user.entity';
 import { UserRepository } from 'src/users/user.repository';
 import { Connection } from 'typeorm';
 import { convertStringToNumber } from 'utils/value-converter.util';
@@ -11,8 +13,6 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { PatchPostRequestDto } from './dto/patchPostRequestDto';
 import { Post } from './entities/post.entity';
 import { PostRepository } from './post.repository';
-
-const LIMIT_NUMBER = 10;
 
 @Injectable()
 export class PostService {
@@ -25,40 +25,44 @@ export class PostService {
 
   async create(createPostDto: CreatePostDto, contentsInfos: CreateContentDto[], userId: number) {
     const user = await this.userRepository.findOne(userId, { relations: ['species'] });
-    if (!user) throw new HttpException('Error: 유저가 존재하지 않습니다.', HttpStatus.BAD_REQUEST);
-    const { sound } = user.species;
-    const contentArr = [];
-    const soundLength = sound.length;
-    const humanContentLength = createPostDto.animalContent.length;
 
-    Array(Math.ceil(humanContentLength / soundLength))
-      .fill(0)
-      .forEach((v) => {
-        contentArr.push(sound + '!');
-      });
-    createPostDto.animalContent = contentArr.join(' ');
-    return await this.postRepository.createPost(createPostDto, contentsInfos, userId);
+    if (!user)
+      throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
+
+    const animalContent = translateHumanToAnimal(user, createPostDto);
+
+    return await this.postRepository.createPost(
+      createPostDto,
+      contentsInfos,
+      userId,
+      animalContent
+    );
   }
 
   async findAll(habitatId: number, user: any, lastPostId?: number) {
     const userId = user ? user.userId : user;
+
     if (!lastPostId) {
       const result = await this.getFirstPage(habitatId, userId);
+
       result.posts.forEach((post) =>
         convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
       );
+
       return result;
     } else {
       const result = await this.getNextPage(habitatId, userId, lastPostId);
+
       result.posts.forEach((post) =>
         convertStringToNumber(post, 'numOfHearts', 'numOfComments', 'is_heart')
       );
+
       return result;
     }
   }
 
-  async findAllByUserId(userId: number, lastId?: number): Promise<UserPostDto[]> {
-    const results = await this.postRepository.findAllByUserId(userId, lastId);
+  async findAllByUserId(userId: number, lastPostId?: number): Promise<UserPostDto[]> {
+    const results = await this.postRepository.findAllByUserId(userId, lastPostId);
 
     results.forEach((result: UserPostDto) =>
       convertStringToNumber(result, 'numOfHearts', 'numOfComments')
@@ -76,13 +80,13 @@ export class PostService {
     const posts = await this.connection.query(baseSql + whereSql + tailSql, [
       userId,
       habitatId,
-      LIMIT_NUMBER,
+      PAGE_LIMIT,
     ]);
 
     return { posts };
   }
 
-  async getNextPage(habitatId: number, userId: number | false, oldLastPostId: number) {
+  async getNextPage(habitatId: number, userId: number | false, lastPostId: number) {
     let baseSql = this.getBaseQuery();
     let tailSql = this.getTailQuery();
     let whereSql = `where p.habitat_id = ?
@@ -94,8 +98,8 @@ export class PostService {
     const posts = await this.connection.query(baseSql + whereSql + middleSql + tailSql, [
       userId,
       habitatId,
-      oldLastPostId,
-      LIMIT_NUMBER,
+      lastPostId,
+      PAGE_LIMIT,
     ]);
 
     return { posts };
@@ -104,7 +108,7 @@ export class PostService {
   private getBaseQuery() {
     return `
     select p.post_id, p.human_content, p.animal_content, p.created_at, u.user_id, u.username, u.nickname, c.contents_id, c.url as user_image_url
-    , group_concat(distinct pcc.url order by pcc.contents_id) as post_contents_urls, group_concat(distinct pcc.contents_id order by pcc.contents_id) as post_contents_ids
+    , group_concat(pcc.url order by pcc.contents_id) as post_contents_urls, group_concat(pcc.contents_id order by pcc.contents_id) as post_contents_ids
     , (select count(*) from heart where post_id = p.post_id) as numOfHearts
     , (select count(*) from comment where post_id = p.post_id) as numOfComments
     , (select count(*) from heart where post_id = p.post_id and user_id = ?) as is_heart
@@ -124,41 +128,56 @@ export class PostService {
     `;
   }
 
-  async findOne(id: number, user: any) {
+  async findOne(posId: number, user: any) {
     const userId = user ? user.userId : user;
     let baseSql = this.getBaseQuery();
     let whereSql = `where p.post_id = ?;
     `;
-    return (await this.connection.query(baseSql + whereSql, [userId, id]))[0];
+
+    const result = (await this.connection.query(baseSql + whereSql, [userId, posId]))[0];
+
+    if (!result) return null;
+
+    convertStringToNumber(result, 'numOfHearts', 'numOfComments', 'is_heart');
+    return result;
   }
 
   async update(
-    id: number,
+    postId: number,
     patchPostRequestDto: PatchPostRequestDto,
-    contentsInfos: CreateContentDto[]
+    contentsInfos: CreateContentDto[],
+    userId: number
   ) {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
 
+    const userRepository = queryRunner.manager.getRepository(User);
     const postRepository = queryRunner.manager.getRepository(Post);
     const postContentRepository = queryRunner.manager.getRepository(PostContent);
     const contentRepository = queryRunner.manager.getRepository(Content);
 
-    const post = await postRepository.findOne(id, {
+    const post = await postRepository.findOne(postId, {
       relations: ['postContents'],
     });
 
-    const updateIds = patchPostRequestDto.contentIds.split(',').map((id: string, i: number) => id);
+    const updateIds = patchPostRequestDto.contentIds.split(',').map((id: string) => id);
 
     const excludedPostContents = post.postContents.filter(
-      (postContent, i) => !updateIds.includes('' + postContent.contentsId)
+      (postContent) => !updateIds.includes('' + postContent.contentsId)
     );
 
     if (
       post.postContents.length - excludedPostContents.length + contentsInfos.length >
-      LIMIT_NUMBER
+      UPLOAD_LIMIT
     )
       return false;
+
+    const user = await userRepository.findOne(userId, { relations: ['species'] });
+
+    if (!user)
+      throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
+
+    const animalContent = translateHumanToAnimal(user, patchPostRequestDto);
 
     await queryRunner.startTransaction();
 
@@ -173,9 +192,9 @@ export class PostService {
       }));
       await postContentRepository.insert(postContents);
 
-      await postRepository.update(id, {
+      await postRepository.update(postId, {
         humanContent: patchPostRequestDto.humanContent,
-        animalContent: patchPostRequestDto.animalContent,
+        animalContent: animalContent,
       });
 
       await queryRunner.commitTransaction();
@@ -195,7 +214,6 @@ export class PostService {
     await queryRunner.connect();
 
     const postRepository = queryRunner.manager.getRepository(Post);
-    const postContentRepository = queryRunner.manager.getRepository(PostContent);
     const contentRepository = queryRunner.manager.getRepository(Content);
     const commentRepository = queryRunner.manager.getRepository(Comment);
 
@@ -224,4 +242,18 @@ export class PostService {
       await queryRunner.release();
     }
   }
+}
+
+function translateHumanToAnimal(user: User, dto: CreatePostDto | PatchPostRequestDto) {
+  const { sound } = user.species;
+  const contentArr = [];
+  const soundLength = sound.length;
+  const humanContentLength = dto.humanContent.length;
+
+  Array(Math.ceil(humanContentLength / soundLength))
+    .fill(0)
+    .forEach((v) => {
+      contentArr.push(sound + '!');
+    });
+  return contentArr.join(' ');
 }
