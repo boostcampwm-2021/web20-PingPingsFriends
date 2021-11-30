@@ -29,6 +29,9 @@ function App() {
             <MainPage />
           </UserProvider>
         </Route>
+        <Route>
+          <>에러페이지</>
+        </Route>
       </Switch>
     </>
   );

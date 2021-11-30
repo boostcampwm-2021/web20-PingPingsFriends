@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import styled from 'styled-components';
 import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
@@ -14,6 +14,7 @@ import useCommentList from './useCommentList';
 import { useUserState } from '@src/contexts/UserContext';
 import Modal from '@common/Modal/Modal';
 import AlertDiv from '@common/Alert/AlertDiv';
+import { Posts } from '@src/types/Post';
 
 interface DetailModalProps {
   hide?: ToggleHandler;
@@ -26,9 +27,11 @@ interface DetailModalProps {
   numOfHearts: number;
   userImgURL: string | null;
   isHeart: 0 | 1;
+  setTotalPosts?: Dispatch<SetStateAction<Posts>>;
+  setFeeds?: Dispatch<SetStateAction<Posts>>;
 }
 
-const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ago, isHeart, numOfHearts }: DetailModalProps) => {
+const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ago, isHeart, numOfHearts, setTotalPosts, setFeeds }: DetailModalProps) => {
   const userState = useUserState();
   const { commentState, commentDispatch, inputMode, inputModeDispatch } = useCommentList();
   const [like, toggleLike] = useLike(isHeart, feedId);

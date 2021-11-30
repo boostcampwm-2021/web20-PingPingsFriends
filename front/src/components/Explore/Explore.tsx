@@ -14,7 +14,7 @@ import { formatDate } from '@lib/utils/time';
 
 const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined | null }) => {
   const divRef = useRef<HTMLDivElement>(null);
-  const [totalFeed] = useFetchTotalFeeds(habitatInfo?.habitat.id);
+  const [totalFeed, _, setTotalPosts] = useFetchTotalFeeds(habitatInfo?.habitat.id);
   const [isReady, setReady] = useState(false);
   const [test, setTest] = useState<Post | null>(null);
   const { isShowing, toggle } = useModal();
@@ -47,6 +47,7 @@ const Explore = ({ habitatInfo }: { habitatInfo: HabitatInfo | undefined | null 
             userImgURL={test.user_image_url}
             numOfHearts={test.numOfHearts}
             isHeart={test.is_heart}
+            setTotalPosts={setTotalPosts}
           />
         )}
       </Modal>

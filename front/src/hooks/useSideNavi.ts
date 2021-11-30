@@ -1,8 +1,6 @@
 import { useEffect, useReducer, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import queryString from '@lib/utils/queryString';
-
-const FETCH_HABITAT_LENGTH = 10;
 const INIT_HISTORY_INDEX = 4;
 
 interface HistoryState {
@@ -41,15 +39,20 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
 
 const useSideNavi = (userHabitatId: number) => {
   const [historyState, historyDispatch] = useReducer(reducer, initHistoryState);
+  const [error, setError] = useState(false);
   const getCurHabitat = (idx: number = 0) => historyState.habitatList[historyState.curIndex + idx] ?? undefined;
   const history = useHistory();
   const location = useLocation();
 
   const initRandomList = async (habitatId: number) => {
-    const res: Response = await fetch(`/api/habitat/random?currentId=${habitatId}`);
-    const data: number[] = await res.json();
-    data.splice(INIT_HISTORY_INDEX, 0, habitatId);
-    historyDispatch({ type: 'INIT_RANDOM_HABITAT', data });
+    try {
+      const res: Response = await fetch(`/api/habitat/random?currentId=${habitatId}`);
+      const data: number[] = await res.json();
+      data.splice(INIT_HISTORY_INDEX, 0, habitatId);
+      historyDispatch({ type: 'INIT_RANDOM_HABITAT', data });
+    } catch (e) {
+      setError(true);
+    }
   };
 
   useEffect(() => {
@@ -94,8 +97,8 @@ const useSideNavi = (userHabitatId: number) => {
   return {
     handleNextHabitat,
     handlePrevHabitat,
-    historyState,
     getCurHabitat,
+    error,
   };
 };
 

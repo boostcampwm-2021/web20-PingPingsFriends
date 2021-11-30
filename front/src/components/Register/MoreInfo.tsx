@@ -15,7 +15,7 @@ import { RegisterState } from '@src/contexts/RegisterContext';
 import useForm, { Validation } from '@components/Register/useForm';
 import useGetFetch from '@hooks/useGetFetch';
 import HabitatsMakeModal from '@components/Register/HabitatsMakeModal';
-import useFetchDuplicate from '@components/Register/useFetchDuplicate';
+import useFetchDuplicate from '@components/Register/useFetchVerification';
 import useFocus from '@hooks/useFocus';
 
 interface MoreInfoProps {

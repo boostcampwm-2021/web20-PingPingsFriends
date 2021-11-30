@@ -1,10 +1,13 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Posts, PostsResponse } from '@src/types/Post';
+import { getAuthOption } from '@lib/utils/fetch';
+import { useUserState } from '@src/contexts/UserContext';
 
-const useFetchTotalFeeds = (curHabitatId: number | undefined): [Posts, Dispatch<SetStateAction<number | null>>] => {
+const useFetchTotalFeeds = (curHabitatId: number | undefined): [Posts, Dispatch<SetStateAction<number | null>>, Dispatch<SetStateAction<Posts>>] => {
   const [feeds, setFeeds] = useState<Posts>([] as Posts);
   const [lastFeedId, setLastFeedId] = useState<number | null>(null);
   const [totalFeed, setTotalFeed] = useState<Posts>([] as Posts);
+  const userState = useUserState();
 
   useEffect(() => {
     setTotalFeed([]);
@@ -17,14 +20,13 @@ const useFetchTotalFeeds = (curHabitatId: number | undefined): [Posts, Dispatch<
 
     async function fetchData() {
       try {
-        const response: Response = await fetch(`/api/posts/habitats/${curHabitatId}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`);
+        const response: Response = await fetch(`/api/posts/habitats/${curHabitatId}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`, getAuthOption('GET', userState.data?.accessToken));
         const data: PostsResponse = await response.json();
 
         if (!data.posts.length) {
           setFeeds([]);
           return;
         }
-
         const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')) }));
 
         setFeeds(postsData);
@@ -38,7 +40,7 @@ const useFetchTotalFeeds = (curHabitatId: number | undefined): [Posts, Dispatch<
     setTotalFeed([...totalFeed, ...feeds]);
   }, [feeds]);
 
-  return [totalFeed, setLastFeedId];
+  return [totalFeed, setLastFeedId, setTotalFeed];
 };
 
 export default useFetchTotalFeeds;

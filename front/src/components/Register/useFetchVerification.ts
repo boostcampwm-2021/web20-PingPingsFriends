@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-type UseFetchDuplicate = (path: string) => [boolean, (arg: string) => Promise<void>];
+type UseFetchVerification = (path: string) => [boolean, (arg: string) => Promise<void>];
 
-const useFetchDuplicate: UseFetchDuplicate = (path: string) => {
+const useFetchDuplicate: UseFetchVerification = (path: string) => {
   const [isDuplicate, setIsDuplicate] = useState(false);
 
   const handleCheckUsername = async (value: string) => {
-    const response: Response = await fetch(`/api/users/isDuplicated?${path}=${value}`);
+    const response: Response = await fetch(`/api/users/verification?${path}=${value}`);
     const result = await response.json();
     setIsDuplicate(result);
   };

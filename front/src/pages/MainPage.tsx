@@ -12,6 +12,7 @@ import useHabitatInfo from '@hooks/useHabitatInfo';
 import MagicNumber from '@src/lib/styles/magic';
 import { useUserState } from '@src/contexts/UserContext';
 import useValidateUser from '@src/hooks/useValidateUser';
+import { ScrollProvider } from '@src/contexts/ScrollContext';
 
 const MainPage = () => {
   const userState = useUserState();
@@ -19,9 +20,8 @@ const MainPage = () => {
 
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
   const feedModeRef = useRef<HTMLDivElement>(null);
+  const { getCurHabitat, handleNextHabitat, handlePrevHabitat, error } = useSideNavi(userState.data?.habitatId ?? 2);
 
-  // const { curHabitatId, handleNextHabitat, handlePrevHabitat, habitatList, historyIdx } = useSideNavi(userState.data?.habitatId as number);
-  const { getCurHabitat, handleNextHabitat, handlePrevHabitat, historyState } = useSideNavi(userState.data?.habitatId ?? 2);
   const { habitatInfo } = useHabitatInfo(getCurHabitat());
 
   const toggleMode = () => {
@@ -40,29 +40,35 @@ const MainPage = () => {
   const getFeedFloatingPos = () => (window.innerWidth + parseInt(MagicNumber.FEED_SECTION_WIDTH)) / 2 + 10;
   const getExploreFloatingPos = () => 0;
 
+  if (error) {
+    return <div>잘못된 경로입니다!</div>;
+  }
+
   return (
     <MainPageBlock>
-      <Header habitatInfo={habitatInfo} />
-      <MainContentsDiv ref={feedModeRef}>
-        {
+      <Header habitatInfo={habitatInfo} />{' '}
+      <ScrollProvider>
+        <MainContentsDiv ref={feedModeRef}>
           {
-            feed: (
-              <>
-                <FeedContainer habitatInfo={habitatInfo} curHabitatId={getCurHabitat()} />
-                <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
-                <HabitatPreview habitat={getCurHabitat(1)} onClick={handleNextHabitat} side={'right'} />
-                <HabitatPreview habitat={getCurHabitat(-1)} onClick={handlePrevHabitat} side={'left'} />
-              </>
-            ),
-            explore: (
-              <>
-                <Explore habitatInfo={habitatInfo} />
-                <FeedFAB mode={mode} getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
-              </>
-            ),
-          }[mode]
-        }
-      </MainContentsDiv>
+            {
+              feed: (
+                <>
+                  <FeedContainer habitatInfo={habitatInfo} curHabitatId={getCurHabitat()} />
+                  <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
+                  <HabitatPreview habitat={getCurHabitat(1)} onClick={handleNextHabitat} side={'right'} />
+                  <HabitatPreview habitat={getCurHabitat(-1)} onClick={handlePrevHabitat} side={'left'} />
+                </>
+              ),
+              explore: (
+                <>
+                  <Explore habitatInfo={habitatInfo} />
+                  <FeedFAB mode={mode} getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
+                </>
+              ),
+            }[mode]
+          }
+        </MainContentsDiv>{' '}
+      </ScrollProvider>
       <EmptyStyleDiv color={habitatInfo?.habitat.color} />
     </MainPageBlock>
   );

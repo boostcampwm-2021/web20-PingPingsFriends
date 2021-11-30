@@ -9,6 +9,8 @@ import { getAuthOption } from '@lib/utils/fetch';
 import { useUserState } from '@src/contexts/UserContext';
 import Modal from '@common/Modal/Modal';
 import AlertDiv from '@common/Alert/AlertDiv';
+import { ModalType } from '@src/types/Modal';
+import Button from '@components/Button/Button';
 
 interface UserAboutProps {
   userInfo: User | null;
@@ -16,10 +18,9 @@ interface UserAboutProps {
 
 const UserAbout = ({ userInfo }: UserAboutProps) => {
   const { data: userData } = useUserState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<ModalType>(null);
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoading(true);
     const target = e.target as HTMLInputElement;
     const file = target.files![0];
 
@@ -28,18 +29,25 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
     try {
       const response = await fetch('/api/users/contents', getAuthOption('PATCH', userData!.accessToken, data));
       await response.json();
-      setLoading(false);
-      window.location.reload();
+      setLoading('success');
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (e) {
-      setLoading(false);
+      setLoading('fail');
     }
+  };
+
+  const handleClick = () => {
+    setLoading('loading');
   };
 
   return (
     <UserAboutDiv>
       {userData?.userId === userInfo?.id ? (
         <Form>
-          <FileInsertLabel htmlFor="profile">
+          <FileInsertLabel htmlFor="profile" onClick={handleClick}>
             <AvatarDiv>
               <Avatar imgSrc={userInfo?.content?.url} size={'100%'} preventLink />
             </AvatarDiv>
@@ -66,9 +74,23 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
           '존재하지 않는 사용자입니다'
         )}
       </TextDiv>
-      {loading && (
+      {loading === 'loading' && (
         <Modal isShowing={true}>
-          <AlertDiv> 파일 업로드 중입니다.</AlertDiv>
+          <AlertDiv>프로필 사진 변경 중</AlertDiv>
+        </Modal>
+      )}
+      {loading === 'fail' && (
+        <Modal isShowing={true}>
+          <AlertDiv>다시 시도해주세요.</AlertDiv>
+          <Button borderColor={'black'} onClick={() => setLoading(null)} children={'확인'} />
+        </Modal>
+      )}
+      {loading === 'success' && (
+        <Modal isShowing={true}>
+          <AlertDiv>
+            <div>변경 성공!</div>
+            <Button borderColor={'black'} onClick={() => window.location.reload()} children={'확인'} />
+          </AlertDiv>
         </Modal>
       )}
     </UserAboutDiv>

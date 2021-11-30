@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as VertBtnSvg } from '@assets/icons/more_vert_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '@assets/icons/comment_btn.svg';
@@ -20,6 +20,7 @@ import { Palette } from '@src/lib/styles/Palette';
 import { useHistory, useLocation } from 'react-router';
 import queryString from '@src/lib/utils/queryString';
 import AlertDiv from '@common/Alert/AlertDiv';
+import { Posts } from '@src/types/Post';
 
 export interface FeedProps {
   feedId: number;
@@ -35,13 +36,15 @@ export interface FeedProps {
   avatarImage: string | null;
   contentIds: number[];
   lazy?: (node: HTMLDivElement) => void;
+  setTotalPosts: Dispatch<SetStateAction<Posts>>;
+  setFeeds?: Dispatch<SetStateAction<Posts>>;
 }
 
-const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
+const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments, setTotalPosts, setFeeds }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
   const { isShowing: isHeartErrorShowing, toggle: toggleErrorModal } = useModal();
-  const [like, toggleLike] = useLike(is_heart, feedId);
+  const [like, toggleLike] = useLike(is_heart, feedId, setTotalPosts, setFeeds);
   const ago = formatDate(createdTime);
   const items = makeDropBoxMenu([
     { text: '글 수정', handler: toggleEditModal },
