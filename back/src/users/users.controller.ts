@@ -59,7 +59,7 @@ export class UsersController {
   @ApiQuery({ name: 'username', required: false, type: 'string' })
   @ApiQuery({ name: 'nickname', required: false, type: 'string' })
   @HttpCode(200)
-  async check(@Query() username?: string, @Query('nickname') nickname?: string) {
+  async check(@Query('username') username?: string, @Query('nickname') nickname?: string) {
     return await this.usersService.check(username, nickname);
   }
 
