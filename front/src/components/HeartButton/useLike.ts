@@ -15,7 +15,7 @@ export type UseLikeType = (
   setFeeds?: Dispatch<SetStateAction<Posts>> | undefined
 ) => [like: boolean, toggleLike: () => void];
 
-export const useLike: UseLikeType = (isHeartString, feedId, setTotalPosts, setFeeds) => {
+export const useLike: UseLikeType = (isHeartString, feedId) => {
   const isHeart = isHeartString !== 0;
   const [like, setLike] = useState(isHeart);
   const userState = useUserState();
@@ -23,55 +23,12 @@ export const useLike: UseLikeType = (isHeartString, feedId, setTotalPosts, setFe
   const toggleLike = async () => {
     if (like) {
       await fetch(`/api/hearts/${feedId}`, getAuthOption('DELETE', userState.data?.accessToken));
-
       setLike(false);
-      if (setTotalPosts) {
-        setTotalPosts((posts) =>
-          posts.map((post) => {
-            if (post.post_id === feedId) {
-              return { ...post, is_heart: 0 };
-            }
-            return post;
-          })
-        );
-      }
-      if (setFeeds) {
-        setFeeds((feeds) =>
-          feeds.map((feed) => {
-            if (feed.post_id === feedId) {
-              return { ...feed, is_heart: 0 };
-            }
-            return feed;
-          })
-        );
-      }
-
       return;
     }
     await fetch(`/api/hearts/${feedId}`, getAuthOption('POST', userState.data?.accessToken));
 
     setLike(true);
-    if (setTotalPosts) {
-      setTotalPosts((posts) =>
-        posts.map((post) => {
-          if (post.post_id === feedId) {
-            return { ...post, is_heart: 1 };
-          }
-          return post;
-        })
-      );
-    }
-    if (setFeeds) {
-      setFeeds((feeds) =>
-        feeds.map((feed) => {
-          if (feed.post_id === feedId) {
-            console.log(feed);
-            return { ...feed, is_heart: 1 };
-          }
-          return feed;
-        })
-      );
-    }
     return;
   };
 

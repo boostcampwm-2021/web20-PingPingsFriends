@@ -67,7 +67,7 @@ const MainPage = () => {
               ),
             }[mode]
           }
-        </MainContentsDiv>{' '}
+        </MainContentsDiv>
       </ScrollProvider>
       <EmptyStyleDiv color={habitatInfo?.habitat.color} />
     </MainPageBlock>

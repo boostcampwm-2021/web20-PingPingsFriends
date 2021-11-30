@@ -12,12 +12,12 @@ interface scrollState {
   height: number;
   feeds: Posts;
   totalFeeds: Posts;
-  lastFeedId?: number;
 }
 
 interface Action {
-  type: 'CHANGE_SCROLL' | 'RESET_SCROLL' | 'CHANGE_TOTAL_FEEDS' | 'FETCH_POSTS' | 'RESET_FEEDS';
+  type: 'CHANGE_SCROLL' | 'RESET_SCROLL' | 'CHANGE_TOTAL_FEEDS' | 'FETCH_POSTS' | 'RESET_FEEDS' | 'UPDATE_FEED';
   payload?: Partial<scrollState>;
+  feedId?: number;
 }
 
 const initialState: scrollState = {
@@ -30,24 +30,24 @@ const initialState: scrollState = {
 };
 
 interface IFetchPost {
-  (habitat: number, lastFeedId?: number, accessToken?: string): Promise<Action>;
+  (habitat: number, lastFeedId?: number, accessToken?: string): Promise<{ totalFeeds: Posts }>;
 }
-
 export const fetchPost: IFetchPost = async (habitat, lastFeedId, accessToken) => {
   try {
-    console.log(habitat);
     const response = await fetch(`/api/posts/habitats/${habitat}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`, getAuthOption('GET', accessToken));
     const data: PostsResponse = await response.json();
-
-    const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')) }));
-    return { type: 'FETCH_POSTS', payload: { totalFeeds: postsData } };
+    const postsData: Posts = data.posts.map((post) => ({
+      ...post,
+      contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')),
+    }));
+    return { totalFeeds: postsData };
   } catch (e: any) {
     console.log(e);
-    return { type: 'FETCH_POSTS', payload: { totalFeeds: e } };
+    return e;
   }
 };
 
-const reducer = (state: scrollState, { type, payload }: Action) => {
+const reducer = (state: scrollState, { type, payload, feedId }: Action) => {
   switch (type) {
     case 'CHANGE_SCROLL': {
       const scrollTop = payload!.scrollTop!;
@@ -69,6 +69,13 @@ const reducer = (state: scrollState, { type, payload }: Action) => {
       const feeds = totalFeeds.slice(state.startIndex, state.startIndex + FIX_FEED);
 
       return { ...state, totalFeeds, feeds };
+    }
+    case 'UPDATE_FEED': {
+      const totalFeeds: Posts = state.totalFeeds.map((feed) =>
+        feed.post_id === feedId ? { ...feed, is_heart: feed.is_heart === 0 ? 1 : 0, numOfHearts: feed.numOfHearts + (feed.is_heart === 0 ? 1 : -1) } : feed
+      );
+
+      return { ...state, totalFeeds };
     }
     case 'RESET_SCROLL': {
       return { ...state, scrollTop: 0, offset: 0, height: 0 };
