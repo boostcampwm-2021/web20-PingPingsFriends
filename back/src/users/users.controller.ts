@@ -39,6 +39,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { FileUploadDto } from 'common/dto/file-upload.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtRefreshAuthGuard } from 'src/auth/jwt-refresh-auth.guard';
 import { Response } from 'express';
 import { getPartialFileInfo } from 'utils/s3.util';
 import { ParseOptionalStringPipe } from 'common/pipes/parse-optional-string.pipe';
@@ -154,6 +155,7 @@ export class UsersController {
   })
   @ApiCookieAuth()
   @HttpCode(200)
+  @UseGuards(JwtRefreshAuthGuard)
   async refresh(@Req() req) {
     const refreshToken = req.cookies['refreshToken'];
     const accessToken = await this.authService.refreshAccessToken(refreshToken);
