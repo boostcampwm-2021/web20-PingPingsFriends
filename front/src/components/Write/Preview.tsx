@@ -10,13 +10,7 @@ const CELL_HEIGHT = '180px';
 const Preview = ({ file, idx, removeContents }: { file: File | string; idx: number; removeContents: (targetIdx: number) => void }) => {
   const [isLoading, setLoading] = useState(false);
   const contentsURL = useRef('');
-  const handleRemoveClick = (e: React.MouseEvent) => {
-    const target = e.target as Element;
-    if (target.closest('.remove_btn')) {
-      const selectedFile = (target.closest('.preview_cell') as HTMLElement).dataset.id;
-      removeContents(Number(selectedFile));
-    }
-  };
+
   useEffect(() => {
     if (typeof file === 'string') {
       setLoading(true);
@@ -31,10 +25,15 @@ const Preview = ({ file, idx, removeContents }: { file: File | string; idx: numb
   }, [file]);
 
   return (
-    <CellDiv className={'preview_cell'} data-id={idx} onClick={handleRemoveClick}>
+    <CellDiv>
       {isLoading ? (
         <>
-          <CancelBtnSvg className={'button remove_btn'} />
+          <CancelBtnSvg
+            className={'button remove_btn'}
+            onClick={() => {
+              removeContents(idx);
+            }}
+          />
           {typeof file === 'string' ? (
             <img src={file} alt={'upload img'} />
           ) : file.type.includes('image') ? (

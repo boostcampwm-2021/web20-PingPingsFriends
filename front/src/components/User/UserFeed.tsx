@@ -37,6 +37,7 @@ const FeedGridDiv = styled.div`
   ${prettyScroll()};
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: max-content;
   justify-content: space-between;
   width: 100%;
   overflow-y: scroll;

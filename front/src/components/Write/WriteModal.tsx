@@ -116,7 +116,7 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
                 <SwipeBox width="80%" height="100%" gap="10px">
                   <>
                     {contents.map((file, idx) => (
-                      <Preview key={idx} file={file} idx={idx} removeContents={removeContents} />
+                      <Preview key={typeof file === 'string' ? file : file.name} file={file} idx={idx} removeContents={removeContents} />
                     ))}
                   </>
                 </SwipeBox>
