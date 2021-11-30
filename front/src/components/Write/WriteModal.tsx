@@ -10,7 +10,7 @@ import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useUserState } from '@src/contexts/UserContext';
 import { useHistory } from 'react-router';
-import { getAuthOption } from '@lib/utils/fetch';
+import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
 import AlertDiv from '@common/Alert/AlertDiv';
 
 interface InitState {
@@ -56,38 +56,32 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
     setOnSubmit(true);
     const data = new FormData();
     data.append('humanContent', text);
-    data.append('animalContent', text);
     if (initState) {
       const editedContents = contents.filter((content) => typeof content === 'string').map((content) => initState.contentIds[initState.contents.indexOf(content as string)]);
       data.append('contentIds', editedContents.join(','));
     } else {
       data.append('habitatId', (userState.data?.habitatId as number).toString());
     }
-
     contents.filter((content) => typeof content !== 'string').forEach((content) => data.append('upload', content));
     const form = e.target as HTMLFormElement;
-    try {
-      if (!userState.data) {
-        return;
-      }
-      let response: Response;
-      if (initState) {
-        response = await fetch(`/api/posts/${initState.feedId}`, getAuthOption('PATCH', userState.data.accessToken, data));
-      } else response = await fetch(form.action, getAuthOption('POST', userState.data.accessToken, data));
-
-      await response.json();
-
-      if (response.ok) {
-        // 글쓰기 성공
-        history.go(0);
-      } else {
-        // 글쓰기 실패
-        setOnSubmit(false);
-      }
-    } catch (e) {
-      console.log(e as Error);
-      setOnSubmit(false);
+    if (!userState.data) {
+      return;
     }
+    fetchAPI(
+      initState ? `/api/posts/${initState.feedId}` : form.action,
+      (okResponse) => {
+        history.go(0);
+      },
+      (failResponse) => {
+        console.log(failResponse);
+        setOnSubmit(false);
+      },
+      (err) => {
+        console.log(err);
+        setOnSubmit(false);
+      },
+      initState ? getAuthOption('PATCH', userState.data.accessToken, data) : getAuthOption('POST', userState.data.accessToken, data)
+    );
   };
 
   useEffect(() => {
@@ -132,7 +126,7 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
             <TextIndicatorP>
               ({text.length}/{MAX_TEXT})
             </TextIndicatorP>
-            <ValidInfoP>{isValid ? '' : '사진과 글은 필수입니다!'}</ValidInfoP>
+            <ValidInfoP isValid={isValid}>{isValid ? '자신의 서식지에 글을 작성/수정 합니다' : '사진과 글은 필수입니다!'}</ValidInfoP>
             <SubmitBtn type={'submit'} valid={isValid}>
               <PetBtnSvg />
               <p>Done</p>
@@ -218,8 +212,8 @@ const TextIndicatorP = styled.p`
   font-size: 10px;
 `;
 
-const ValidInfoP = styled.p`
-  color: red;
+const ValidInfoP = styled.p<{ isValid: boolean }>`
+  color: ${(props) => (props.isValid ? 'black' : 'red')};
 `;
 
 const ContentsDiv = styled.div`

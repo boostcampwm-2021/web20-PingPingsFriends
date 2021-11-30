@@ -38,6 +38,7 @@ const UserInfo = () => {
       text: '로그아웃',
       handler: () => {
         userDispatch({ type: 'LOGOUT_USER' });
+        history.push('/');
       },
     },
   ]);

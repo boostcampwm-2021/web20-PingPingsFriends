@@ -19,7 +19,7 @@ interface Action {
   data?: User;
   error?: any;
 }
-const DEFAULT_HABITAT = 2;
+const DEFAULT_HABITAT = 1;
 export const initialState: UserState = {
   loading: false,
   data: {

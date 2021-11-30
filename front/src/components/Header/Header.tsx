@@ -44,7 +44,7 @@ const Header = ({ habitatInfo }: HeaderProps) => {
   return (
     <HeaderBlock>
       <img className={'logo'} src={logo} alt={'로고'} onClick={handleClick} />
-      <Place habitat={habitatInfo?.habitat.name} toggle={toggle} />
+      <Place habitatInfo={habitatInfo} toggle={toggle} />
       <UserInfo />
       <Modal isShowing={isShowing} hide={toggle} routePath={routePath}>
         <HabitatModal hide={toggle} />

@@ -136,7 +136,9 @@ const FeedInfoDiv = styled.div<{ isTranslate: boolean }>`
     color: #c4c4c4;
   }
   .translate {
-    fill: ${(props) => (props.isTranslate ? Palette.PINK : Palette.LIGHT_GRAY)};
+    fill: ${(props) => (props.isTranslate ? Palette.RED : Palette.PINK)};
+    border: 2px solid ${(props) => (props.isTranslate ? Palette.RED : Palette.PINK)};
+    border-radius: 100%;
   }
   .translate:hover {
     transform: scale(120%);

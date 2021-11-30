@@ -46,6 +46,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
         };
         userDispatch({ type: 'GET_USER_SUCCESS', data: newState });
         hide('off');
+        history.push('/');
       } else {
         switch (res.status) {
           case 401:

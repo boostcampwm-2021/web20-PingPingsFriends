@@ -89,7 +89,14 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
 
   return (
     <UserForm onSubmit={handleSubmit}>
-      <UserInput mode={inputMode.mode} onChange={handleInputChange} ref={inputRef} placeholder={'댓글을 입력하세요.'} required />
+      <UserInput
+        mode={inputMode.mode}
+        onChange={handleInputChange}
+        ref={inputRef}
+        placeholder={userState.data?.accessToken ? '댓글을 입력하세요.' : '로그인이 필요합니다'}
+        required
+        disabled={userState.data?.accessToken ? false : true}
+      />
       <SubmitBtn type={'submit'} isActive={isActive}>
         {isActive ? 'OK!' : 'X'}
       </SubmitBtn>
