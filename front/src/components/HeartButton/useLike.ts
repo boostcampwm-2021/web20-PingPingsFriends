@@ -11,8 +11,8 @@ export interface LikeProps {
 export type UseLikeType = (
   isHeartString: 0 | 1,
   feedId: number,
-  setTotalPosts: Dispatch<SetStateAction<Posts>> | undefined,
-  setFeeds: Dispatch<SetStateAction<Posts>> | undefined
+  setTotalPosts?: Dispatch<SetStateAction<Posts>> | undefined,
+  setFeeds?: Dispatch<SetStateAction<Posts>> | undefined
 ) => [like: boolean, toggleLike: () => void];
 
 export const useLike: UseLikeType = (isHeartString, feedId, setTotalPosts, setFeeds) => {
