@@ -21,7 +21,6 @@ async function bootstrap() {
     })
   );
   app.useGlobalFilters(new AllExceptionsFilter());
-
   app.use(cookieParser());
   const document = SwaggerModule.createDocument(app, SwaggerConfig);
   SwaggerModule.setup('docs', app, document);
