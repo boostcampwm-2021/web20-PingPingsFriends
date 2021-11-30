@@ -21,7 +21,6 @@ const HabitatsContainer = ({ habitatInfos, keyword }: HabitatsContainerProps) =>
     history.push(`/?habitat=${target.dataset.id}`);
   };
   useEffect(() => {
-    console.log('sss');
     setArr(habitatInfos.filter((info) => info.name.includes(text)));
   }, [text]);
 

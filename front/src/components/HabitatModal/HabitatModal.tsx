@@ -13,7 +13,6 @@ interface HabitatModalProps {
 const HabitatModal = ({ hide }: HabitatModalProps) => {
   const [habitatInfos, setHabitatInfos] = useState<HabitatList | any>([] as any);
   const [keyword, setKeyword] = useState('');
-  const test = createRef<HTMLInputElement>();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
@@ -31,7 +30,7 @@ const HabitatModal = ({ hide }: HabitatModalProps) => {
   return (
     <HabitatModalDiv>
       <HabitatSearchDiv>
-        <input type="text" value={keyword} onChange={handleChange} placeholder={'검색어를 입력하세요.'} ref={test} />
+        <input type="text" value={keyword} onChange={handleChange} placeholder={'검색어를 입력하세요.'} />
       </HabitatSearchDiv>
       <HabitatsContainer habitatInfos={habitatInfos} hide={hide} keyword={keyword} />
     </HabitatModalDiv>
