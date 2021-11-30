@@ -56,7 +56,6 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
     setOnSubmit(true);
     const data = new FormData();
     data.append('humanContent', text);
-    data.append('animalContent', text);
     if (initState) {
       const editedContents = contents.filter((content) => typeof content === 'string').map((content) => initState.contentIds[initState.contents.indexOf(content as string)]);
       data.append('contentIds', editedContents.join(','));
