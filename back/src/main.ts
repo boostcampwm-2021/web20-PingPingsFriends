@@ -5,6 +5,9 @@ import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
 import { loggerEnv } from 'config/logger.config';
 import * as dotenv from 'dotenv';
+import { ValidationPipe } from '@nestjs/common';
+import { SwaggerConfig } from 'config/swagger.config';
+import { AllExceptionsFilter } from 'common/error/AllExceptionsFilter';
 dotenv.config();
 
 async function bootstrap() {
@@ -12,24 +15,15 @@ async function bootstrap() {
   app.use(morgan(loggerEnv));
   if (process.env.NODE_ENV === 'dev') app.enableCors();
   app.setGlobalPrefix('api', { exclude: ['docs'] });
-  app.use(cookieParser());
-  const config = new DocumentBuilder()
-    .setTitle(`PingPing's Friends`)
-    .setDescription(`The PingPing's friends API description`)
-    .setVersion('0.1.0')
-    .addBearerAuth(
-      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'Header' },
-      'access-token'
-    )
-    .addCookieAuth('auth-cookie', {
-      type: 'http',
-      in: 'Header',
-      scheme: 'Bearer',
+  app.useGlobalPipes(
+    new ValidationPipe({
+      disableErrorMessages: false,
     })
-    .addTag('pingpings')
-    .build();
+  );
+  app.useGlobalFilters(new AllExceptionsFilter());
 
-  const document = SwaggerModule.createDocument(app, config);
+  app.use(cookieParser());
+  const document = SwaggerModule.createDocument(app, SwaggerConfig);
   SwaggerModule.setup('docs', app, document);
   await app.listen(3000);
 }
