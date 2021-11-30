@@ -33,7 +33,7 @@ const HabitatModal = ({ hide }: HabitatModalProps) => {
       <HabitatSearchDiv>
         <input type="text" value={keyword} onChange={handleChange} placeholder={'검색어를 입력하세요.'} ref={test} />
       </HabitatSearchDiv>
-      <HabitatsContainer habitatInfos={habitatInfos} hide={hide} keyword={test} />
+      <HabitatsContainer habitatInfos={habitatInfos} hide={hide} keyword={keyword} />
     </HabitatModalDiv>
   );
 };
