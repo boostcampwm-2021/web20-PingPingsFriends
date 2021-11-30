@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 import HabitatsContainer from './HabitatsContainer';
@@ -11,12 +11,8 @@ interface HabitatModalProps {
 }
 
 const HabitatModal = ({ hide }: HabitatModalProps) => {
-  //todo: 검색로직에 대해서
-  // 1. HabitatModal이 열릴 때 모든 서식지 이름을 다 받아오고 키워드 입력시에 그 데이터를 필터링하기
-  // 2. 페이징으로 받아오다가 키워드 입력시 패치 보내기
   const [habitatInfos, setHabitatInfos] = useState<HabitatList | any>([] as any);
   const [keyword, setKeyword] = useState('');
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
@@ -29,14 +25,14 @@ const HabitatModal = ({ hide }: HabitatModalProps) => {
       const habitats: HabitatList = await response.json();
       setHabitatInfos(habitats);
     }
-  }, [keyword]);
+  }, []);
 
   return (
     <HabitatModalDiv>
       <HabitatSearchDiv>
         <input type="text" value={keyword} onChange={handleChange} placeholder={'검색어를 입력하세요.'} />
       </HabitatSearchDiv>
-      <HabitatsContainer habitatInfos={habitatInfos} hide={hide} />
+      <HabitatsContainer habitatInfos={habitatInfos} hide={hide} keyword={keyword} />
     </HabitatModalDiv>
   );
 };

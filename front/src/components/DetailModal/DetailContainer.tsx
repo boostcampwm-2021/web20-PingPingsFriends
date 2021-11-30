@@ -1,10 +1,10 @@
 import DetailModal from '@components/DetailModal/DetailModal';
-import { Post, Posts } from '@src/types/Post';
+import { Post } from '@src/types/Post';
 import { formatDate } from '@lib/utils/time';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 const DetailContainerBlock = styled.div`
   ${flexBox('center', 'center')};
@@ -20,11 +20,9 @@ const DetailContainerBlock = styled.div`
 interface DetailContainerProps {
   detailFeed: Post;
   toggle: ToggleHandler;
-  setTotalPosts: Dispatch<SetStateAction<Posts>>;
-  setFeeds: Dispatch<SetStateAction<Posts>>;
 }
 
-const DetailContainer = ({ detailFeed, toggle, setTotalPosts, setFeeds }: DetailContainerProps) => {
+const DetailContainer = ({ detailFeed, toggle }: DetailContainerProps) => {
   const ago = formatDate(detailFeed!.created_at);
 
   return (
@@ -40,8 +38,6 @@ const DetailContainer = ({ detailFeed, toggle, setTotalPosts, setFeeds }: Detail
           numOfHearts={detailFeed.numOfHearts}
           isHeart={detailFeed.is_heart}
           ago={ago}
-          setTotalPosts={setTotalPosts}
-          setFeeds={setFeeds}
         />
       </div>
     </DetailContainerBlock>
