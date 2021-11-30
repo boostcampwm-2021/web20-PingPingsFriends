@@ -29,10 +29,7 @@ export class HeartsService {
     return this.heartRepository.countPostLiked(postId);
   }
 
-  async getAllLikedUser(
-    postId: number,
-    { skip, take }: PaginationQueryDto
-  ) {
+  async getAllLikedUser(postId: number, { skip, take }: PaginationQueryDto) {
     return this.heartRepository.getLikedList(postId, skip, take);
   }
 
