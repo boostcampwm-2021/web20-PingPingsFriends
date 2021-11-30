@@ -41,6 +41,7 @@ import { FileUploadDto } from 'common/dto/file-upload.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Response } from 'express';
 import { getPartialFileInfo } from 'utils/s3.util';
+import { ParseOptionalStringPipe } from 'common/pipes/parse-optional-string.pipe';
 
 @ApiTags('유저 API')
 @Controller('users')
@@ -58,7 +59,7 @@ export class UsersController {
   @ApiQuery({ name: 'username', required: false, type: 'string' })
   @ApiQuery({ name: 'nickname', required: false, type: 'string' })
   @HttpCode(200)
-  async check(@Query('username') username?: string, @Query('nickname') nickname?: string) {
+  async check(@Query() username?: string, @Query('nickname') nickname?: string) {
     return await this.usersService.check(username, nickname);
   }
 

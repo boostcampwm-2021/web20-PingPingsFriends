@@ -136,7 +136,7 @@ export class PostService {
 
     const result = (await this.connection.query(baseSql + whereSql, [userId, posId]))[0];
 
-    if (!result) return null;
+    if (!result) throw new HttpException('Error: 잘못된 접근입니다.', HttpStatus.BAD_REQUEST);
 
     convertStringToNumber(result, 'numOfHearts', 'numOfComments', 'is_heart');
     return result;

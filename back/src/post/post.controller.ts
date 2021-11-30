@@ -35,7 +35,6 @@ import FileDto from 'common/dto/transformFileDto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt-auth.guard';
 import { UPLOAD_LIMIT } from 'common/constants/nums';
-// import { UPLOAD_LIMIT } from 'common/constants/nums';
 
 @ApiTags('게시물 API')
 @Controller('posts')
@@ -125,7 +124,6 @@ export class PostController {
     @Req() req
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    console.log(patchPostRequestDto);
 
     return await this.postService.update(
       postId,
