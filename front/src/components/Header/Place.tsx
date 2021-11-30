@@ -25,8 +25,7 @@ interface PlaceProps {
 const Place = ({ habitatInfo, toggle }: PlaceProps) => {
   return (
     <PlaceBlock color={habitatInfo?.habitat.color} onClick={toggle}>
-      {' '}
-      {habitatInfo?.habitat.name ?? '공허'}{' '}
+      {habitatInfo?.habitat.name ?? '공허'}
     </PlaceBlock>
   );
 };
