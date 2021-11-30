@@ -28,14 +28,6 @@ export class SpeciesController {
   isDuplicate(@Query('name') name: string) {
     return this.speciesService.isDuplicate(name);
   }
-  // @Get()
-  // @ApiOperation({
-  //   summary: '동물 카테고리 조회 API',
-  //   description: '동물 카테고리 조회하기',
-  // })
-  // findAll() {
-  //   return this.speciesService.findAll();
-  // }
 
   @Get('cursor') //동물 카테고리 커서 페이지네이션
   @ApiOperation({

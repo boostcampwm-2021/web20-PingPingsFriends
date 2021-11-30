@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsInt, IsNotEmpty, Min } from 'class-validator';
 import { CursorPaginationDto } from 'common/dto/cursor-pagination.dto';
 export class CommentCursorPaginationDto extends CursorPaginationDto {
-  @ApiProperty()
+  @IsInt()
+  @Min(1)
   @IsNotEmpty()
+  @ApiProperty()
   postId: number;
 }
