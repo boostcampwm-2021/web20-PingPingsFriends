@@ -6,10 +6,10 @@ import {
   HttpStatus,
   NotFoundException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { QueryFailedError } from 'typeorm';
+import { TypeORMError } from 'typeorm';
 import * as dotenv from 'dotenv';
-
 dotenv.config();
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -20,21 +20,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let message = '';
     let status = 200;
     process.env.NODE_ENV === 'dev' && console.log(exception);
-    switch (exception.constructor) {
-      case HttpException:
-      case BadRequestException:
-      case NotFoundException:
-        status = exception.getStatus();
-        message = (exception as any).response.message;
-        break;
-      case QueryFailedError:
-        message = 'DB 애러입니다.';
-        status = HttpStatus.SERVICE_UNAVAILABLE;
-        break;
-
-      default:
-        status = HttpStatus.INTERNAL_SERVER_ERROR;
-        message = 'internal server error';
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      message = (exception as any).response.message;
+    } else if (exception instanceof TypeORMError) {
+      message = 'DB 애러입니다.';
+      status = HttpStatus.SERVICE_UNAVAILABLE;
+    } else {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = 'internal server error';
     }
     response.status(status).json({
       statusCode: status,
