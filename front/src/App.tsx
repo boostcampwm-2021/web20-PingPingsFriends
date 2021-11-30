@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import UserPage from './pages/UserPage';
 import RegisterPage from './pages/RegisterPage';
-import ExplorePage from './pages/ExplorePage';
+import ErrorPage from './pages/ErrorPage';
 import GlobalStyle from '@lib/styles/GlobalStyle';
 import '@lib/styles/fonts.css';
 import { UserProvider } from '@src/contexts/UserContext';
@@ -16,21 +16,18 @@ function App() {
         <Route path="/register">
           <RegisterPage />
         </Route>
-        <Route path="/explore">
-          <ExplorePage />
-        </Route>
         <Route path="/user/:id">
           <UserProvider>
             <UserPage />
           </UserProvider>
         </Route>
-        <Route path="/">
+        <Route exact path="/(modal/.*)?">
           <UserProvider>
             <MainPage />
           </UserProvider>
         </Route>
         <Route>
-          <>에러페이지</>
+          <ErrorPage />
         </Route>
       </Switch>
     </>
