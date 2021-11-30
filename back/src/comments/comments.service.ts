@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentRepository } from './comment.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -16,12 +16,19 @@ export class CommentsService {
     return this.commentRepository.createComment(createCommentDto, userId);
   }
 
-  updateComment(id: number, updateCommentDto: UpdateCommentDto) {
-    return this.commentRepository.updateComment(id, updateCommentDto);
+  async updateComment(postId: number, updateCommentDto: UpdateCommentDto, userId: number) {
+    const comment = await this.commentRepository.findOne(postId);
+    if (comment.userId !== userId)
+      throw new HttpException('Error: 잘못된 사용자 접근입니다.', HttpStatus.FORBIDDEN);
+
+    return this.commentRepository.updateComment(postId, updateCommentDto);
   }
 
-  removeComment(id: number) {
-    return this.commentRepository.removeComment(id);
+  async removeComment(postId: number, userId: number) {
+    const comment = await this.commentRepository.findOne(postId);
+    if (comment.userId !== userId)
+      throw new HttpException('Error: 잘못된 사용자 접근입니다.', HttpStatus.FORBIDDEN);
+    return this.commentRepository.removeComment(postId);
   }
 
   getCommentList(query: CommentCursorPaginationDto) {

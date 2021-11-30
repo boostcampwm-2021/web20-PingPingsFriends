@@ -48,7 +48,7 @@ export class CommentsController {
     @Body() updateCommentDto: UpdateCommentDto,
     @Req() req
   ) {
-    return this.commentsService.updateComment(commentId, updateCommentDto);
+    return this.commentsService.updateComment(commentId, updateCommentDto, req.user.userId);
   }
 
   @Delete(':commentId') //댓글 삭제
@@ -59,7 +59,7 @@ export class CommentsController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   remove(@Param('commentId', ParseIntPipe) commentId: number, @Req() req) {
-    return this.commentsService.removeComment(commentId);
+    return this.commentsService.removeComment(commentId, req.user.userId);
   }
 
   @Get('cursor') //댓글 커서 페이지네이션
