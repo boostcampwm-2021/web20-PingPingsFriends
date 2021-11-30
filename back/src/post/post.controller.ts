@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   UseGuards,
   Req,
+  HttpCode,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -33,6 +34,8 @@ import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
 import FileDto from 'common/dto/transformFileDto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt-auth.guard';
+import { UPLOAD_LIMIT } from 'common/constants/nums';
+// import { UPLOAD_LIMIT } from 'common/constants/nums';
 
 @ApiTags('게시물 API')
 @Controller('posts')
@@ -48,7 +51,8 @@ export class PostController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreatePostDto })
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  @UseInterceptors(FilesInterceptor('upload', UPLOAD_LIMIT, multerTransFormOption))
+  @HttpCode(201)
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
     @UploadedFiles() files: FileDto[],
@@ -66,6 +70,7 @@ export class PostController {
   @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'lastPostId', type: 'number', required: false })
   @UseGuards(OptionalJwtAuthGuard)
+  @HttpCode(200)
   async findAll(
     @Param('habitatId', ParseIntPipe) habitatId: number,
     @Req() req,
@@ -80,6 +85,7 @@ export class PostController {
     description: '특정 유저의 게시글 리스트를 조회하는 api입니다.',
   })
   @ApiQuery({ name: 'lastId', required: false })
+  @HttpCode(200)
   async findAllByUserId(
     @Param('userId', ParseIntPipe) userId: number,
     @Query('lastId', ParseOptionalIntPipe) lastId?: number
@@ -95,6 +101,7 @@ export class PostController {
   @ApiCreatedResponse({ type: GetPostResponseDto })
   @ApiBearerAuth('access-token')
   @UseGuards(OptionalJwtAuthGuard)
+  @HttpCode(200)
   findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
     return this.postService.findOne(id, req.user);
   }
@@ -109,14 +116,23 @@ export class PostController {
   @ApiBody({ type: PatchPostRequestDto })
   @ApiCreatedResponse({ type: Boolean })
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('upload', 10, multerTransFormOption))
+  @UseInterceptors(FilesInterceptor('upload', UPLOAD_LIMIT, multerTransFormOption))
+  @HttpCode(200)
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) postId: number,
     @Body() patchPostRequestDto: PatchPostRequestDto,
-    @UploadedFiles() files: FileDto[]
+    @UploadedFiles() files: FileDto[],
+    @Req() req
   ) {
     const contentsInfos = getPartialFilesInfo(files);
-    return await this.postService.update(id, patchPostRequestDto, contentsInfos);
+    console.log(patchPostRequestDto);
+
+    return await this.postService.update(
+      postId,
+      patchPostRequestDto,
+      contentsInfos,
+      req.user.userId
+    );
   }
 
   @Delete(':id')
@@ -127,6 +143,7 @@ export class PostController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({ type: Boolean })
+  @HttpCode(200)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postService.remove(id);
   }

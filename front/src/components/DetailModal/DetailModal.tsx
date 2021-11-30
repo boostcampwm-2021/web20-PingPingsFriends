@@ -33,20 +33,9 @@ interface DetailModalProps {
 
 const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ago, isHeart, numOfHearts, setTotalPosts, setFeeds }: DetailModalProps) => {
   const userState = useUserState();
-  const [editMode, setEditMode] = useState(false);
-  const [inputText, setInputText] = useState('');
-  const [commentState, commentDispatch] = useCommentList();
-  const [like, toggleLike] = useLike(isHeart, feedId, setTotalPosts, setFeeds);
+  const { commentState, commentDispatch, inputMode, inputModeDispatch } = useCommentList();
+  const [like, toggleLike] = useLike(isHeart, feedId);
   const { isShowing, toggle } = useModal();
-  const toggleEditMode = (text: string) => {
-    if (editMode) {
-      setEditMode(false);
-      setInputText('');
-    } else {
-      setEditMode(true);
-      setInputText(text);
-    }
-  };
 
   return (
     <DetailModalDiv>
@@ -65,9 +54,9 @@ const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ag
           </FeedAuthorDiv>
           <p className={'text'}>{text}</p>
         </FeedInfoDiv>
-        <CommentList commentState={commentState} commentDispatch={commentDispatch} toggleEditMode={toggleEditMode} feedId={feedId} />
+        <CommentList commentState={commentState} commentDispatch={commentDispatch} inputMode={inputMode} inputModeDispatch={inputModeDispatch} feedId={feedId} />
         <HeartSection like={like!} toggleLike={userState.data?.userId !== -1 ? toggleLike : () => {}} numOfHearts={numOfHearts} />
-        <CommentForm inputText={inputText} commentDispatch={commentDispatch} setInputText={setInputText} editMode={editMode} feedId={feedId} />
+        <CommentForm commentDispatch={commentDispatch} inputMode={inputMode} inputModeDispatch={inputModeDispatch} feedId={feedId} />
       </CommunicateDiv>
       <Modal isShowing={isShowing} hide={toggle}>
         <AlertDiv>먼저 로그인 해주세요!</AlertDiv>

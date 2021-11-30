@@ -5,34 +5,27 @@ import Comment from './Comment';
 import { Comments } from '@src/types/Comment';
 import { useElementRef } from '@hooks/useElementRef';
 import useScrollObserver from '@hooks/useScrollObserver';
-import { CommentAction, CommentState } from './useCommentList';
-
-const ScrollBox = styled.div`
-  ${prettyScroll()};
-  overflow-y: scroll;
-  overflow-x: hidden;
-  max-height: 300px;
-  padding-top: 5px;
-`;
+import { CommentAction, CommentState, InputModeState, InputModeAction } from './useCommentList';
 
 interface CommentListProps {
   feedId: number;
-  toggleEditMode: (text: string) => void;
   commentState: CommentState;
   commentDispatch: React.Dispatch<CommentAction>;
+  inputMode: InputModeState;
+  inputModeDispatch: React.Dispatch<InputModeAction>;
 }
 
-const CommentList = ({ feedId, toggleEditMode, commentState, commentDispatch }: CommentListProps) => {
+const CommentList = ({ feedId, commentState, commentDispatch, inputMode, inputModeDispatch }: CommentListProps) => {
   const { commentList: comments, lastComment } = commentState;
   async function getComment() {
     const response: Response = await fetch(`/api/comments/cursor/?limit=10&postId=${feedId}${lastComment !== -1 ? `&lastId=${lastComment}` : ''}`);
     const commentsData: Comments = await response.json();
 
     if (lastComment === -1) {
-      commentDispatch({ type: 'INIT_COMMENT_LIST', data: commentsData });
+      commentDispatch({ type: 'INIT_COMMENT_LIST', data: { commentList: commentsData } });
       return;
     }
-    commentDispatch({ type: 'UPDATE_COMMENT_LIST', data: commentsData });
+    commentDispatch({ type: 'UPDATE_COMMENT_LIST', data: { commentList: commentsData } });
   }
 
   useEffect(() => {
@@ -52,7 +45,7 @@ const CommentList = ({ feedId, toggleEditMode, commentState, commentDispatch }: 
     (entries: any) => {
       const target = entries[0];
       if (target.isIntersecting && comments.length) {
-        commentDispatch({ type: 'UPDATE_LAST_COMMENT', data: comments[comments.length - 1].id });
+        commentDispatch({ type: 'UPDATE_LAST_COMMENT', data: { lastComment: comments[comments.length - 1].id } });
       }
     },
     [comments]
@@ -65,21 +58,44 @@ const CommentList = ({ feedId, toggleEditMode, commentState, commentDispatch }: 
         if (idx === comments.length - 1)
           return (
             <Comment
-              toggleEditMode={toggleEditMode}
               commentId={id}
               userId={userId}
               key={id}
               nickname={user.nickname}
               comment={content}
+              inputMode={inputMode}
+              inputModeDispatch={inputModeDispatch}
+              commentDispatch={commentDispatch}
               avatar={user.content?.url}
               createdAt={createdAt}
               bottomRef={bottomRef}
             />
           );
-        return <Comment toggleEditMode={toggleEditMode} commentId={id} userId={userId} key={id} nickname={user.nickname} comment={content} avatar={user.content?.url} createdAt={createdAt} />;
+        return (
+          <Comment
+            commentId={id}
+            userId={userId}
+            key={id}
+            nickname={user.nickname}
+            comment={content}
+            inputMode={inputMode}
+            inputModeDispatch={inputModeDispatch}
+            commentDispatch={commentDispatch}
+            avatar={user.content?.url}
+            createdAt={createdAt}
+          />
+        );
       })}
     </ScrollBox>
   );
 };
 
 export default CommentList;
+
+const ScrollBox = styled.div`
+  ${prettyScroll()};
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: 300px;
+  padding-top: 5px;
+`;

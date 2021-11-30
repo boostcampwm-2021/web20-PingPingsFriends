@@ -10,8 +10,4 @@ export class CreatePostDto extends FilesUploadDto {
   @ApiProperty()
   @IsString()
   humanContent: string;
-
-  @ApiProperty()
-  @IsString()
-  animalContent: string;
 }
