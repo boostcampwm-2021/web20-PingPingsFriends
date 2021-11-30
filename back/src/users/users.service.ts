@@ -187,4 +187,18 @@ export class UsersService {
       await queryRunner.release();
     }
   }
+
+  async logout(userId: number, refreshToken: string) {
+    const user = await this.userRepository.findOne(userId, { relations: ['refreshToken'] });
+
+    if (!user)
+      throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
+
+    if (user.refreshToken !== refreshToken)
+      throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
+
+    user.refreshToken = null;
+
+    return await this.userRepository.save(user);
+  }
 }
