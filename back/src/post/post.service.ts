@@ -250,10 +250,10 @@ function translateHumanToAnimal(user: User, dto: CreatePostDto | PatchPostReques
   const soundLength = sound.length;
   const humanContentLength = dto.humanContent.length;
 
-  Array(Math.ceil(humanContentLength / soundLength))
+  Array(Math.ceil(humanContentLength / (soundLength + 2)))
     .fill(0)
     .forEach((v) => {
       contentArr.push(sound + '!');
     });
-  return contentArr.join(' ');
+  return contentArr.join(' ').slice(0, 501);
 }
