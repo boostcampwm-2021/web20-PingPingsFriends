@@ -7,6 +7,7 @@ const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
   width: ${(props) => props.size};
   height: ${(props) => props.size};
   border-radius: 50%;
+  flex-shrink: 0;
   img {
     width: 100%;
     height: 100%;
