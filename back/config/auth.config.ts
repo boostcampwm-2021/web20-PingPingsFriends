@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const ACCESS_EXPIRE_TIME = 1 * 60 * 60;
+const ACCESS_EXPIRE_TIME = 2 * 60 * 60;
 const REFRESH_EXPIRE_TIME = 24 * 60 * 60;
 
 export const jwtOption = {

@@ -42,4 +42,20 @@ export class AuthService {
     const accessToken = this.jwtService.sign({ username, sub }, jwtOption);
     return accessToken;
   }
+
+  async verfyToken(token: string) {
+    const payload = this.jwtService.decode(token);
+    if (typeof payload === 'string') {
+      return false;
+    }
+    const username = payload.username;
+    const sub = payload.sub;
+    const exp = payload.exp;
+    const user = await this.userRepository.findOne({ id: sub });
+    if (!user) throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
+    if (new Date(exp * 1000).getTime() < new Date().getTime()) {
+      throw new HttpException('Error: 인증이 만료되었습니다.', HttpStatus.UNAUTHORIZED);
+    }
+    return { username, userId: sub };
+  }
 }
