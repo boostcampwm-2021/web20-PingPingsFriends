@@ -13,6 +13,7 @@ import {
   UseGuards,
   Req,
   HttpCode,
+  Headers,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -33,13 +34,16 @@ import { GetPostResponseDto } from './dto/getPostResponse.dto';
 import { ParseOptionalIntPipe } from 'common/pipes/parse-optional-int.pipe';
 import FileDto from 'common/dto/transformFileDto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt-auth.guard';
 import { UPLOAD_LIMIT } from 'common/constants/nums';
+import { AuthService } from 'src/auth/auth.service';
 
 @ApiTags('게시물 API')
 @Controller('posts')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly authService: AuthService
+  ) {}
 
   @Post()
   @ApiOperation({
@@ -68,14 +72,19 @@ export class PostController {
   })
   @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'lastPostId', type: 'number', required: false })
-  @UseGuards(OptionalJwtAuthGuard)
   @HttpCode(200)
   async findAll(
     @Param('habitatId', ParseIntPipe) habitatId: number,
-    @Req() req,
+    @Headers() headers,
     @Query('lastPostId', ParseOptionalIntPipe) lastPostId?: number
   ) {
-    return await this.postService.findAll(habitatId, req.user, lastPostId);
+    const header = headers.authorization;
+    const token = header.split(' ')[1];
+    if (token !== 'undefined') {
+      const user = await this.authService.verfyToken(token);
+      return await this.postService.findAll(habitatId, user, lastPostId);
+    }
+    return await this.postService.findAll(habitatId, false, lastPostId);
   }
 
   @Get('users/:userId')
@@ -99,10 +108,15 @@ export class PostController {
   })
   @ApiCreatedResponse({ type: GetPostResponseDto })
   @ApiBearerAuth('access-token')
-  @UseGuards(OptionalJwtAuthGuard)
   @HttpCode(200)
-  findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
-    return this.postService.findOne(id, req.user);
+  async findOne(@Param('id', ParseIntPipe) id: number, @Headers() headers) {
+    const header = headers.authorization;
+    const token = header.split(' ')[1];
+    if (token !== 'undefined') {
+      const user = await this.authService.verfyToken(token);
+      return this.postService.findOne(id, user);
+    }
+    return this.postService.findOne(id, false);
   }
 
   @Patch(':id')

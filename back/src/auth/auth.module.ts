@@ -8,7 +8,6 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtRefreshStrategy } from './jwt-refresh.strategy';
 import { LocalStrategy } from './local.strategy';
-import { OptionalJwtStrategy } from './optional-jwt.strategy';
 
 @Module({
   imports: [
@@ -19,7 +18,7 @@ import { OptionalJwtStrategy } from './optional-jwt.strategy';
       signOptions: { expiresIn: jwtOption.expiresIn },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, OptionalJwtStrategy, JwtRefreshStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
