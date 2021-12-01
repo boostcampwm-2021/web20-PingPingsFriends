@@ -8,7 +8,6 @@ const useScrollObserver: CustomIntersectionObserverType = (callback, options) =>
   useEffect(() => {
     const observer = new IntersectionObserver(callback, options);
     if (observedElement) {
-      console.log(observedElement);
       observer.observe(observedElement);
     }
 

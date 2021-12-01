@@ -38,7 +38,6 @@ const useModal = (path = '', $elem = '#modal') => {
 
     function routeToggle() {
       const url = getURL(path);
-
       if (event === 'off') {
         history.push(url);
         return;
@@ -64,13 +63,20 @@ const useModal = (path = '', $elem = '#modal') => {
   const getURL = (link: string) => {
     const path = location.pathname;
     const queryString = location.search;
+
     const arr = path.split('/').filter((pathname: string) => pathname.length);
+    const removeCount = link.split('/').filter((v) => v.length).length;
 
     if (path.includes('modal')) {
-      return `/${queryString}`;
+      for (let i = 0; i <= removeCount; i++) {
+        arr.pop();
+      }
+      return `/${arr.join('/')}${queryString}`;
     }
     arr.push('modal');
-    return `/${arr.join('/')}/${link}/${queryString}`;
+    arr.push(link);
+
+    return `/${arr.join('/')}/${queryString}`;
   };
 
   useEffect(() => {

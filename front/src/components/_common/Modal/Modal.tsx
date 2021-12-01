@@ -31,7 +31,7 @@ const Modal = ({ children, isShowing, hide, routePath }: ModalProps) => {
   const { $portal, contentRef } = useModal();
 
   return routePath ? (
-    <Route path={routePath}>
+    <Route path={`(/.*)?${routePath}`}>
       <>
         {ReactDOM.createPortal(
           <ModalDiv className={'modal-container'} onClick={hide}>

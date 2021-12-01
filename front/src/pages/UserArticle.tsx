@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Header from '@src/components/Header/Header';
 import styled from 'styled-components';
-import { flexBox } from '@src/lib/styles/mixin';
 import { Palette } from '@src/lib/styles/Palette';
 import useHabitatInfo from '@src/hooks/useHabitatInfo';
 import { useParams } from 'react-router';
@@ -12,7 +10,7 @@ import MagicNumber from '@src/lib/styles/magic';
 import { useUserState } from '@src/contexts/UserContext';
 import useValidateUser from '@src/hooks/useValidateUser';
 
-const UserPage = () => {
+const UserArticle = () => {
   const param: { id: string } = useParams();
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const { habitatInfo } = useHabitatInfo(userInfo?.habitat?.id ?? undefined);
@@ -38,7 +36,6 @@ const UserPage = () => {
   }, [param]);
   return (
     <UserPageDiv>
-      <Header habitatInfo={habitatInfo} />
       <ContentDiv color={habitatInfo?.habitat.color}>
         <UserAbout userInfo={userInfo} />
         <UserFeed userId={userInfo?.id} />
@@ -47,15 +44,10 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default UserArticle;
 
 const UserPageDiv = styled.div`
-  ${flexBox(null, null, 'column')};
-  overflow: hidden;
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  background-color: ${Palette.BACKGROUND_GRAY};
+  height: 100vw;
 `;
 
 const ContentDiv = styled.div<{ color: string | undefined }>`
