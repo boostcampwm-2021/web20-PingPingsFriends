@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Post, Posts } from '@src/types/Post';
 import { useLocation } from 'react-router-dom';
-import { getAuthOption } from '@lib/utils/fetch';
+import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
 import { useUserState } from '@src/contexts/UserContext';
 
 const useDetailFeed = (feeds: Posts) => {
@@ -22,15 +22,18 @@ const useDetailFeed = (feeds: Posts) => {
 
     const targetFeed = feeds.find(({ post_id }) => post_id === id);
     if (targetFeed) setDetail(targetFeed);
-    else getFeed(id);
-
-    async function getFeed(id: number) {
-      const response: Response = await fetch(`/api/posts/${id}`, getAuthOption('GET', userState.data?.accessToken));
-      const detailFeed: Post = await response.json();
-      detailFeed.contents_url_array = detailFeed.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp'));
-      setDetail(detailFeed);
-      return detailFeed;
-    }
+    else
+      fetchAPI(
+        `/api/posts/${id}`,
+        async (okRes) => {
+          const detailFeed: Post = await okRes.json();
+          detailFeed.contents_url_array = detailFeed.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp'));
+          setDetail(detailFeed);
+        },
+        (failRes) => {},
+        (err) => {},
+        getAuthOption('GET', userState.data?.accessToken)
+      );
   }, [location]);
 
   return detail;

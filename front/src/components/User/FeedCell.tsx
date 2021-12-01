@@ -5,6 +5,8 @@ import useModal from '@common/Modal/useModal';
 import DetailModal from '@components/DetailModal/DetailModal';
 import { Post } from '@src/types/Post';
 import { formatDate } from '@lib/utils/time';
+import { fetchAPI, getAuthOption } from '@src/lib/utils/fetch';
+import { useUserState } from '@src/contexts/UserContext';
 
 interface FeedCellProps {
   url: string;
@@ -14,16 +16,20 @@ interface FeedCellProps {
 const FeedCell = ({ url, feedId }: FeedCellProps) => {
   const { toggle, isShowing } = useModal();
   const [feedInfo, setFeedInfo] = useState<Post | null>(null);
+  const userState = useUserState();
 
   const handleClick = async (e: React.MouseEvent) => {
-    const res: Response = await fetch(`/api/posts/${feedId}`);
-    if (res.ok) {
-      const data: Post = await res.json();
-      setFeedInfo(data);
-      toggle(e);
-    } else {
-      return;
-    }
+    fetchAPI(
+      `/api/posts/${feedId}`,
+      async (okRes) => {
+        const data: Post = await okRes.json();
+        setFeedInfo(data);
+        toggle(e);
+      },
+      (failRes) => {},
+      (err) => {},
+      getAuthOption('GET', userState.data?.accessToken)
+    );
   };
 
   return (

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { getAuthOption } from '@lib/utils/fetch';
+import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
 import { useUserState } from '@src/contexts/UserContext';
 import { Posts } from '@src/types/Post';
 
@@ -21,15 +21,15 @@ export const useLike: UseLikeType = (isHeartString, feedId) => {
   const userState = useUserState();
 
   const toggleLike = async () => {
-    if (like) {
-      await fetch(`/api/hearts/${feedId}`, getAuthOption('DELETE', userState.data?.accessToken));
-      setLike(false);
-      return;
-    }
-    await fetch(`/api/hearts/${feedId}`, getAuthOption('POST', userState.data?.accessToken));
-
-    setLike(true);
-    return;
+    await fetchAPI(
+      `/api/hearts/${feedId}`,
+      (okRes) => {
+        setLike(!like);
+      },
+      (failRes) => {},
+      (err) => {},
+      getAuthOption(like ? 'DELETE' : 'POST', userState.data?.accessToken)
+    );
   };
 
   return [like, toggleLike];

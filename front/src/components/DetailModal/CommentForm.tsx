@@ -3,8 +3,9 @@ import { Palette } from '@src/lib/styles/Palette';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
-import { useUserState } from '@src/contexts/UserContext';
+import { useUserState, useUserDispatch } from '@src/contexts/UserContext';
 import { CommentAction, InputModeState, InputModeAction } from './useCommentList';
+import { useHistory } from 'react-router';
 
 interface CommentFormProps {
   feedId: number;
@@ -17,6 +18,8 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
   const [isActive, setActive] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const userState = useUserState();
+  const userDispatch = useUserDispatch();
+  const history = useHistory();
   const handleInputChange = () => {
     const $input = inputRef.current;
     if ($input) inputModeDispatch({ type: 'SET_INPUT_TEXT', data: { inputText: $input.value ?? '' } });
@@ -47,12 +50,16 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
         };
         fetchAPI(
           `/api/comments`,
-          (res) => {
+          (okResponse) => {
             commentDispatch({ type: 'REFRESH' });
             inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
           },
-          (res) => {
-            console.log(res.status);
+          (failResponse) => {
+            if (failResponse.status === 419) {
+              userDispatch({ type: 'LOGOUT_USER' });
+              history.push('/modal/login/');
+            }
+            console.log(failResponse);
           },
           (err) => {
             console.log(err);

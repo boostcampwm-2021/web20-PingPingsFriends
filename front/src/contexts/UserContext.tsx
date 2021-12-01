@@ -15,7 +15,7 @@ export interface UserState {
   error: any | null;
 }
 interface Action {
-  type: 'GET_USER' | 'GET_USER_SUCCESS' | 'GET_USER_ERROR' | 'LOGOUT_USER';
+  type: 'GET_USER' | 'GET_USER_SUCCESS' | 'GET_USER_ERROR' | 'LOGOUT_USER' | 'SET_ACCESSTOKEN';
   data?: User;
   error?: any;
 }
@@ -29,6 +29,9 @@ export const initialState: UserState = {
     habitatId: DEFAULT_HABITAT,
     speciesId: 2,
     username: 'pingping',
+    get accessToken() {
+      return localStorage.getItem('access_token') ?? undefined;
+    },
   },
   error: null,
 };
@@ -42,7 +45,12 @@ const success = (data: User): UserState => {
   localStorage.setItem('access_token', data.accessToken!);
   return {
     loading: false,
-    data,
+    data: {
+      ...data,
+      get accessToken() {
+        return localStorage.getItem('access_token') ?? undefined;
+      },
+    },
     error: null,
   };
 };
@@ -60,6 +68,7 @@ const userReducer = (state: UserState, action: Action): UserState => {
   switch (action.type) {
     case 'GET_USER':
       return loadingState;
+    case 'SET_ACCESSTOKEN':
     case 'GET_USER_SUCCESS':
       return success(action.data as User);
     case 'GET_USER_ERROR':
