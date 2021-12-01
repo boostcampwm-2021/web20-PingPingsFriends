@@ -18,11 +18,9 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
   const [isActive, setActive] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const userState = useUserState();
-  const userDispatch = useUserDispatch();
-  const history = useHistory();
   const handleInputChange = () => {
     const $input = inputRef.current;
-    if ($input) inputModeDispatch({ type: 'SET_INPUT_TEXT', data: { inputText: $input.value ?? '' } });
+    if ($input) inputModeDispatch({ type: 'SET_INPUT_TEXT', data: { inputText: $input.value.substring(0, 500) ?? '' } });
   };
 
   useEffect(() => {
