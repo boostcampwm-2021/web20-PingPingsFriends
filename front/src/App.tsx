@@ -15,9 +15,11 @@ function App() {
         <Route path="/register">
           <RegisterPage />
         </Route>
-        <UserProvider>
-          <MainPage />
-        </UserProvider>
+        <Route exact path={['/user/:id/(modal/.*)?', '/(modal/.*)?']}>
+          <UserProvider>
+            <MainPage />
+          </UserProvider>
+        </Route>
         <Route>
           <ErrorPage />
         </Route>
