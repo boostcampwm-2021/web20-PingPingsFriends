@@ -23,6 +23,7 @@ const FeedCell = ({ url, feedId }: FeedCellProps) => {
       `/api/posts/${feedId}`,
       async (okRes) => {
         const data: Post = await okRes.json();
+        data.contents_url_array = data.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp'));
         setFeedInfo(data);
         toggle(e);
       },
@@ -40,7 +41,7 @@ const FeedCell = ({ url, feedId }: FeedCellProps) => {
           <DetailModal
             feedId={feedInfo.post_id}
             ago={formatDate(feedInfo.created_at)}
-            imageURLs={feedInfo.post_contents_urls.split(',')}
+            imageURLs={feedInfo.contents_url_array}
             nickname={feedInfo.nickname}
             numOfHearts={feedInfo.numOfHearts}
             text={feedInfo.human_content}
