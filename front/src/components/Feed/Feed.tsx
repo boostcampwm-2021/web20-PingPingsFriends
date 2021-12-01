@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as VertBtnSvg } from '@assets/icons/more_vert_btn.svg';
 import { ReactComponent as CommentBtnSvg } from '@assets/icons/comment_btn.svg';
@@ -20,7 +20,6 @@ import { Palette } from '@src/lib/styles/Palette';
 import { useHistory, useLocation } from 'react-router';
 import queryString from '@src/lib/utils/queryString';
 import AlertDiv from '@common/Alert/AlertDiv';
-import { useScrollDispatch } from '@src/contexts/ScrollContext';
 
 export interface FeedProps {
   feedId: number;
@@ -52,11 +51,6 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
   const [isTranslate, setTranslate] = useState(false);
   const history = useHistory();
   const location = useLocation();
-  const scrollDispatch = useScrollDispatch();
-
-  useEffect(() => {
-    scrollDispatch({ type: 'UPDATE_FEED', nextLike: { feedId, like: like ? 1 : 0 } });
-  }, [like]);
 
   return (
     <FeedContainerDiv>
@@ -98,7 +92,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
   );
 };
 
-export default Feed;
+export default React.memo(Feed);
 
 const FeedContainerDiv = styled.div`
   background-color: white;

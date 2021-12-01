@@ -57,7 +57,7 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
   });
   const { feeds, offset, height } = useScrollState();
 
-  const detail = useDetailFeed(feeds);
+  const detail = useDetailFeed();
 
   return (
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>
