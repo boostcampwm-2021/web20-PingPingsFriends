@@ -23,15 +23,15 @@ interface MoreInfoProps {
 }
 
 const validations: Validation<RegisterState>[] = [
-  { value: 'nickname', check: (values) => values['nickname'].length <= 4, message: '아이디는 4자를 넘어야합니다.' },
-  { value: 'nickname', check: (values) => values['nickname'].length >= 19, message: '아이디는 20자보다 적어야합니다.' },
+  { value: 'nickname', check: (values) => values['nickname'].length === 0, message: '닉네임은 한 글자 이상 입력해주세요' },
+  { value: 'nickname', check: (values) => values['nickname'].length >= 19, message: '닉네임은 20자보다 적어야합니다.' },
   { value: 'habitatId', check: (values) => values['habitatId'] === null && !values['habitatInfo'], message: '서식지를 선택해야합니다.' },
   { value: 'speciesId', check: (values) => values['speciesId'] === null && !values['speciesInfo'], message: '동물을 선택해야합니다.' },
 ];
 
 const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
   const speciesOptions = useGetFetch<SpeciesList>('/api/species/cursor');
-  const habitatOptions = useGetFetch<HabitatList>('/api/habitat?skip=1&take=10');
+  const habitatOptions = useGetFetch<HabitatList>('/api/habitat?skip=1&take=10000');
   const { toggle: habitatToggle, isShowing: habitatIsShowing } = useModal();
   const { toggle: speciesToggle, isShowing: speciesIsShowing } = useModal();
 
