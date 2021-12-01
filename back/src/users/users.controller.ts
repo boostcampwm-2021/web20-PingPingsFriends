@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -129,6 +130,23 @@ export class UsersController {
     const user = await this.usersService.createRefreshToken(req.user.id, refreshToken);
     res.cookie('refreshToken', refreshToken);
     return { accessToken, user };
+  }
+
+  @Delete('logout')
+  @ApiOperation({
+    summary: '유저 로그아웃',
+    description: '유저가 로그아웃하는 api입니다.',
+  })
+  @ApiCookieAuth()
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
+    console.log(req.cookies);
+    const refreshToken = req.cookies['refreshToken'];
+    await this.usersService.logout(req.user.userId, refreshToken);
+    res.clearCookie('refreshToken');
+    return { result: 'true' };
   }
 
   @Patch('contents')
