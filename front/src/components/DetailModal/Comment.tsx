@@ -102,12 +102,16 @@ const CommentDiv = styled.div<{ isEdited: boolean }>`
 `;
 
 const TextDiv = styled.div`
-  width: 100%;
+  width: calc(100% - 30px);
   position: relative;
 
   span {
     font-size: 12px;
     font-weight: bold;
+  }
+  p {
+    width: 100%;
+    word-break: break-all;
   }
 `;
 
