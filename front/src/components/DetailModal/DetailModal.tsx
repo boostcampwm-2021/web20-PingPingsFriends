@@ -31,7 +31,7 @@ interface DetailModalProps {
 const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ago, isHeart, numOfHearts }: DetailModalProps) => {
   const userState = useUserState();
   const { commentState, commentDispatch, inputMode, inputModeDispatch } = useCommentList();
-  const [like, toggleLike] = useLike(isHeart, feedId);
+  const [like, toggleLike, syncNumberOfHeart] = useLike(isHeart, feedId);
   const { isShowing, toggle } = useModal();
   return (
     <DetailModalDiv>
@@ -51,7 +51,7 @@ const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ag
           <p className={'text'}>{text}</p>
         </FeedInfoDiv>
         <CommentList commentState={commentState} commentDispatch={commentDispatch} inputMode={inputMode} inputModeDispatch={inputModeDispatch} feedId={feedId} />
-        <HeartSection like={like!} toggleLike={userState.data?.userId !== -1 ? toggleLike : () => {}} numOfHearts={numOfHearts} />
+        <HeartSection like={like!} toggleLike={userState.data?.userId !== -1 ? toggleLike : () => {}} numOfHearts={numOfHearts} syncNumberOfHeart={syncNumberOfHeart} />
         <CommentForm commentDispatch={commentDispatch} inputMode={inputMode} inputModeDispatch={inputModeDispatch} feedId={feedId} />
       </CommunicateDiv>
       <Modal isShowing={isShowing} hide={toggle}>
