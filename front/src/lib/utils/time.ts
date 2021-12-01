@@ -23,7 +23,7 @@ export const formatDate = (sqlDate: string) => {
   //todo: 이전에 sqlDate를 변환해주는 함수 구현한 걸 그대로 가져와서 타입 정의가 필요함
   // 가장 큰 단위의 날짜를 반환해줌 ex)1년 전, 5개월 전, 3주 전, 30초 전...
   const pastDate = pipe(divisionYear, divisionMonth, divisionWeek, divisionDay, divisionHour, divisionMin)(second);
-  return typeof pastDate === 'number' ? `${pastDate}초 전` : `${pastDate[1]} ${pastDate[0]} 전`;
+  return typeof pastDate === 'number' ? `방금 전` : `${pastDate[1]} ${pastDate[0]} 전`;
 };
 
 const divisionYear = (second: any): any => {
