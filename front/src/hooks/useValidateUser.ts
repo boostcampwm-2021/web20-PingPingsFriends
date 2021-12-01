@@ -30,23 +30,6 @@ const useValidateUser = (userState: UserState) => {
       },
       getAuthOption('GET', accessToken)
     );
-    // const validFetch = async () => {
-    //   const res: Response = await fetch(`/api/users/info`, getAuthOption('GET', accessToken));
-    //   if (res.ok) {
-    //     const data = await res.json();
-    //     const newState: User = {
-    //       userId: data.id,
-    //       username: data.username,
-    //       nickname: data.nickname,
-    //       habitatId: data.habitatId,
-    //       speciesId: data.speciesId,
-    //       url: data.content?.url,
-    //       accessToken: accessToken!,
-    //     };
-    //     userDispatch({ type: 'GET_USER_SUCCESS', data: newState });
-    //   } else return;
-    // };
-    // validFetch();
   }, [userState]);
 };
 
