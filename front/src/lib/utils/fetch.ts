@@ -54,8 +54,8 @@ export const fetchAPI = async (fetchURL: string, okCallback: (res: Response) => 
           (failResponse) => {
             if (failResponse.status === 419) {
               localStorage.removeItem('access_token');
+              window.location.assign('/modal/login');
             }
-            console.log('adfadsfad', failResponse);
             failCallback(failResponse);
           },
           (err) => {
@@ -63,8 +63,7 @@ export const fetchAPI = async (fetchURL: string, okCallback: (res: Response) => 
             errorCallback(err);
           }
         );
-      }
-      failCallback(response);
+      } else failCallback(response);
     }
   } catch (err) {
     errorCallback(err);
