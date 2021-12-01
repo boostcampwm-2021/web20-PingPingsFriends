@@ -10,7 +10,8 @@ import { flexBox } from '@lib/styles/mixin';
 import { ReactComponent as HamburgerMenuSvg } from '@assets/icons/hamburger_menu.svg';
 import MagicNumber from '@src/lib/styles/magic';
 import { useHistory } from 'react-router-dom';
-import { useUserState, useUserDispatch, initialState } from '@src/contexts/UserContext';
+import { useUserState, useUserDispatch } from '@src/contexts/UserContext';
+import { fetchAPI, getAuthOption } from '@lib/utils/fetch';
 
 const UserInfoBlock = styled.div`
   ${flexBox('center', 'center')}
@@ -32,13 +33,24 @@ const UserInfo = () => {
     { text: '로그인', handler: toggle },
     { text: '회원가입', handler: moveRegisterPage },
   ]);
-
   const loginedDropboxMenu = makeDropBoxMenu([
     {
       text: '로그아웃',
       handler: () => {
-        userDispatch({ type: 'LOGOUT_USER' });
-        history.push('/');
+        fetchAPI(
+          `/api/users/logout`,
+          () => {
+            userDispatch({ type: 'LOGOUT_USER' });
+            history.push('/');
+          },
+          (failResponse) => {
+            console.log(failResponse);
+          },
+          (err) => {
+            console.log(err);
+          },
+          getAuthOption('DELETE', userState.data?.accessToken)
+        );
       },
     },
   ]);

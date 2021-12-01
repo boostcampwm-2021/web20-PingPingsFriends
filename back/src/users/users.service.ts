@@ -189,7 +189,7 @@ export class UsersService {
   }
 
   async logout(userId: number, refreshToken: string) {
-    const user = await this.userRepository.findOne(userId, { relations: ['refreshToken'] });
+    const user = await this.userRepository.findOne(userId);
 
     if (!user)
       throw new HttpException('Error: 존재하지 않는 사용자입니다.', HttpStatus.BAD_REQUEST);
