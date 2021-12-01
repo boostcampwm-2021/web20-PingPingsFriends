@@ -11,11 +11,11 @@ import { RegisterState, useRegisterDispatch, useRegisterState } from '@src/conte
 import { useHistory } from 'react-router-dom';
 import Modal from '@common/Modal/Modal';
 import AlertDiv from '@common/Alert/AlertDiv';
-import { ModalType } from '@src/types/Modal';
+import useFileInputAlert from '@hooks/useFileInputAlert';
 
 const ProfileImage = () => {
   const [profile, setProfile] = useState<File | null>(null);
-  const [loading, setLoading] = useState<ModalType>(null);
+  const { loading, ref, checkIt, setLoading, handleClick: handleLabelClick } = useFileInputAlert();
   const imageURL = useReadFileURL({ file: profile });
   const flag = useFlag(imageURL);
   const registerState = useRegisterState();
@@ -27,7 +27,7 @@ const ProfileImage = () => {
       const target = e.target as HTMLInputElement;
       const file = target.files![0];
       setProfile(file);
-      setLoading(null);
+      checkIt();
       return;
     }
   };
@@ -84,10 +84,6 @@ const ProfileImage = () => {
     }
   };
 
-  const handleLabelClick = () => {
-    setLoading('loading');
-  };
-
   return (
     <ProfileImageBlock>
       <Header>
@@ -100,7 +96,7 @@ const ProfileImage = () => {
             <PhotoCameraSvg />
           </SvgContainer>
         </FileInsertLabel>
-        <FileInput id="profile" type="file" accept="image/*" name="contents" form="write" onChange={handleChange} />
+        <FileInput id="profile" type="file" accept="image/*" name="contents" form="write" onChange={handleChange} ref={ref} />
       </Form>
       자신을 잘 나타내는 이미지를 골라주세요
       <ButtonContainer>

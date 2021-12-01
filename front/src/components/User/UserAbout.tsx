@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { User } from '@src/types/User';
 import styled from 'styled-components';
 import { flexBox } from '@src/lib/styles/mixin';
@@ -9,9 +9,9 @@ import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
 import { useUserState } from '@src/contexts/UserContext';
 import Modal from '@common/Modal/Modal';
 import AlertDiv from '@common/Alert/AlertDiv';
-import { ModalType } from '@src/types/Modal';
 import Button from '@components/Button/Button';
 import { useHistory } from 'react-router';
+import useFileInputAlert from '@hooks/useFileInputAlert';
 
 interface UserAboutProps {
   userInfo: User | null;
@@ -19,9 +19,8 @@ interface UserAboutProps {
 
 const UserAbout = ({ userInfo }: UserAboutProps) => {
   const { data: userData } = useUserState();
-  const [loading, setLoading] = useState<ModalType>(null);
   const history = useHistory();
-
+  const { loading, ref, checkIt, setLoading, handleClick } = useFileInputAlert();
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     const file = target.files![0];
@@ -31,24 +30,20 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
     fetchAPI(
       '/api/users/contents',
       (okRes) => {
-        setLoading('success');
+        checkIt('success');
 
         setTimeout(() => {
           history.go(0);
         }, 1500);
       },
       (failRes) => {
-        setLoading('fail');
+        checkIt('fail');
       },
       (err) => {
-        setLoading('fail');
+        checkIt('fail');
       },
       getAuthOption('PATCH', userData!.accessToken, data)
     );
-  };
-
-  const handleClick = () => {
-    setLoading('loading');
   };
 
   return (
@@ -63,7 +58,7 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
               <PhotoCameraSvg />
             </SvgContainer>
           </FileInsertLabel>
-          <FileInput id="profile" type="file" accept="image/*" name="contents" form="write" onChange={handleChange} />
+          <FileInput id="profile" type="file" accept="image/*" name="contents" form="write" onChange={handleChange} ref={ref} />
         </Form>
       ) : (
         <AvatarDiv>
@@ -157,7 +152,12 @@ const SvgContainer = styled.div`
 `;
 
 const FileInput = styled.input`
-  display: none;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  height: 0;
+  width: 0;
+  left: 0;
 `;
 
 const Form = styled.form`
