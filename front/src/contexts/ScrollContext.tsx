@@ -1,6 +1,6 @@
 import { Posts, PostsResponse } from '@src/types/Post';
 import React, { createContext, useContext, useReducer } from 'react';
-import { getAuthOption } from '@lib/utils/fetch';
+import { fetchAPI, getAuthOption } from '@lib/utils/fetch';
 
 const FIX_FEED = 5;
 const ITEM_HEIGHT = 650;
@@ -37,13 +37,28 @@ interface IFetchPost {
 }
 export const fetchPost: IFetchPost = async (habitat, lastFeedId, accessToken) => {
   try {
-    const response = await fetch(`/api/posts/habitats/${habitat}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`, getAuthOption('GET', accessToken));
-    const data: PostsResponse = await response.json();
-    const postsData: Posts = data.posts.map((post) => ({
-      ...post,
-      contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')),
-    }));
-    return { totalFeeds: postsData };
+    const posts = await new Promise(async (resolve, reject) => {
+      fetchAPI(
+        `/api/posts/habitats/${habitat}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`,
+        async (okResponse) => {
+          const data: PostsResponse = await okResponse.json();
+          const postsData: Posts = data.posts.map((post) => ({
+            ...post,
+            contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')),
+          }));
+          resolve(postsData);
+        },
+        (failResponse) => {
+          reject(failResponse);
+        },
+        (errResponse) => {
+          reject(errResponse);
+        },
+        getAuthOption('GET', accessToken)
+      );
+    });
+
+    return { totalFeeds: posts };
   } catch (e: any) {
     console.log(e);
     return e;
