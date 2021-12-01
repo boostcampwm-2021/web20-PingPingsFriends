@@ -89,7 +89,6 @@ const EmptyStyleDiv = styled.div<{ color: string | undefined }>`
   right: 0;
   background-color: ${(props) => (props.color !== undefined ? props.color : Palette.PINK)};
   height: calc(100% - ${MagicNumber.HEADER_HEIGHT});
-  top: ${MagicNumber.HEADER_HEIGHT};
   position: absolute;
-  overflow-y: scroll;
+  overflow-y: hidden;
 `;
