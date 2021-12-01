@@ -56,7 +56,6 @@ const Input = ({ type = 'text', placeholder, value, handleChange, name, errorMes
   const [error, setError] = useState('');
   const handleBlur = () => {
     setError(errorMessage!);
-    console.log('s');
     if (!errorMessage && check) {
       check(value);
     }
