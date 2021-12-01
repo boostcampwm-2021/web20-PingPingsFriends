@@ -55,10 +55,6 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
             inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
           },
           (failResponse) => {
-            if (failResponse.status === 419) {
-              userDispatch({ type: 'LOGOUT_USER' });
-              history.push('/modal/login/');
-            }
             console.log(failResponse);
           },
           (err) => {
