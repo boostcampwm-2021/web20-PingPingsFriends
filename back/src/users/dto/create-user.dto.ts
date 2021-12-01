@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumberString, IsOptional } from 'class-validator';
 
 export class CreateUserDto {
   username: string;
@@ -8,10 +8,11 @@ export class CreateUserDto {
   nickname: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumberString()
   habitatId?: number;
 
   @IsOptional()
+  @IsNumberString()
   speciesId?: number;
 
   @IsOptional()
