@@ -11,9 +11,8 @@ const databaseConfig: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  // autoLoadEntities: true,
   synchronize: false,
-  logging: true,
+  logging: process.env.NODE_ENV === 'db_dev',
   timezone: '+00:00',
 };
 
