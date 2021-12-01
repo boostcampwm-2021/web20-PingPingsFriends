@@ -15,14 +15,16 @@ export class HeartsService {
     const heart = new Heart();
     heart.postId = postId;
     heart.userId = userId;
-    return this.heartRepository.createLiked(heart);
+    const result = await this.heartRepository.createLiked(heart);
+    return this.heartRepository.countPostLiked(postId);
   }
 
   async deleteHeart(postId: number, userId: number) {
     const heart = new Heart();
     heart.postId = postId;
     heart.userId = userId;
-    return this.heartRepository.deleteLiked(heart);
+    const result = await this.heartRepository.deleteLiked(heart);
+    return this.heartRepository.countPostLiked(postId);
   }
 
   async getHeartCount(postId: number) {
