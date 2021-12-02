@@ -8,6 +8,7 @@ import { useUserState } from '@src/contexts/UserContext';
 import useValidateUser from '@hooks/useValidateUser';
 import useSideNavi from '@hooks/useSideNavi';
 import useHabitatInfo from '@hooks/useHabitatInfo';
+import { ScrollProvider } from '@src/contexts/ScrollContext';
 
 const MainPageDiv = styled.div`
   overflow: hidden;
@@ -26,14 +27,15 @@ const MainPage = () => {
   return (
     <MainPageDiv>
       <Header habitatInfo={habitatInfo} />
+      <ScrollProvider>
+        <Route exact path="/user/:id/(modal/.*)?">
+          <UserArticle />
+        </Route>
 
-      <Route exact path="/user/:id/(modal/.*)?">
-        <UserArticle />
-      </Route>
-
-      <Route exact path="/(modal/.*)?">
-        <MainArticle getCurHabitat={getCurHabitat} handleNextHabitat={handleNextHabitat} handlePrevHabitat={handlePrevHabitat} error={error} habitatInfo={habitatInfo} />
-      </Route>
+        <Route exact path="/(modal/.*)?">
+          <MainArticle getCurHabitat={getCurHabitat} handleNextHabitat={handleNextHabitat} handlePrevHabitat={handlePrevHabitat} error={error} habitatInfo={habitatInfo} />
+        </Route>
+      </ScrollProvider>
     </MainPageDiv>
   );
 };

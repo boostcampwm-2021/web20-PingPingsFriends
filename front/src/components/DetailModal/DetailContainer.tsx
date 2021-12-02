@@ -3,6 +3,7 @@ import { Post } from '@src/types/Post';
 import { formatDate } from '@lib/utils/time';
 import { ToggleHandler } from '@common/Modal/useModal';
 import React from 'react';
+import { useScrollDispatch } from '@src/contexts/ScrollContext';
 
 interface DetailContainerProps {
   detailFeed: Post;

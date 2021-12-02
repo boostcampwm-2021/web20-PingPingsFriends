@@ -122,7 +122,7 @@ export const ScrollProvider = ({ children }: { children: React.ReactNode }) => {
 export const useScrollState = () => {
   const state = useContext(ScrollStateContext);
   if (!state) {
-    throw new Error('user state context error');
+    throw new Error('scroll state context error');
   }
   return state;
 };
@@ -130,7 +130,7 @@ export const useScrollState = () => {
 export const useScrollDispatch = () => {
   const dispatch = useContext(ScrollDispatchContext);
   if (!dispatch) {
-    throw new Error('user dispatch context error');
+    throw new Error('scroll dispatch context error');
   }
   return dispatch;
 };
