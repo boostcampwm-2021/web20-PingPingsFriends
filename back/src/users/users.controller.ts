@@ -129,7 +129,7 @@ export class UsersController {
   async login(@Req() req, @Res({ passthrough: true }) res: Response) {
     const { accessToken, refreshToken } = await this.authService.login(req.user);
     const user = await this.usersService.createRefreshToken(req.user.id, refreshToken);
-    res.cookie('refreshToken', refreshToken);
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict', path: '/api/' });
     return { accessToken, user };
   }
 
