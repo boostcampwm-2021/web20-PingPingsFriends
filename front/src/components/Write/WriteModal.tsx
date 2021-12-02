@@ -111,7 +111,7 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
                   {contents.length}/{MAX_CONTENTS}
                 </p>
               </FileInsertLabel>
-              <FileInput ref={fileInputRef} onChange={handleFileInputChange} id="input-contents" type="file" accept="image/*, video/*" name="contents" form="write" multiple />
+              <FileInput ref={fileInputRef} onChange={handleFileInputChange} id="input-contents" type="file" accept=".jpg, .png, .jpeg" name="contents" form="write" multiple />
               {contents.length ? (
                 <SwipeBox width="80%" height="100%" gap="10px">
                   <>

@@ -13,7 +13,7 @@ import useValidateUser from '@src/hooks/useValidateUser';
 const UserArticle = () => {
   const param: { id: string } = useParams();
   const [userInfo, setUserInfo] = useState<User | null>(null);
-  const { habitatInfo } = useHabitatInfo(userInfo?.habitat?.id ?? undefined);
+  const { habitatInfo } = useHabitatInfo(userInfo?.habitat?.id);
   const userState = useUserState();
   useValidateUser(userState);
 
