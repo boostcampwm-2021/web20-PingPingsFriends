@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const ACCESS_EXPIRE_TIME = 2 * 60 * 60;
-const REFRESH_EXPIRE_TIME = 24 * 60 * 60;
+const REFRESH_EXPIRE_TIME = 2 * 7 * 24 * 60 * 60;
 
 export const jwtOption = {
   secret: process.env.AUTH_ACCESS_SECRET_KEY,
