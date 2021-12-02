@@ -67,7 +67,7 @@ const useSideNavi = (userHabitatId: number) => {
       else {
         initRandomList(curHabitatId);
       }
-    } else {
+    } else if (!location.pathname.includes('user')) {
       initRandomList(userHabitatId);
       history.push(`${location.pathname}?habitat=${userHabitatId}`);
     }
