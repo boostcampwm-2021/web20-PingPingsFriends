@@ -19,6 +19,7 @@ import { Palette } from '@src/lib/styles/Palette';
 import { useHistory, useLocation } from 'react-router';
 import queryString from '@src/lib/utils/queryString';
 import AlertDiv from '@common/Alert/AlertDiv';
+import WriteModal from '@components/Write/WriteModal';
 
 export interface FeedProps {
   feedId: number;
@@ -32,12 +33,13 @@ export interface FeedProps {
   numOfComments: number;
   is_heart: 0 | 1;
   avatarImage: string | null;
+  contentIds: string;
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, userId, nickname, imageURLs, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
+const Feed = ({ contentIds, feedId, userId, nickname, imageURLs, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
-  const { toggle: toggleEditModal } = useModal();
+  const { toggle: toggleEditModal, isShowing: isEditShowing } = useModal();
   const { isShowing: isHeartErrorShowing, toggle: toggleErrorModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
@@ -78,6 +80,9 @@ const Feed = ({ feedId, userId, nickname, imageURLs, humanText, animalText, lazy
       <FeedTextDiv>{isTranslate ? humanText : animalText}</FeedTextDiv>
       <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
         <DeleteModal hide={toggleDeleteModal} feedId={feedId} />
+      </Modal>
+      <Modal isShowing={isEditShowing} hide={toggleEditModal}>
+        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, contentIds: contentIds.split(',').map((str) => parseInt(str)), feedId: feedId, text: humanText }} />
       </Modal>
       <Modal isShowing={isHeartErrorShowing} hide={toggleErrorModal}>
         <AlertDiv>먼저 로그인 해주세요!</AlertDiv>

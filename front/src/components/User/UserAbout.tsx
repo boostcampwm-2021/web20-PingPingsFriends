@@ -84,8 +84,10 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
       )}
       {loading === 'fail' && (
         <Modal isShowing={true}>
-          <AlertDiv>다시 시도해주세요.</AlertDiv>
-          <Button borderColor={'black'} onClick={() => setLoading(null)} children={'확인'} />
+          <AlertDiv>
+            다시 시도해주세요.
+            <Button borderColor={'black'} onClick={() => setLoading(null)} children={'확인'} />
+          </AlertDiv>
         </Modal>
       )}
       {loading === 'success' && (

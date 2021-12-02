@@ -62,14 +62,11 @@ const useSideNavi = (userHabitatId: number) => {
       if (curHabitatId === getCurHabitat()) {
         if (historyState.habitatList.length) return;
         initRandomList(curHabitatId);
-      } else if (curHabitatId === getCurHabitat(1)) historyDispatch({ type: 'GO_NEXT_HABITAT', data: [] });
-      else if (curHabitatId === getCurHabitat(-1)) historyDispatch({ type: 'GO_PREV_HABITAT', data: [] });
-      else {
+      } else {
         initRandomList(curHabitatId);
       }
-    } else {
-      initRandomList(userHabitatId);
-      history.push(`${location.pathname}?habitat=${userHabitatId}`);
+    } else if (!location.pathname.includes('user')) {
+      history.replace(`${location.pathname}?habitat=${userHabitatId}`);
     }
   }, [location]);
 
@@ -87,11 +84,13 @@ const useSideNavi = (userHabitatId: number) => {
   const handleNextHabitat = () => {
     if (historyState.curIndex + 1 === historyState.habitatList.length) return;
     history.push(`/?habitat=${getCurHabitat(1)}`);
+    historyDispatch({ type: 'GO_NEXT_HABITAT', data: [] });
   };
 
   const handlePrevHabitat = () => {
     if (historyState.curIndex - 1 === 0) return;
     history.push(`/?habitat=${getCurHabitat(-1)}`);
+    historyDispatch({ type: 'GO_PREV_HABITAT', data: [] });
   };
 
   return {
