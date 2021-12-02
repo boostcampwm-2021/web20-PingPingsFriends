@@ -1,35 +1,9 @@
-import FileDto from 'common/dto/transformFileDto';
-import { CreateContentDto } from 'src/contents/dto/create-content.dto';
-import { Content } from 'src/contents/entities/content.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
+import { getPartialFileInfo } from '../../utils/s3.util';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  async saveUser(createUserDto: CreateUserDto, contentInfo?: CreateContentDto) {
-    const user = new User();
-
-    user.username = createUserDto.username;
-    user.nickname = createUserDto.nickname;
-    user.password = createUserDto.password;
-    user.habitatId = createUserDto.habitatId;
-    user.speciesId = createUserDto.speciesId;
-
-    if (contentInfo) {
-      const content = new Content();
-      content.url = contentInfo.url;
-      content.mimeType = contentInfo.mimeType;
-      user.content = content;
-    }
-
-    try {
-      return (await this.save(user)).id;
-    } catch (err) {
-      return false;
-    }
-  }
-
   async selectUserInfo(id: number) {
     return await this.query(
       `SELECT u.user_id as userId, u.nickname as nickName, c.url FROM user u
@@ -37,16 +11,5 @@ export class UserRepository extends Repository<User> {
     WHERE u.user_id = ?;`,
       [id]
     );
-  }
-
-  async updateImage(image: FileDto, user: any) {
-    const originalUser = await this.findOne(user.id, { relations: ['content'] });
-    if (!originalUser) return false;
-
-    const content = new Content();
-    content.url = image.location;
-    content.mimeType = image.mimetype;
-    originalUser.content = content;
-    return await this.save(originalUser);
   }
 }

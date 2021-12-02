@@ -2,10 +2,11 @@ import FileDto from 'common/dto/transformFileDto';
 import { CreateContentDto } from 'src/contents/dto/create-content.dto';
 
 export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
-  const contentsInfos = files.map((v: FileDto, i: number) => {
+  const contentsInfos = files.map((file: FileDto, i: number) => {
+    const originFile = file.transforms.find((v) => v.id === 'origin');
     return {
-      url: v.transforms[0].location,
-      mimeType: v.mimetype,
+      url: originFile.location,
+      mimeType: 'image/webp',
     };
   });
   return contentsInfos;
@@ -13,9 +14,10 @@ export const getPartialFilesInfo = (files: Express.Multer.File[]) => {
 
 export const getPartialFileInfo = (file?: FileDto): CreateContentDto | undefined => {
   if (!file) return undefined;
+  const originFile = file.transforms.find((v) => v.id === 'origin');
   const contentInfo = {
-    url: file.transforms[0].location,
-    mimeType: file.mimetype,
+    url: originFile.location,
+    mimeType: 'image/webp',
   };
   return contentInfo;
 };

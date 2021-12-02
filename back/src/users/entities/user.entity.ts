@@ -46,12 +46,15 @@ export class User {
   @Column({ name: 'contents_id', nullable: true })
   contentsId: number;
 
+  @Column({ name: 'refresh_token', nullable: true, length: 200 })
+  refreshToken: string;
+
   @ApiProperty({ type: () => Content })
-  @OneToOne(() => Content, (content) => content.user, { cascade: ['insert'] })
+  @OneToOne(() => Content, (content) => content.user, { cascade: ['insert'], onDelete: 'SET NULL' })
   @JoinColumn({ name: 'contents_id', referencedColumnName: 'id' })
   content: Content;
 
-  @ManyToOne(() => Species, (species) => species.users)
+  @ManyToOne(() => Species, (species) => species.users, { cascade: ['insert'] })
   @JoinColumn({ name: 'species_id', referencedColumnName: 'id' })
   species: Species;
 
@@ -75,7 +78,6 @@ export class User {
   async hashPassword() {
     try {
       this.password = await bcrypt.hash(this.password, 10);
-      console.log(this.password);
     } catch (err) {
       throw new InternalServerErrorException();
     }

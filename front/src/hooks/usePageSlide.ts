@@ -1,16 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { InfoData, UserData } from '@components/Register/Register';
-import Config from '@lib/constants/config';
 
-enum TEXT {
-  NEXT = '다음',
-  BACK = '뒤로 가기',
-  REGISTER = '가입',
-}
 type SlideDirection = 'right' | 'left' | '';
 
-const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: UserData, infoData: InfoData) => {
+const usePageSlide = () => {
   const history = useHistory();
   const [direction, setDirection] = useState<SlideDirection>('');
 
@@ -18,11 +11,11 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: Use
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
 
-    if (target.innerHTML === TEXT.NEXT && accountFlag) {
+    if (target.classList.contains('next-button') && target.classList.contains('active')) {
       setDirection('right');
       return;
     }
-    if (target.innerHTML === TEXT.BACK) {
+    if (target.classList.contains('back-button')) {
       history.push('/');
     }
   };
@@ -30,38 +23,13 @@ const usePageSlide = (accountFlag: boolean, moreInfoFlag: boolean, userData: Use
   const handleMoreInfoClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
-    if (target.innerHTML === TEXT.BACK) {
+    if (target.classList.contains('back-button')) {
       setDirection('left');
       return;
     }
 
-    if (target.innerHTML === TEXT.REGISTER && moreInfoFlag) {
-      const body: BodyInit = JSON.stringify({
-        username: userData.username,
-        password: userData.password,
-        nickname: infoData.nickname,
-        habitatId: 1,
-        speciesId: 1,
-      });
-
-      const headers = new Headers();
-      headers.append('Accept', 'application/json');
-      headers.append('Content-Type', 'application/json');
-
-      const response: Response = await fetch(`${Config.BACK_HOST}/api/users/register`, {
-        method: 'POST',
-        headers,
-        body,
-      });
-
-      console.log(response);
-
-      if (response) {
-        history.push(`/register/set-profile`);
-        return;
-      }
-      history.push(`/register`);
-      return;
+    if (target.classList.contains('next-button') && target.classList.contains('active')) {
+      history.push(`/register/set-profile`);
     }
   };
 

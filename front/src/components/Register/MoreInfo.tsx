@@ -2,44 +2,88 @@ import React from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 import Input from '@common/Input/Input';
-import { InfoData } from '@components/Register/Register';
-import { ErrorType } from '@hooks/useForm';
 import Select from '@common/Select/Select';
 import Button from '@components/Button/Button';
+import logo from '@assets/images/logo2.png';
+import { SpeciesList } from '@src/types/Species';
+import { HabitatList } from '@src/types/Habitat';
+import { ReactComponent as AddCircle } from '@assets/icons/add_circle.svg';
+import useModal from '@common/Modal/useModal';
+import Modal from '@common/Modal/Modal';
+import SpeciesMakeModal from '@components/Register/SpeciesMakeModal';
+import { RegisterState } from '@src/contexts/RegisterContext';
+import useForm, { Validation } from '@components/Register/useForm';
+import useGetFetch from '@hooks/useGetFetch';
+import HabitatsMakeModal from '@components/Register/HabitatsMakeModal';
+import useFetchDuplicate from '@components/Register/useFetchVerification';
+import useFocus from '@hooks/useFocus';
 
 interface MoreInfoProps {
-  values: InfoData;
-  handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
-  errors: ErrorType<InfoData>;
-  flag: boolean;
   handleMoreInfoClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const habitatOptions = ['강남역 뒷골목', '부산 해운대', '서울숲'];
-const animalOptions = ['고양이', '강아지', '돌멩이'];
+const validations: Validation<RegisterState>[] = [
+  { value: 'nickname', check: (values) => values['nickname'].length === 0, message: '닉네임은 한 글자 이상 입력해주세요' },
+  { value: 'nickname', check: (values) => values['nickname'].length >= 19, message: '닉네임은 20자보다 적어야합니다.' },
+  { value: 'habitatId', check: (values) => values['habitatId'] === null && !values['habitatInfo'], message: '서식지를 선택해야합니다.' },
+  { value: 'speciesId', check: (values) => values['speciesId'] === null && !values['speciesInfo'], message: '동물을 선택해야합니다.' },
+];
 
-const MoreInfo = ({ values, flag, handleMoreInfoClick, errors, handleChange }: MoreInfoProps) => {
-  const { nickname } = values;
+const MoreInfo = ({ handleMoreInfoClick }: MoreInfoProps) => {
+  const speciesOptions = useGetFetch<SpeciesList>('/api/species/cursor');
+  const habitatOptions = useGetFetch<HabitatList>('/api/habitat?skip=1&take=10000');
+  const { toggle: habitatToggle, isShowing: habitatIsShowing } = useModal();
+  const { toggle: speciesToggle, isShowing: speciesIsShowing } = useModal();
+
+  const { registerState, handleChange, errors, activeFlag } = useForm(validations);
+  const { nickname, speciesInfo, habitatInfo } = registerState;
+  const [isCheck, checkUsername] = useFetchDuplicate(`nickname`);
+  const inputRef = useFocus();
 
   return (
     <MoreInfoBlock>
       <Header>
-        <div className={'logo'}>핑핑이와 친구들</div>
+        <img className={'logo'} src={logo} alt={'로고'} />
         <div className={'title'}>추가 정보 입력하기</div>
       </Header>
-      <Form>
-        <Input name={'nickname'} placeholder={'유저 아이디'} value={nickname} handleChange={handleChange} errorMessage={errors.nickname} />
-        <Select name={'habitat'} id={'habitat'} options={habitatOptions} label={'서식지'} handleChange={handleChange} />
-        <Select name={'category'} id={'category'} options={animalOptions} label={'동물 카테고리'} handleChange={handleChange} />
+      <Form onSubmit={(e) => e.preventDefault()}>
+        <Input
+          name={'nickname'}
+          placeholder={'유저 닉네임'}
+          value={nickname}
+          handleChange={handleChange}
+          errorMessage={errors.nickname}
+          check={checkUsername}
+          isDuplicate={isCheck}
+          focusRef={inputRef}
+        />
+        <SelectContainer>
+          {habitatOptions && (
+            <Select name={'habitatId'} id={'habitatId'} options={habitatOptions} label={'서식지'} handleChange={handleChange} errorMessage={errors.habitatId} value={habitatInfo?.name} />
+          )}
+          <AddCircle onClick={habitatToggle} />
+        </SelectContainer>
+        <SelectContainer>
+          {speciesOptions && (
+            <Select name={'speciesId'} id={'speciesId'} options={speciesOptions} label={'동물 카테고리'} handleChange={handleChange} errorMessage={errors.speciesId} value={speciesInfo?.name} />
+          )}
+          <AddCircle onClick={speciesToggle} />
+        </SelectContainer>
         <ButtonContainer>
-          <Button borderColor={'none'} onClick={handleMoreInfoClick}>
+          <Button type={'button'} borderColor={'none'} onClick={handleMoreInfoClick} className={'back-button'}>
             뒤로 가기
           </Button>
-          <Button className={`${flag && 'active'}`} onClick={handleMoreInfoClick}>
-            가입
+          <Button className={`${activeFlag && !isCheck && 'active'} next-button`} onClick={handleMoreInfoClick}>
+            다음
           </Button>
         </ButtonContainer>
       </Form>
+      <Modal hide={speciesToggle} isShowing={speciesIsShowing}>
+        <SpeciesMakeModal hide={speciesToggle} />
+      </Modal>
+      <Modal hide={habitatToggle} isShowing={habitatIsShowing}>
+        <HabitatsMakeModal hide={habitatToggle} />
+      </Modal>
     </MoreInfoBlock>
   );
 };
@@ -52,10 +96,22 @@ const MoreInfoBlock = styled.div`
   width: 370px;
   height: 420px;
 `;
+
+const SelectContainer = styled.div`
+  ${flexBox('center', 'center', 'row')};
+  padding-left: 30px;
+  svg {
+    margin: 25px 0 0 5px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+`;
 const Header = styled.div`
   ${flexBox('space-between', 'flex-start', 'column')};
   .logo {
-    font-size: 18px;
+    height: 80px;
+    object-fit: cover;
   }
   .title {
     margin: 15px 0;
@@ -66,10 +122,11 @@ const Form = styled.form`
   ${flexBox('center', 'center', 'column')};
 
   & > * {
-    margin: 20px;
+    margin: 15px;
   }
 `;
 const ButtonContainer = styled.div`
   ${flexBox('space-between', 'center')};
   width: 100%;
+  margin-top: 35px;
 `;

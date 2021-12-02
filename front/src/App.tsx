@@ -1,36 +1,28 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import MainPage from './pages/MainPage';
-import UserPage from './pages/UserPage';
 import RegisterPage from './pages/RegisterPage';
-import ExplorePage from './pages/ExplorePage';
-import TestPage from './pages/TestPage';
+import ErrorPage from './pages/ErrorPage';
 import GlobalStyle from '@lib/styles/GlobalStyle';
 import '@lib/styles/fonts.css';
 import { UserProvider } from '@src/contexts/UserContext';
+import MainPage from '@src/pages/MainPage';
 
 function App() {
   return (
     <>
       <GlobalStyle />
       <Switch>
-        <Route path="/test">
-          <TestPage />
-        </Route>
         <Route path="/register">
           <RegisterPage />
         </Route>
-        <Route path="/explore">
-          <ExplorePage />
-        </Route>
-        <UserProvider>
-          <Route path="/user">
-            <UserPage />
-          </Route>
-          <Route path="/">
+        <Route exact path={['/user/:id/(modal/.*)?', '/(modal/.*)?']}>
+          <UserProvider>
             <MainPage />
-          </Route>
-        </UserProvider>
+          </UserProvider>
+        </Route>
+        <Route>
+          <ErrorPage />
+        </Route>
       </Switch>
     </>
   );

@@ -5,7 +5,75 @@ import useHabitatInfo from '@hooks/useHabitatInfo';
 import { flexBox } from '@lib/styles/mixin';
 import MagicNumber from '@lib/styles/magic';
 import { Palette } from '@lib/styles/Palette';
-import { compareTime } from '@lib/utils/time';
+import { formatDate } from '@lib/utils/time';
+import Loading from '@common/Indicator/Loading';
+import Warning from '@common/Indicator/Warning';
+
+interface HabitatPreviewProps {
+  side: string;
+  habitat: number;
+  onClick: () => void;
+}
+
+const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
+  const HABITAT_OFFSET = 50;
+  const getResponsiveRadius = () => Math.min((window.innerWidth - parseInt(MagicNumber.FEED_SECTION_WIDTH) - HABITAT_OFFSET) / 2, parseInt(MagicNumber.MAX_PREVIEW_RADIUS));
+  const [radius, setRadius] = useState(getResponsiveRadius());
+  const changeResponsiveRadius = () => {
+    setRadius(getResponsiveRadius());
+  };
+  const { habitatInfo } = useHabitatInfo(habitat);
+  const handlePreviewClick = () => {
+    if (habitatInfo === undefined) return;
+    onClick();
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', changeResponsiveRadius);
+    return () => {
+      window.removeEventListener('resize', changeResponsiveRadius);
+    };
+  }, []);
+
+  return (
+    <>
+      {radius > 100 && (
+        <HabitatPreviewBlock side={side} color={habitatInfo?.habitat.color} radius={radius} onClick={handlePreviewClick}>
+          {habitatInfo ? (
+            <>
+              {radius > 150 ? (
+                <>
+                  <AvatarDiv radius={radius} side={side}>
+                    {habitatInfo.recentUsers.map(({ url }, idx) => (
+                      <Avatar imgSrc={url ? url : undefined} key={idx} size={'3em'} />
+                    ))}
+                  </AvatarDiv>
+                  <DetailDiv radius={radius}>
+                    <p>{habitatInfo.userCnt} 마리의 동물들</p>
+                    <p>{habitatInfo.postCnt}개의 게시글</p>
+                    <p>최근 활동 {formatDate(habitatInfo.lastActTime)}</p>
+                  </DetailDiv>
+                  <TitleDiv radius={radius}>
+                    <p className="habitat_king">우두머리: {habitatInfo.leader?.nickName}</p>
+                    <p className="habitat_name">{habitatInfo.habitat.name}</p>
+                  </TitleDiv>
+                </>
+              ) : (
+                <ShrinkTitleDiv>{habitatInfo.habitat.name}</ShrinkTitleDiv>
+              )}
+            </>
+          ) : habitatInfo === undefined ? (
+            <Loading width={'100px'} height={'100px'} />
+          ) : (
+            <Warning width={'100px'} height={'100px'} />
+          )}
+        </HabitatPreviewBlock>
+      )}
+    </>
+  );
+};
+
+export default HabitatPreview;
 
 const HabitatPreviewBlock = styled.div<Pick<HabitatPreviewProps, 'side'> & { radius: number }>`
   ${flexBox('center', null, 'column')}
@@ -80,63 +148,3 @@ const AvatarDiv = styled.div<Pick<HabitatPreviewProps, 'side'> & { radius: numbe
       `;
   }}
 `;
-
-interface HabitatPreviewProps {
-  side: string;
-  habitat: number;
-  onClick: () => void;
-}
-
-const HabitatPreview = ({ side, habitat, onClick }: HabitatPreviewProps) => {
-  const HABITAT_OFFSET = 50;
-  const getResponsiveRadius = () => Math.min((window.innerWidth - parseInt(MagicNumber.FEED_SECTION_WIDTH) - HABITAT_OFFSET) / 2, parseInt(MagicNumber.MAX_PREVIEW_RADIUS));
-  const [radius, setRadius] = useState(getResponsiveRadius());
-  const changeResponsiveRadius = () => {
-    setRadius(getResponsiveRadius());
-  };
-  const { habitatInfo } = useHabitatInfo(habitat);
-
-  useEffect(() => {
-    window.addEventListener('resize', changeResponsiveRadius);
-    return () => {
-      window.removeEventListener('resize', changeResponsiveRadius);
-    };
-  }, []);
-
-  return (
-    <>
-      {radius > 100 && (
-        <HabitatPreviewBlock side={side} color={habitatInfo?.habitat.color} radius={radius} onClick={onClick}>
-          {habitatInfo !== undefined ? (
-            <>
-              {radius > 150 ? (
-                <>
-                  <AvatarDiv radius={radius} side={side}>
-                    {habitatInfo.recentUsers.map(({ url }, idx) => (
-                      <Avatar imgSrc={url ? url : undefined} key={idx} size={'3em'} />
-                    ))}
-                  </AvatarDiv>
-                  <DetailDiv radius={radius}>
-                    <p>{habitatInfo.userCnt} 마리의 동물들</p>
-                    <p>{habitatInfo.postCnt}개의 게시글</p>
-                    <p>최근 활동 {compareTime(new Date(), new Date(habitatInfo.lastActTime))}</p>
-                  </DetailDiv>
-                  <TitleDiv radius={radius}>
-                    <p className="habitat_king">우두머리: {habitatInfo.leader?.nickname}</p>
-                    <p className="habitat_name">{habitatInfo.habitat.name}</p>
-                  </TitleDiv>
-                </>
-              ) : (
-                <ShrinkTitleDiv>{habitatInfo.habitat.name}</ShrinkTitleDiv>
-              )}
-            </>
-          ) : (
-            'Loading...'
-          )}
-        </HabitatPreviewBlock>
-      )}
-    </>
-  );
-};
-
-export default HabitatPreview;

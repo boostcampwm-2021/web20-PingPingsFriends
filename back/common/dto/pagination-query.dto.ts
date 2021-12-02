@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class PaginationQueryDto {
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
-  skip: number;
+  skip?: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
-  take: number;
+  take?: number;
 }

@@ -7,16 +7,19 @@ import Modal from '@common/Modal/Modal';
 import useModal from '@common/Modal/useModal';
 import WriteModal from '@components/Write/WriteModal';
 import { flexBox } from '@lib/styles/mixin';
+import { Palette } from '@src/lib/styles/Palette';
 
 const FloatingDiv = styled.div<{ pos: number }>`
   ${flexBox(null, 'center', 'column')};
   position: fixed;
   left: ${(props) => props.pos}px;
-  bottom: 0;
+  bottom: 5px;
   width: 60px;
   font-size: 12px;
   color: #545454;
   z-index: 2;
+  background-color: rgba(238, 238, 238, 0.5);
+  border-radius: 20px;
   svg {
     width: 50px;
     height: 50px;

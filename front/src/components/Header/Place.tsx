@@ -3,26 +3,31 @@ import styled from 'styled-components';
 import { Palette } from '@lib/styles/Palette';
 import { flexBox } from '@lib/styles/mixin';
 import { ToggleHandler } from '@common/Modal/useModal';
+import { HabitatInfo } from '@src/types/Habitat';
 
-const PlaceBlock = styled.div`
+const PlaceBlock = styled.div<{ color: string | undefined }>`
   ${flexBox()}
-
+  font-size:30px;
   border-radius: 10px;
-  border: 1px solid ${Palette.GRAY};
+  border: 2px solid ${Palette.LIGHT_GRAY};
   width: 200px;
-  padding: 12px;
+  background-color: ${(props) => props.color ?? 'white'};
   &:hover {
     cursor: pointer;
   }
 `;
 
 interface PlaceProps {
-  habitat: string | undefined;
+  habitatInfo: HabitatInfo | null | undefined;
   toggle: ToggleHandler;
 }
 
-const Place = ({ habitat, toggle }: PlaceProps) => {
-  return <PlaceBlock onClick={toggle}> {habitat} </PlaceBlock>;
+const Place = ({ habitatInfo, toggle }: PlaceProps) => {
+  return (
+    <PlaceBlock color={habitatInfo?.habitat.color} onClick={toggle}>
+      {habitatInfo?.habitat.name ?? '공허'}
+    </PlaceBlock>
+  );
 };
 
 export default Place;

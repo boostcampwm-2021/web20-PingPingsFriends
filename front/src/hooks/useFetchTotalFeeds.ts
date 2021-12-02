@@ -1,11 +1,13 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Posts, PostsResponse } from '@src/types/Post';
-import Config from '@lib/constants/config';
+import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
+import { useUserState } from '@src/contexts/UserContext';
 
-const useFetchTotalFeeds = (curHabitatId: number): [Posts, Dispatch<SetStateAction<number | null>>] => {
+const useFetchTotalFeeds = (curHabitatId: number | undefined): [Posts, Dispatch<SetStateAction<number | null>>, Dispatch<SetStateAction<Posts>>] => {
   const [feeds, setFeeds] = useState<Posts>([] as Posts);
   const [lastFeedId, setLastFeedId] = useState<number | null>(null);
   const [totalFeed, setTotalFeed] = useState<Posts>([] as Posts);
+  const userState = useUserState();
 
   useEffect(() => {
     setTotalFeed([]);
@@ -13,32 +15,30 @@ const useFetchTotalFeeds = (curHabitatId: number): [Posts, Dispatch<SetStateActi
   }, [curHabitatId]);
 
   useEffect(() => {
-    fetchData();
+    if (curHabitatId === undefined) return;
 
-    async function fetchData() {
-      try {
-        const response: Response = await fetch(`${Config.BACK_HOST}/api/posts/habitats/${curHabitatId}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`);
-        const data: PostsResponse = await response.json();
-
+    fetchAPI(
+      `/api/posts/habitats/${curHabitatId}${lastFeedId ? `?lastPostId=${lastFeedId}` : ''}`,
+      async (okRes) => {
+        const data: PostsResponse = await okRes.json();
         if (!data.posts.length) {
           setFeeds([]);
           return;
         }
-        // post에 이미지가 null인 경우가 존재해서 임시로 아래의 로직 사용 중
-        // const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',') }));
-        const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls ? post.post_contents_urls.split(',') : ['/default_avatar.png'] }));
+        const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')) }));
         setFeeds(postsData);
-      } catch (e) {
-        console.log(e);
-      }
-    }
+      },
+      (failRes) => {},
+      (err) => {},
+      getAuthOption('GET', userState.data?.accessToken)
+    );
   }, [lastFeedId, curHabitatId]);
 
   useEffect(() => {
     setTotalFeed([...totalFeed, ...feeds]);
   }, [feeds]);
 
-  return [totalFeed, setLastFeedId];
+  return [totalFeed, setLastFeedId, setTotalFeed];
 };
 
 export default useFetchTotalFeeds;

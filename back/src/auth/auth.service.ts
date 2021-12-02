@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { UserRepository } from 'src/users/user.repository';
 import { JwtService } from '@nestjs/jwt';
+import { jwtOption, jwtRefeshOption } from 'config/auth.config';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,39 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.id };
-    return { accessToken: this.jwtService.sign(payload) };
+    return {
+      accessToken: this.jwtService.sign(payload, jwtOption),
+      refreshToken: this.jwtService.sign(payload, jwtRefeshOption),
+    };
+  }
+
+  async refreshAccessToken(token: string) {
+    const { username, sub, exp } = this.jwtService.verify(token, {
+      secret: jwtRefeshOption.secret,
+    });
+    const user = await this.userRepository.findOne({ id: sub });
+    if (!user) throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
+    if (user.refreshToken !== token)
+      throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
+    if (new Date(exp * 1000) < new Date())
+      throw new HttpException('Error: 인증이 만료되었습니다.', HttpStatus.UNAUTHORIZED);
+    const accessToken = this.jwtService.sign({ username, sub }, jwtOption);
+    return accessToken;
+  }
+
+  async verfyToken(token: string) {
+    const payload = this.jwtService.decode(token);
+    if (typeof payload === 'string') {
+      return false;
+    }
+    const username = payload.username;
+    const sub = payload.sub;
+    const exp = payload.exp;
+    const user = await this.userRepository.findOne({ id: sub });
+    if (!user) throw new HttpException('Error: 잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
+    if (new Date(exp * 1000).getTime() < new Date().getTime()) {
+      throw new HttpException('Error: 인증이 만료되었습니다.', HttpStatus.UNAUTHORIZED);
+    }
+    return { username, userId: sub };
   }
 }

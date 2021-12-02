@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-
-export const DEFAULT_AVATAR = `default_avatar.png`;
+import { Link } from 'react-router-dom';
+export const DEFAULT_AVATAR = `/default_avatar.png`;
 
 const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
   width: ${(props) => props.size};
   height: ${(props) => props.size};
   border-radius: 50%;
+  flex-shrink: 0;
   img {
     width: 100%;
     height: 100%;
@@ -15,14 +16,22 @@ const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
 `;
 
 interface AvatarProps {
-  imgSrc?: string;
+  imgSrc?: string | null;
   size: string;
+  userId?: number;
+  preventLink?: boolean;
 }
 
-const Avatar = ({ imgSrc = DEFAULT_AVATAR, size }: AvatarProps) => {
+const Avatar = ({ imgSrc, size, userId, preventLink }: AvatarProps) => {
   return (
     <AvatarBlock size={size}>
-      <img src={imgSrc} alt="아바타 이미지" />
+      {preventLink ? (
+        <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
+      ) : (
+        <Link to={userId && userId !== -1 ? `/user/${userId}` : '#'}>
+          <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
+        </Link>
+      )}
     </AvatarBlock>
   );
 };

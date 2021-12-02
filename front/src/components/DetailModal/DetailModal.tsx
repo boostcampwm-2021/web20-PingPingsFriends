@@ -1,39 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
 import Carousel from '../_common/Carousel/Carousel';
 import PreviewBox from './PreviewBox';
-import { ToggleHandler } from '@common/Modal/useModal';
+import useModal, { ToggleHandler } from '@common/Modal/useModal';
 import Avatar from '../_common/Avatar/Avatar';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 import HeartSection from './HeartSection';
-import { LikeProps } from '@components/HeartButton/useLike';
+import { useLike } from '@components/HeartButton/useLike';
+import useCommentList from './useCommentList';
+import { useUserState } from '@src/contexts/UserContext';
+import Modal from '@common/Modal/Modal';
+import AlertDiv from '@common/Alert/AlertDiv';
 
-interface DetailModalProps extends LikeProps {
-  hide: ToggleHandler;
+interface DetailModalProps {
+  hide?: ToggleHandler;
   imageURLs: string[];
   nickname: string;
   text: string;
   feedId: number;
+  userId: number;
   ago: string;
-  numOfHearts: string;
+  numOfHearts: number;
+  userImgURL: string | null;
+  isHeart: 0 | 1;
 }
 
-const DetailModal = ({ feedId, hide, imageURLs, nickname, text, ago, like, toggleLike, numOfHearts }: DetailModalProps) => {
-  const [editMode, setEditMode] = useState(false);
-  const [inputText, setInputText] = useState('');
-  const toggleEditMode = (text: string) => {
-    if (editMode) {
-      setEditMode(false);
-      setInputText('');
-    } else {
-      setEditMode(true);
-      setInputText(text);
-    }
-  };
-
+const DetailModal = ({ feedId, userId, userImgURL, imageURLs, nickname, text, ago, isHeart, numOfHearts }: DetailModalProps) => {
+  const userState = useUserState();
+  const { commentState, commentDispatch, inputMode, inputModeDispatch } = useCommentList();
+  const [like, toggleLike, syncNumberOfHeart] = useLike(isHeart, feedId);
+  const { isShowing, toggle } = useModal();
   return (
     <DetailModalDiv>
       <ContentsDiv>
@@ -45,24 +44,19 @@ const DetailModal = ({ feedId, hide, imageURLs, nickname, text, ago, like, toggl
       <CommunicateDiv>
         <FeedInfoDiv>
           <FeedAuthorDiv>
-            <Avatar size={'35px'} />
+            <Avatar size={'35px'} userId={userId} imgSrc={userImgURL ?? undefined} />
             <span className={'nickname'}>{nickname}</span>
-            <span className={'time'}>{ago} 전</span>
+            <span className={'time'}>{ago}</span>
           </FeedAuthorDiv>
-          <p className={'text'}>
-            {text
-              ? text
-              : `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
-          </p>
+          <p className={'text'}>{text}</p>
         </FeedInfoDiv>
-        <CommentList toggleEditMode={toggleEditMode} feedId={feedId} />
-        <HeartSection like={like} toggleLike={toggleLike} numOfHearts={numOfHearts} />
-        <CommentForm inputText={inputText} setInputText={setInputText} editMode={editMode} feedId={feedId} />
+        <CommentList commentState={commentState} commentDispatch={commentDispatch} inputMode={inputMode} inputModeDispatch={inputModeDispatch} feedId={feedId} />
+        <HeartSection like={like!} toggleLike={userState.data?.userId !== -1 ? toggleLike : () => {}} numOfHearts={numOfHearts} syncNumberOfHeart={syncNumberOfHeart} />
+        <CommentForm commentDispatch={commentDispatch} inputMode={inputMode} inputModeDispatch={inputModeDispatch} feedId={feedId} />
       </CommunicateDiv>
+      <Modal isShowing={isShowing} hide={toggle}>
+        <AlertDiv>먼저 로그인 해주세요!</AlertDiv>
+      </Modal>
     </DetailModalDiv>
   );
 };

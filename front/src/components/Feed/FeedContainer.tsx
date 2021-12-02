@@ -8,7 +8,14 @@ import useScroll from '@hooks/useScroll';
 import ScrollContainer from '@components/Feed/ScrollBoxContainer';
 import ViewPort from '@components/Feed/ViewPort';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useGetDiv } from '@hooks/useGetDiv';
+import { useElementRef } from '@hooks/useElementRef';
+import useModal from '@common/Modal/useModal';
+import DetailContainer from '@components/DetailModal/DetailContainer';
+import useDetailFeed from '@components/Feed/useDetailFeed';
+import Warning from '@common/Indicator/Warning';
+import Loading from '@common/Indicator/Loading';
+import { useScrollState } from '@src/contexts/ScrollContext';
+import Modal from '@common/Modal/Modal';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
@@ -22,11 +29,11 @@ const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   box-sizing: border-box;
   gap: 20px;
   overflow-y: scroll;
-  z-index: 1;
+  z-index: 10;
 `;
 
 interface FeedScrollBoxProps {
-  habitatInfo: HabitatInfo | undefined;
+  habitatInfo: HabitatInfo | undefined | null;
   curHabitatId: number;
 }
 
@@ -41,31 +48,54 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
 };
 
 const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
-  const { feeds, offset, height, handleScroll } = useScroll(curHabitatId);
-  const [root, rootRef] = useGetDiv();
+  const { handleScroll } = useScroll(curHabitatId);
+  const [observerElement, observerRef] = useElementRef();
+  const { toggle } = useModal('/detail/:id');
+
   const lazy = useIntersectionObserver(callback, {
-    root: root,
+    root: observerElement,
     rootMargin: '300px 0px',
   });
+  const { feeds, offset, height } = useScrollState();
+
+  const detail = useDetailFeed();
+
   return (
-    <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={rootRef}>
+    <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
-          {feeds.map((feed) => (
-            <Feed
-              key={feed.post_id}
-              feedId={feed.user_id}
-              nickname={feed.nickname}
-              imageURLs={feed.contents_url_array}
-              text={feed.human_content}
-              createdTime={feed.created_at}
-              numOfHearts={feed.numOfHearts}
-              is_heart={feed.is_heart}
-              lazy={lazy}
-            />
-          ))}
+          {habitatInfo ? (
+            feeds.length ? (
+              feeds.map((feed) => (
+                <Feed
+                  key={feed.post_id}
+                  userId={feed.user_id}
+                  feedId={feed.post_id}
+                  nickname={feed.nickname}
+                  imageURLs={feed.contents_url_array}
+                  humanText={feed.human_content}
+                  animalText={feed.animal_content}
+                  createdTime={feed.created_at}
+                  numOfHearts={feed.numOfHearts}
+                  numOfComments={feed.numOfComments}
+                  is_heart={feed.is_heart}
+                  avatarImage={feed.user_image_url}
+                  lazy={lazy}
+                />
+              ))
+            ) : (
+              '첫 피드를 작성해보세요!'
+            )
+          ) : habitatInfo === undefined ? (
+            <Loading width={'100px'} height={'100px'} />
+          ) : (
+            <Warning width={'100px'} height={'100px'} />
+          )}
         </ViewPort>
       </ScrollContainer>
+      <Modal routePath={'/detail/:id'} hide={toggle}>
+        {detail && <DetailContainer detailFeed={detail} toggle={toggle} />}
+      </Modal>
     </FeedContainerDiv>
   );
 };

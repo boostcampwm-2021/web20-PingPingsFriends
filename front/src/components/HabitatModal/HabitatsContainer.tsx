@@ -1,51 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { flexBox, prettyScroll } from '@lib/styles/mixin';
 import { useHistory } from 'react-router-dom';
 import { ToggleHandler } from '@common/Modal/useModal';
-import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useGetDiv } from '@hooks/useGetDiv';
-import { HabitatLists } from '@src/types/Habitat';
+import { HabitatList } from '@src/types/Habitat';
+import useDebounce from '@hooks/useDebounce';
 
 interface HabitatsContainerProps {
-  habitatInfos: HabitatLists;
+  habitatInfos: HabitatList;
   hide: ToggleHandler;
+  keyword: string;
 }
 
-const HabitatsContainer = ({ habitatInfos, hide }: HabitatsContainerProps) => {
+const HabitatsContainer = ({ habitatInfos, keyword }: HabitatsContainerProps) => {
   const history = useHistory();
-  const [root, rootRef] = useGetDiv();
-
-  const observeHabitats: IntersectionObserverCallback = (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        //todo: habitat 메뉴 증가
-        console.log('todo');
-      }
-    });
-  };
-
-  const options = {
-    root: root,
-    rootMargin: '200px 0px',
-  };
-
-  const observerRef = useIntersectionObserver(observeHabitats, options);
-
+  const [arr, setArr] = useState<HabitatList>(habitatInfos);
+  const text = useDebounce(keyword, 500);
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
     history.push(`/?habitat=${target.dataset.id}`);
-    hide('off');
   };
+  useEffect(() => {
+    setArr(habitatInfos.filter((info) => info.name.includes(text)));
+  }, [text]);
 
   return (
-    <HabitatsContainerDiv ref={rootRef}>
-      {habitatInfos.map((habitatInfo) => (
-        <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick} className={'modal-close-button'}>
-          {habitatInfo.name}
-        </HabitatBlockDiv>
-      ))}
-      <div ref={observerRef} />
+    <HabitatsContainerDiv>
+      {arr.length
+        ? arr.map((habitatInfo) => (
+            <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick}>
+              {habitatInfo.name}
+            </HabitatBlockDiv>
+          ))
+        : habitatInfos.map((habitatInfo) => (
+            <HabitatBlockDiv key={habitatInfo.name} color={habitatInfo.color} data-id={habitatInfo.id} onClick={handleClick}>
+              {habitatInfo.name}
+            </HabitatBlockDiv>
+          ))}
+      <div />
     </HabitatsContainerDiv>
   );
 };

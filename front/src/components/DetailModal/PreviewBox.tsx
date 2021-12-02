@@ -29,7 +29,7 @@ const PreviewBox = ({ controller, imageURLs }: { controller: CarouselControl | u
     <PreviewDiv>
       <SwipeBox gap={'10px'} height={'100%'} width={'100%'}>
         {imageURLs?.map((url, idx) => (
-          <ImgDiv className={'button'} key={(idx.toString() + 'pre' + url).toString()}>
+          <ImgDiv className={'button'} key={idx}>
             <PreviewImg src={url} alt="test" data-idx={idx} onClick={handleImgClick} />
           </ImgDiv>
         ))}

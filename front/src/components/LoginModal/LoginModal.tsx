@@ -4,8 +4,8 @@ import { flexBox, boxShadow } from '@lib/styles/mixin';
 import { Palette } from '@lib/styles/Palette';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useHistory } from 'react-router-dom';
-import { useUserDispatch, useUserState, initialState, User } from '@src/contexts/UserContext';
-import Config from '@lib/constants/config';
+import { useUserDispatch, useUserState, User } from '@src/contexts/UserContext';
+import { fetchAPI, getAuthOption } from '@src/lib/utils/fetch';
 
 const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const history = useHistory();
@@ -13,7 +13,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const userDispatch = useUserDispatch();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  const [isFail, setFail] = useState(false);
+  const [isFail, setFail] = useState<boolean>(false);
 
   const handleClick = () => {
     history.push('/register');
@@ -22,47 +22,53 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const handleLoginFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     userDispatch({ type: 'GET_USER' });
-    try {
-      const bodyJson = {
-        username: nameInputRef.current?.value,
-        password: passwordInputRef.current?.value,
-      };
-      const res = await fetch(Config.BACK_HOST + '/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bodyJson),
-      });
-      const data = await res.json();
-      const newState: User = {
-        userId: data.user.id,
-        username: data.user.username,
-        nickname: data.user.nickname,
-        habitatId: data.user.habitatId,
-        speciesId: data.user.speciesId,
-        url: data.user.content.url,
-        accessToken: data.accessToken,
-      };
-      if (data.accessToken) {
+    const bodyJson = {
+      username: nameInputRef.current?.value,
+      password: passwordInputRef.current?.value,
+    };
+
+    fetchAPI(
+      '/api/users/login',
+      async (okRes) => {
+        const data = await okRes.json();
+        const newState: User = {
+          userId: data.user.id,
+          username: data.user.username,
+          nickname: data.user.nickname,
+          habitatId: data.user.habitatId,
+          speciesId: data.user.speciesId,
+          url: data.user.content?.url,
+          accessToken: data.accessToken,
+        };
         userDispatch({ type: 'GET_USER_SUCCESS', data: newState });
         hide('off');
-      } else {
+        history.push('/');
+      },
+      (failRes) => {
+        switch (failRes.status) {
+          case 400:
+            userDispatch({ type: 'GET_USER_ERROR', error: '아이디/비밀번호가 없거나 다릅니다.' });
+            break;
+          default:
+            userDispatch({ type: 'GET_USER_ERROR', error: '알 수 없는 이유로 로그인에 실패하여습니다.' });
+        }
         setFail(true);
-        userDispatch({ type: 'GET_USER_SUCCESS', data: initialState.data! });
-      }
-    } catch (e) {
-      userDispatch({ type: 'GET_USER_ERROR', error: e });
-    }
+      },
+      (err) => {
+        userDispatch({ type: 'GET_USER_ERROR', error: err });
+        setFail(true);
+      },
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyJson) }
+    );
   };
 
   return (
     <LoginDiv>
       {userState.data?.userId === -1 ? (
         <>
-          <LoginForm action={Config.BACK_HOST + '/api/users/login'} method={'POST'} onSubmit={handleLoginFormSubmit}>
+          <LoginForm action={'/api/users/login'} method={'POST'} onSubmit={handleLoginFormSubmit}>
             <LoginLabel htmlFor={'userId'}>아이디</LoginLabel>
-            <LoginInput ref={nameInputRef} id={'userId'} name={'userId'} type={'text'} placeholder={'username@mail'} required />
+            <LoginInput ref={nameInputRef} id={'userId'} name={'userId'} type={'text'} placeholder={'아이디'} required />
             <LoginLabel htmlFor={'password'}>비밀번호</LoginLabel>
             <LoginInput ref={passwordInputRef} id={'password'} name={'password'} type={'password'} placeholder={'비밀번호'} required />
             <LoginBtnDiv>
@@ -74,7 +80,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
               </LoginBtn>
             </LoginBtnDiv>
           </LoginForm>
-          <p>{isFail && '실패했습니다ㅠㅜ'}</p>
+          <ErrorP>{isFail && userState.error}</ErrorP>
           <AuthBtnDiv>
             <AuthBtn onClick={handleClick} color={Palette.GREEN}>
               회원가입
@@ -146,4 +152,8 @@ const AuthBtn = styled(DefaultBtn)`
   width: 100%;
   height: 40px;
   font-size: 20px;
+`;
+
+const ErrorP = styled.p`
+  color: ${Palette.RED};
 `;

@@ -3,16 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Query,
   ParseIntPipe,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { HabitatService } from './habitat.service';
 import { CreateHabitatDto } from './dto/create-habitat.dto';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationQueryDto } from 'common/dto/pagination-query.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('habitat')
 @ApiTags('서식지 API')
@@ -29,13 +30,24 @@ export class HabitatController {
     return this.habitatService.getRandomHabitat(currentId);
   }
 
+  @Get('isDuplicated')
+  @ApiOperation({
+    summary: '서식지 이름 중복 체크 API',
+    description: '서식지 이름 중복 여부 반환',
+  })
+  isDuplicate(@Query('name') name: string) {
+    return this.habitatService.isDuplicate(name);
+  }
+
   @Post()
   @ApiOperation({
     summary: '서식지 추가 API',
     description: '유저가 서식지를 추가한다.',
   })
-  createHabitat(@Body() createHabitatDto: CreateHabitatDto) {
-    return this.habitatService.createHabitat(createHabitatDto, 1);
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  createHabitat(@Body() createHabitatDto: CreateHabitatDto, @Req() req) {
+    return this.habitatService.createHabitat(createHabitatDto, req.user.userId);
   }
 
   @Get()

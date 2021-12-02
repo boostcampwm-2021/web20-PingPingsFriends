@@ -4,7 +4,7 @@ export interface Habitat {
   color: string;
   leaderId: string | number;
 }
-export type HabitatLists = Habitat[];
+export type HabitatList = Habitat[];
 
 type RecentUserInfo = {
   userId: string;
@@ -14,7 +14,7 @@ type RecentUserInfo = {
 };
 type Leader = {
   userId: number;
-  nickname: string;
+  nickName: string;
   url: null | string;
 };
 export interface HabitatInfo {
@@ -23,5 +23,5 @@ export interface HabitatInfo {
   userCnt: number;
   postCnt: number;
   recentUsers: RecentUserInfo[];
-  lastActTime: Date;
+  lastActTime: string;
 }
