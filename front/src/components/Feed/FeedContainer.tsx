@@ -93,7 +93,9 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
           )}
         </ViewPort>
       </ScrollContainer>
-      {detail && <DetailContainer detailFeed={detail} toggle={toggle} />}
+      <Modal routePath={'/detail/:id'} hide={toggle}>
+        {detail && <DetailContainer detailFeed={detail} toggle={toggle} />}
+      </Modal>
     </FeedContainerDiv>
   );
 };

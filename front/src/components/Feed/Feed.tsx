@@ -37,7 +37,7 @@ export interface FeedProps {
 
 const Feed = ({ feedId, userId, nickname, imageURLs, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
-  const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
+  const { toggle: toggleEditModal } = useModal();
   const { isShowing: isHeartErrorShowing, toggle: toggleErrorModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
@@ -49,6 +49,10 @@ const Feed = ({ feedId, userId, nickname, imageURLs, humanText, animalText, lazy
   const [isTranslate, setTranslate] = useState(false);
   const history = useHistory();
   const location = useLocation();
+
+  const handleClick = () => {
+    history.push(`/modal/detail/${feedId}/?habitat=${queryString(location.search)['habitat']}`);
+  };
 
   return (
     <FeedContainerDiv>
@@ -66,12 +70,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, humanText, animalText, lazy
       </FeedContents>
       <FeedInfoDiv isTranslate={isTranslate}>
         <HeartButton like={like} toggleLike={userState.data?.userId !== -1 ? toggleLike : toggleErrorModal} />
-        <CommentBtnSvg
-          className={'button'}
-          onClick={() => {
-            history.push(`/modal/detail/${feedId}/?habitat=${queryString(location.search)['habitat']}`);
-          }}
-        />
+        <CommentBtnSvg className={'button'} onClick={handleClick} />
         <span>{numOfComments}</span>
         <TranslateBtnSvg className={'button translate'} onClick={() => setTranslate(!isTranslate)} />
         <span className="time">{ago}</span>
