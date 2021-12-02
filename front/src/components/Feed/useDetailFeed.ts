@@ -24,7 +24,7 @@ const useDetailFeed = () => {
       `/api/posts/${id}`,
       async (okRes) => {
         const detailFeed: Post = await okRes.json();
-        detailFeed.contents_url_array = detailFeed.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp'));
+        detailFeed.contents_url_array = detailFeed.post_contents_urls.split(',');
         setDetail(detailFeed);
       },
       (failRes) => {},

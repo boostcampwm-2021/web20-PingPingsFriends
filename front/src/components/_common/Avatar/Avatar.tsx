@@ -26,10 +26,10 @@ const Avatar = ({ imgSrc, size, userId, preventLink }: AvatarProps) => {
   return (
     <AvatarBlock size={size}>
       {preventLink ? (
-        <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
+        <img src={imgSrc ?? DEFAULT_AVATAR} alt="아바타 이미지" />
       ) : (
         <Link to={userId && userId !== -1 ? `/user/${userId}` : '#'}>
-          <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
+          <img src={imgSrc ?? DEFAULT_AVATAR} alt="아바타 이미지" />
         </Link>
       )}
     </AvatarBlock>

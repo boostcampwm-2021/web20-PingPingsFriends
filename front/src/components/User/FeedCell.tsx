@@ -23,7 +23,7 @@ const FeedCell = ({ url, feedId }: FeedCellProps) => {
       `/api/posts/${feedId}`,
       async (okRes) => {
         const data: Post = await okRes.json();
-        data.contents_url_array = data.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp'));
+        data.contents_url_array = data.post_contents_urls.split(',');
         setFeedInfo(data);
         toggle(e);
       },
@@ -35,7 +35,7 @@ const FeedCell = ({ url, feedId }: FeedCellProps) => {
 
   return (
     <CellDiv>
-      <img src={url.replace('.webp', '-feed.webp')} alt={'feed thumbnail'} onClick={handleClick} />
+      <img src={url} alt={'feed thumbnail'} onClick={handleClick} />
       <Modal hide={toggle} isShowing={isShowing}>
         {feedInfo ? (
           <DetailModal

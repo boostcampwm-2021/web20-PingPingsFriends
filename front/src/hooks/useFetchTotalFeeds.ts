@@ -25,7 +25,7 @@ const useFetchTotalFeeds = (curHabitatId: number | undefined): [Posts, Dispatch<
           setFeeds([]);
           return;
         }
-        const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')) }));
+        const postsData = data.posts.map((post) => ({ ...post, contents_url_array: post.post_contents_urls.split(',') }));
         setFeeds(postsData);
       },
       (failRes) => {},

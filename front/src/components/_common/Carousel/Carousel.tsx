@@ -38,7 +38,7 @@ const Carousel = ({ imageURLs, children, lazy }: CarouselProps) => {
       <CarouselDiv ref={ref}>
         <CarouselContents trans={translateStyle} width={rect.width * imageURLs.length}>
           {imageURLs.map((src, index) => (
-            <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} lazy={lazy} />
+            <Slide key={index.toString() + 'slide' + src} rect={rect} src={src} />
           ))}
         </CarouselContents>
         {imageURLs.length > 1 && (

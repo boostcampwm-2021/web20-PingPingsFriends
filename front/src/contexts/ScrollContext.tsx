@@ -44,7 +44,7 @@ export const fetchPost: IFetchPost = async (habitat, lastFeedId, accessToken) =>
           const data: PostsResponse = await okResponse.json();
           const postsData: Posts = data.posts.map((post) => ({
             ...post,
-            contents_url_array: post.post_contents_urls.split(',').map((url) => url.replace('.webp', '-feed.webp')),
+            contents_url_array: post.post_contents_urls.split(','),
           }));
           resolve(postsData);
         },

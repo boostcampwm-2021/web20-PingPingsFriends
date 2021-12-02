@@ -66,7 +66,7 @@ const Feed = ({ feedId, userId, nickname, imageURLs, humanText, animalText, lazy
         )}
       </FeedHeaderDiv>
       <FeedContents>
-        <Carousel imageURLs={imageURLs} lazy={lazy} />
+        <Carousel imageURLs={imageURLs} />
       </FeedContents>
       <FeedInfoDiv isTranslate={isTranslate}>
         <HeartButton like={like} toggleLike={userState.data?.userId !== -1 ? toggleLike : toggleErrorModal} />
