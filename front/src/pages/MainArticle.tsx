@@ -7,7 +7,6 @@ import HabitatPreview from '@components/Habitat/HabitatPreview';
 import { Palette } from '@lib/styles/Palette';
 import { flexBox } from '@lib/styles/mixin';
 import MagicNumber from '@src/lib/styles/magic';
-import { ScrollProvider } from '@src/contexts/ScrollContext';
 
 const MainArticle = ({ getCurHabitat, handleNextHabitat, handlePrevHabitat, error, habitatInfo }: any) => {
   const [mode, setMode] = useState<'feed' | 'explore'>('feed');
