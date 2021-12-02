@@ -53,6 +53,7 @@ const ProfileImage = () => {
 
     if (target.classList.contains('cancel-button')) {
       try {
+        setLoading('loading');
         const response = await fetch('/api/users/register', { method: 'POST', body: data });
         if (!response.ok) {
           throw new Error('회원가입 실패');
@@ -67,6 +68,7 @@ const ProfileImage = () => {
       return;
     }
     if (flag && target.classList.contains('confirm-button')) {
+      setLoading('loading');
       data.append('upload', profile!);
 
       try {
