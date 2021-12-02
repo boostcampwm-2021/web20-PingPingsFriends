@@ -35,28 +35,26 @@ const MainArticle = ({ getCurHabitat, handleNextHabitat, handlePrevHabitat, erro
 
   return (
     <MainPageBlock>
-      <ScrollProvider>
-        <MainContentsDiv ref={feedModeRef}>
+      <MainContentsDiv ref={feedModeRef}>
+        {
           {
-            {
-              feed: (
-                <>
-                  <FeedContainer habitatInfo={habitatInfo} curHabitatId={getCurHabitat()} />
-                  <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
-                  <HabitatPreview habitat={getCurHabitat(1)} onClick={handleNextHabitat} side={'right'} />
-                  <HabitatPreview habitat={getCurHabitat(-1)} onClick={handlePrevHabitat} side={'left'} />
-                </>
-              ),
-              explore: (
-                <>
-                  <Explore habitatInfo={habitatInfo} />
-                  <FeedFAB mode={mode} getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
-                </>
-              ),
-            }[mode]
-          }
-        </MainContentsDiv>
-      </ScrollProvider>
+            feed: (
+              <>
+                <FeedContainer habitatInfo={habitatInfo} curHabitatId={getCurHabitat()} />
+                <FeedFAB mode={mode} getPosFunc={getFeedFloatingPos} toggleMode={toggleMode} />
+                <HabitatPreview habitat={getCurHabitat(1)} onClick={handleNextHabitat} side={'right'} />
+                <HabitatPreview habitat={getCurHabitat(-1)} onClick={handlePrevHabitat} side={'left'} />
+              </>
+            ),
+            explore: (
+              <>
+                <Explore habitatInfo={habitatInfo} />
+                <FeedFAB mode={mode} getPosFunc={getExploreFloatingPos} toggleMode={toggleMode} />
+              </>
+            ),
+          }[mode]
+        }
+      </MainContentsDiv>
       <EmptyStyleDiv color={habitatInfo?.habitat.color} />
     </MainPageBlock>
   );

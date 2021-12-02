@@ -15,6 +15,7 @@ import useDetailFeed from '@components/Feed/useDetailFeed';
 import Warning from '@common/Indicator/Warning';
 import Loading from '@common/Indicator/Loading';
 import { useScrollState } from '@src/contexts/ScrollContext';
+import Modal from '@common/Modal/Modal';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};

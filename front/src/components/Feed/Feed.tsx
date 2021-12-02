@@ -39,7 +39,7 @@ export interface FeedProps {
 
 const Feed = ({ contentIds, feedId, userId, nickname, imageURLs, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
-  const { toggle: toggleEditModal } = useModal();
+  const { toggle: toggleEditModal, isShowing: isEditShowing } = useModal();
   const { isShowing: isHeartErrorShowing, toggle: toggleErrorModal } = useModal();
   const [like, toggleLike] = useLike(is_heart, feedId);
   const ago = formatDate(createdTime);
