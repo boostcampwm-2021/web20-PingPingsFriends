@@ -12,7 +12,6 @@ import { useLike } from '@components/HeartButton/useLike';
 import { makeDropBoxMenu } from '@common/DropBox/makeDropBoxMenu';
 import Modal from '@common/Modal/Modal';
 import DeleteModal from '@components/DeleteModal/DeleteModal';
-import WriteModal from '@components/Write/WriteModal';
 import useModal from '@common/Modal/useModal';
 import { formatDate } from '@lib/utils/time';
 import { useUserState } from '@src/contexts/UserContext';
@@ -33,11 +32,10 @@ export interface FeedProps {
   numOfComments: number;
   is_heart: 0 | 1;
   avatarImage: string | null;
-  contentIds: number[];
   lazy?: (node: HTMLDivElement) => void;
 }
 
-const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
+const Feed = ({ feedId, userId, nickname, imageURLs, humanText, animalText, lazy, createdTime, is_heart, avatarImage, numOfComments }: FeedProps) => {
   const { isShowing: isDeleteShowing, toggle: toggleDeleteModal } = useModal();
   const { isShowing: isEditShowing, toggle: toggleEditModal } = useModal();
   const { isShowing: isHeartErrorShowing, toggle: toggleErrorModal } = useModal();
@@ -81,9 +79,6 @@ const Feed = ({ feedId, userId, nickname, imageURLs, contentIds, humanText, anim
       <FeedTextDiv>{isTranslate ? humanText : animalText}</FeedTextDiv>
       <Modal isShowing={isDeleteShowing} hide={toggleDeleteModal}>
         <DeleteModal hide={toggleDeleteModal} feedId={feedId} />
-      </Modal>
-      <Modal isShowing={isEditShowing} hide={toggleEditModal}>
-        <WriteModal hide={toggleEditModal} initState={{ contents: imageURLs, contentIds: contentIds, feedId: feedId, text: humanText }} />
       </Modal>
       <Modal isShowing={isHeartErrorShowing} hide={toggleErrorModal}>
         <AlertDiv>먼저 로그인 해주세요!</AlertDiv>
