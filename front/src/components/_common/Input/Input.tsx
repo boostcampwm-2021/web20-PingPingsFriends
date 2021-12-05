@@ -13,7 +13,7 @@ const StyledInput = styled.input<{ error?: string }>`
   width: 100%;
   height: 100%;
   padding: 16px 18px 0;
-  font-size: 18px;
+  font-size: 14px;
   border: 1px solid ${(props) => (props.error ? Palette.RED : '')};
   border-radius: 8px;
   &:focus + div {

@@ -98,8 +98,9 @@ const FeedContainerDiv = styled.div`
   width: 100%;
   height: 650px;
   flex-shrink: 0;
-  border-radius: 30px;
   position: relative;
+
+  border-radius: 30px;
   margin: 10px 0;
 `;
 
@@ -122,6 +123,7 @@ const FeedContents = styled.div`
 `;
 
 const FeedInfoDiv = styled.div<{ isTranslate: boolean }>`
+  ${flexBox(null, 'center')};
   display: flex;
   position: relative;
   gap: 5px;

@@ -7,7 +7,6 @@ import Modal from '@common/Modal/Modal';
 import useModal from '@common/Modal/useModal';
 import WriteModal from '@components/Write/WriteModal';
 import { flexBox } from '@lib/styles/mixin';
-import { Palette } from '@src/lib/styles/Palette';
 
 const FloatingDiv = styled.div<{ pos: number }>`
   ${flexBox(null, 'center', 'column')};
@@ -15,11 +14,15 @@ const FloatingDiv = styled.div<{ pos: number }>`
   left: ${(props) => props.pos}px;
   bottom: 5px;
   width: 60px;
-  font-size: 12px;
   color: #545454;
   z-index: 2;
   background-color: rgba(238, 238, 238, 0.5);
+  padding: 8px;
   border-radius: 20px;
+  .text {
+    text-align: center;
+    font-size: 12px;
+  }
   svg {
     width: 50px;
     height: 50px;
@@ -53,19 +56,19 @@ const FeedFAB = ({ toggleMode, getPosFunc, mode }: FeedFABType) => {
         {
           feed: (
             <>
-              <div>탐험하기</div>
+              <div className={'text'}>탐험하기</div>
               <ZoomBtnSvg onClick={toggleMode} />
             </>
           ),
           explore: (
             <>
-              <div>메인으로</div>
+              <div className={'text'}>메인으로</div>
               <HomeSvg onClick={toggleMode} />
             </>
           ),
         }[mode]
       }
-      <div>글쓰기</div>
+      <div className={'text'}>글쓰기</div>
       <WriteBtnSvg onClick={toggle} />
       <Modal isShowing={isShowing} hide={toggle}>
         <WriteModal hide={toggle} />

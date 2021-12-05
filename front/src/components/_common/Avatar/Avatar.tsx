@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 export const DEFAULT_AVATAR = `/default_avatar.png`;
 
 const AvatarBlock = styled.div<Omit<AvatarProps, 'imgSrc'>>`
@@ -23,19 +23,13 @@ interface AvatarProps {
 }
 
 const Avatar = ({ imgSrc, size, userId, preventLink }: AvatarProps) => {
-  const history = useHistory();
-  // const handleClick = () => {
-  //   history.push(`/user/${userId}`);
-  // };
   return (
     <AvatarBlock size={size}>
       {preventLink ? (
         <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
       ) : (
         <Link to={userId && userId !== -1 ? `/user/${userId}` : '#'}>
-          {/*<div onClick={handleClick}>*/}
           <img src={imgSrc?.replace('.webp', '-profile.webp') ?? DEFAULT_AVATAR} alt="아바타 이미지" />
-          {/*</div>*/}
         </Link>
       )}
     </AvatarBlock>

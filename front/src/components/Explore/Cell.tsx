@@ -39,9 +39,10 @@ const Cell = ({ feedInfo, url, toggle }: CellProps) => {
       <HoverDiv className={'hover-container'} isHover={isHover} onClick={handleClick} data-id={feedInfo.post_id}>
         <Avatar imgSrc={feedInfo.user_image_url ?? undefined} size={'50px'} />
         <p>{feedInfo.nickname}</p>
-        <p>{formatDate(feedInfo.created_at)} 전</p>
-        <div>
-          <HeartSvg />x<span>{feedInfo.numOfHearts}</span>
+        <p>{formatDate(feedInfo.created_at)}</p>
+        <div className={'heart-container'}>
+          <HeartSvg />
+          <span>{feedInfo.numOfHearts}</span>
         </div>
       </HoverDiv>
     </CellDiv>
@@ -57,6 +58,9 @@ const CellDiv = styled.div`
   margin: 5px 5px;
   border: 1px solid ${Palette.GRAY};
   position: relative;
+  .heart-container {
+    ${flexBox('center', 'center')};
+  }
 `;
 
 const ExploreImg = styled.img`
@@ -67,7 +71,7 @@ const ExploreImg = styled.img`
 
 const HoverDiv = styled.div<{ isHover: boolean }>`
   ${flexBox('center', 'center', 'column')};
-  font-size: 30px;
+  font-size: 16px;
   color: white;
   width: 100%;
   height: 100%;
@@ -78,4 +82,7 @@ const HoverDiv = styled.div<{ isHover: boolean }>`
   background-color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
   opacity: ${(props) => (props.isHover ? 1 : 0)};
+  & > * {
+    margin-bottom: 10px;
+  }
 `;

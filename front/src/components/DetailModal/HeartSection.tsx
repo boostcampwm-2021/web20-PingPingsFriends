@@ -7,6 +7,7 @@ import { LikeProps } from '@components/HeartButton/useLike';
 const HeartDiv = styled.div`
   ${flexBox('flex-start')};
   margin-top: 10px;
+  font-size: 14px;
 `;
 
 interface HeartSectionProps extends LikeProps {

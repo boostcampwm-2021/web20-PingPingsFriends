@@ -69,7 +69,7 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
     }
     fetchAPI(
       initState ? `/api/posts/${initState.feedId}` : form.action,
-      (okResponse) => {
+      () => {
         history.go(0);
       },
       (failResponse) => {
@@ -129,11 +129,9 @@ const WriteModal = ({ hide, initState }: WriteModalProps) => {
             <ValidInfoP isValid={isValid}>{isValid ? '자신의 서식지에 글을 작성/수정 합니다' : '사진과 글은 필수입니다!'}</ValidInfoP>
             <SubmitBtn type={'submit'} valid={isValid}>
               <PetBtnSvg />
-              <p>Done</p>
             </SubmitBtn>
             <CancelBtn className="modal-close-button" type="button" onClick={hide}>
               <CancelBtnSvg />
-              <p>Back</p>
             </CancelBtn>
           </>
         )}
@@ -164,12 +162,16 @@ const DefaultBtn = styled.button`
 `;
 
 const SubmitBtn = styled(DefaultBtn)<{ valid: boolean }>`
-  background-color: ${(props) => (props.valid ? Palette.APRICOT : Palette.GRAY)};
+  ${flexBox('center', 'center')};
+  background-color: ${(props) => (props.valid ? Palette.ACTIVE : Palette.GRAY)};
   right: 30px;
+  border-radius: 8px;
 `;
 
 const CancelBtn = styled(DefaultBtn)`
-  background-color: ${Palette.ORANGE};
+  ${flexBox('center', 'center')};
+  border-radius: 8px;
+  background-color: ${Palette.RED};
   right: 100px;
 `;
 
@@ -213,7 +215,9 @@ const TextIndicatorP = styled.p`
 `;
 
 const ValidInfoP = styled.p<{ isValid: boolean }>`
-  color: ${(props) => (props.isValid ? 'black' : 'red')};
+  margin-top: 10px;
+  font-size: 15px;
+  color: ${(props) => (props.isValid ? 'black' : Palette.RED)};
 `;
 
 const ContentsDiv = styled.div`

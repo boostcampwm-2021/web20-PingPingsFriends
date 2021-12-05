@@ -20,11 +20,6 @@ interface SlideProps {
 }
 
 const Slide = ({ src, rect, lazy }: SlideProps) => {
-  const handleErrorImg = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = e.target as HTMLImageElement;
-    target.src = '/default_avatar.png';
-  };
-
   return (
     <div ref={lazy}>
       {src.includes('mp4') ? (
@@ -32,7 +27,7 @@ const Slide = ({ src, rect, lazy }: SlideProps) => {
           <source src={src} type={'video/mp4'} />
         </Video>
       ) : (
-        <SlideImg src={lazy ? '/default_avatar.png' : src} onError={handleErrorImg} data-src={src} rect={rect} alt="피드 이미지" />
+        <SlideImg src={lazy ? '#' : src} data-src={src} rect={rect} alt="피드 이미지" />
       )}
     </div>
   );

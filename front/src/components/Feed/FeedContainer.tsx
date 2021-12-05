@@ -13,9 +13,9 @@ import useModal from '@common/Modal/useModal';
 import DetailContainer from '@components/DetailModal/DetailContainer';
 import useDetailFeed from '@components/Feed/useDetailFeed';
 import Warning from '@common/Indicator/Warning';
-import Loading from '@common/Indicator/Loading';
 import { useScrollState } from '@src/contexts/ScrollContext';
 import Modal from '@common/Modal/Modal';
+import SkeletonFeeds from '@components/Feed/SkeletonFeeds';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
@@ -48,8 +48,9 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
 };
 
 const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
-  const { handleScroll } = useScroll(curHabitatId);
   const [observerElement, observerRef] = useElementRef();
+
+  const { handleScroll } = useScroll(curHabitatId, observerElement);
   const { toggle } = useModal('/detail/:id');
 
   const lazy = useIntersectionObserver(callback, {
@@ -88,8 +89,9 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
               '첫 피드를 작성해보세요!'
             )
           ) : habitatInfo === undefined ? (
-            <Loading width={'100px'} height={'100px'} />
+            <SkeletonFeeds />
           ) : (
+            // <Loading width={'100px'} height={'100px'} />
             <Warning width={'100px'} height={'100px'} />
           )}
         </ViewPort>

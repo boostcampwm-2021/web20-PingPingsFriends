@@ -5,7 +5,7 @@ import { Palette } from '@lib/styles/Palette';
 import { ToggleHandler } from '@common/Modal/useModal';
 import { useHistory } from 'react-router-dom';
 import { useUserDispatch, useUserState, User } from '@src/contexts/UserContext';
-import { fetchAPI, getAuthOption } from '@src/lib/utils/fetch';
+import { fetchAPI } from '@src/lib/utils/fetch';
 
 const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
   const history = useHistory();
@@ -82,7 +82,7 @@ const LoginModal = ({ hide }: { hide: ToggleHandler }) => {
           </LoginForm>
           <ErrorP>{isFail && userState.error}</ErrorP>
           <AuthBtnDiv>
-            <AuthBtn onClick={handleClick} color={Palette.GREEN}>
+            <AuthBtn onClick={handleClick} color={'black'}>
               회원가입
             </AuthBtn>
           </AuthBtnDiv>
@@ -119,10 +119,11 @@ const LoginInput = styled.input`
   padding: 0 3px;
   font-size: 15px;
   margin-bottom: 10px;
+  margin-top: 10px;
 `;
 
 const LoginLabel = styled.label`
-  font-size: 20px;
+  font-size: 15px;
 `;
 
 const LoginBtnDiv = styled.div`
@@ -138,8 +139,8 @@ const DefaultBtn = styled.button<{ color: string }>`
 `;
 
 const LoginBtn = styled(DefaultBtn)`
-  width: 50px;
-  height: 20px;
+  width: 85px;
+  height: 40px;
 `;
 
 const AuthBtnDiv = styled.div`
@@ -151,7 +152,6 @@ const AuthBtnDiv = styled.div`
 const AuthBtn = styled(DefaultBtn)`
   width: 100%;
   height: 40px;
-  font-size: 20px;
 `;
 
 const ErrorP = styled.p`

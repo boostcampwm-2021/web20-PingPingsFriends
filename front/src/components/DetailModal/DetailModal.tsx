@@ -125,9 +125,10 @@ const FeedAuthorDiv = styled.div`
   .time {
     position: absolute;
     right: 0;
+    font-size: 14px;
   }
   .nickname {
-    font-size: 20px;
+    font-size: 16px;
     margin-left: 5px;
   }
 `;

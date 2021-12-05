@@ -3,9 +3,8 @@ import { Palette } from '@src/lib/styles/Palette';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { getAuthOption, fetchAPI } from '@lib/utils/fetch';
-import { useUserState, useUserDispatch } from '@src/contexts/UserContext';
+import { useUserState } from '@src/contexts/UserContext';
 import { CommentAction, InputModeState, InputModeAction } from './useCommentList';
-import { useHistory } from 'react-router';
 
 interface CommentFormProps {
   feedId: number;
@@ -48,7 +47,7 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
         };
         fetchAPI(
           `/api/comments`,
-          (okResponse) => {
+          () => {
             commentDispatch({ type: 'REFRESH' });
             inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
           },
@@ -70,7 +69,7 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
         };
         fetchAPI(
           `/api/comments/${inputMode.focusCommentId}`,
-          (res) => {
+          () => {
             inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
             commentDispatch({ type: 'REFRESH' });
           },
@@ -96,7 +95,7 @@ const CommentForm = ({ inputMode, inputModeDispatch, commentDispatch, feedId }: 
         ref={inputRef}
         placeholder={userState.data?.accessToken ? '댓글을 입력하세요.' : '로그인이 필요합니다'}
         required
-        disabled={userState.data?.accessToken ? false : true}
+        disabled={!userState.data?.accessToken}
       />
       <SubmitBtn type={'submit'} isActive={isActive}>
         {isActive ? 'OK!' : 'X'}
@@ -125,7 +124,7 @@ const UserInput = styled.textarea<{ mode: 'write' | 'edit' | 'delete' }>`
 const SubmitBtn = styled.button<{ isActive: boolean }>`
   width: 50px;
   height: 50px;
-  font-size: 20px;
+  font-size: 14px;
   color: ${(props) => (props.isActive ? 'black' : Palette.LIGHT_GRAY)};
   font-weight: bold;
 `;

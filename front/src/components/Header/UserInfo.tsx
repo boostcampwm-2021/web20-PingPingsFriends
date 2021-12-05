@@ -17,8 +17,13 @@ const UserInfoBlock = styled.div`
   ${flexBox('center', 'center')}
   .username {
     margin-right: 5px;
+    font-size: 0.5em;
   }
+
   position: relative;
+  .button {
+    margin-left: 5px;
+  }
 `;
 
 const UserInfo = () => {
