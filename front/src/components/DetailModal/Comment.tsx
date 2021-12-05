@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Avatar from '@common/Avatar/Avatar';
 import { flexBox } from '@src/lib/styles/mixin';
@@ -43,7 +43,7 @@ const Comment = ({ nickname, comment, inputMode, inputModeDispatch, commentDispa
   const handleConfirmDelete = () => {
     fetchAPI(
       `/api/comments/${commentId}`,
-      (res) => {
+      () => {
         inputModeDispatch({ type: 'INIT_NORMAL_MODE' });
         commentDispatch({ type: 'REFRESH' });
       },
@@ -59,7 +59,7 @@ const Comment = ({ nickname, comment, inputMode, inputModeDispatch, commentDispa
 
   return (
     <CommentDiv isEdited={inputMode.mode === 'edit' && inputMode.focusCommentId === commentId} ref={bottomRef}>
-      <Avatar size={'30px'} imgSrc={avatar} />
+      <Avatar size={'30px'} imgSrc={avatar} userId={userId} />
       <TextDiv>
         <TextHeader>
           <span>{nickname}</span>
@@ -106,12 +106,14 @@ const TextDiv = styled.div`
   position: relative;
 
   span {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: bold;
+    margin-bottom: 5px;
   }
   p {
     width: 100%;
     word-break: break-all;
+    font-size: 13px;
   }
 `;
 

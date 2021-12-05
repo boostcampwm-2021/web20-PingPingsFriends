@@ -27,6 +27,15 @@ const HeaderBlock = styled.div`
       cursor: pointer;
     }
   }
+  & > * {
+    flex-basis: 33%;
+  }
+  .place-container {
+    ${flexBox('center', 'center')};
+  }
+  .user-info-container {
+    ${flexBox('flex-end', 'center')};
+  }
 `;
 
 interface HeaderProps {
@@ -43,9 +52,15 @@ const Header = ({ habitatInfo }: HeaderProps) => {
 
   return (
     <HeaderBlock>
-      <img className={'logo'} src={logo} alt={'로고'} onClick={handleClick} />
-      <Place habitatInfo={habitatInfo} toggle={toggle} />
-      <UserInfo />
+      <div>
+        <img className={'logo'} src={logo} alt={'로고'} onClick={handleClick} />
+      </div>
+      <div className={'place-container'}>
+        <Place habitatInfo={habitatInfo} toggle={toggle} />
+      </div>
+      <div className={'user-info-container'}>
+        <UserInfo />
+      </div>
       <Modal isShowing={isShowing} hide={toggle} routePath={routePath}>
         <HabitatModal hide={toggle} />
       </Modal>

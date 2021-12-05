@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { rectType } from '@hooks/useClientRect';
 
 const SlideImg = styled.img<Pick<SlideProps, 'rect'>>`
-  width: 470px;
-  height: 500px;
+  width: ${({ rect }) => rect.width}px;
+  height: ${({ rect }) => rect.height}px;
   object-fit: cover;
 `;
 const Video = styled.video<Pick<SlideProps, 'rect'>>`

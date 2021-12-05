@@ -123,6 +123,7 @@ const FeedContents = styled.div`
 `;
 
 const FeedInfoDiv = styled.div<{ isTranslate: boolean }>`
+  ${flexBox(null, 'center')};
   display: flex;
   position: relative;
   gap: 5px;

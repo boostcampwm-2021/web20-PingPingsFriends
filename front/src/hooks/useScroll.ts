@@ -22,7 +22,9 @@ const useScroll: any = (curHabitatId: number, observerElement: HTMLDivElement) =
       return;
     }
     dispatch({ type: 'RESET_FEEDS' });
-    observerElement.scrollTop = 0;
+    if (observerElement) {
+      observerElement.scrollTop = 0;
+    }
 
     dispatchPostFetch();
 

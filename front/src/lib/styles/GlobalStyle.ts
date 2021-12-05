@@ -5,7 +5,8 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: 'Gmarket';
+    font-family: 'NanumSquareRoundOTFEB';
+    font-size: 14px;
   }
   .button {
     cursor: pointer;

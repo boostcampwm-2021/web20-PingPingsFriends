@@ -6,10 +6,11 @@ import { HabitatInfo } from '@src/types/Habitat';
 
 const PlaceBlock = styled.div<{ color: string | undefined }>`
   ${flexBox()}
-  font-size: 25px;
+  font-size: 20px;
   border-radius: 10px;
   padding: 8px;
   width: 200px;
+  height: 40px;
   background-color: ${(props) => props.color ?? 'white'};
   //border: 1px solid black;
   &:hover {
