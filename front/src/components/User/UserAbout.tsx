@@ -70,8 +70,8 @@ const UserAbout = ({ userInfo }: UserAboutProps) => {
         {userInfo ? (
           <>
             <p className={'nickname'}>{userInfo.nickname}</p>
-            <p>{userInfo.species?.name}</p>
-            <p>서식지:{userInfo.habitat?.name}</p>
+            <p className={'speciesName'}> {userInfo.species?.name}</p>
+            <p className={'habitatName'}>서식지:{userInfo.habitat?.name}</p>
           </>
         ) : (
           '존재하지 않는 사용자입니다'
@@ -126,9 +126,16 @@ const TextDiv = styled.div`
   ${flexBox('center', 'flex-start', 'column')};
   width: 70%;
   height: 100%;
-  font-size: 20px;
   .nickname {
-    font-size: 50px;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  .speciesName {
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+  .habitatName {
+    font-size: 15px;
   }
 `;
 

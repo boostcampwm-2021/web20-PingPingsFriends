@@ -111,10 +111,13 @@ const TitleDiv = styled.div<{ radius: number }>`
   white-space: nowrap;
   .habitat_name {
     font-weight: bold;
-    font-size: 2em;
+    font-size: 1.3em;
+    padding: 0 20px;
   }
   .habitat_king {
-    font-size: 1em;
+    font-size: 0.8em;
+    padding: 0 20px;
+    margin-bottom: 10px;
   }
 `;
 
@@ -126,7 +129,7 @@ const ShrinkTitleDiv = styled.div`
 
 const DetailDiv = styled.div<{ radius: number }>`
   text-align: center;
-  font-size: 1.3em;
+  font-size: 0.8em;
   width: ${(props) => props.radius}px;
   p {
     margin-bottom: 0.5em;

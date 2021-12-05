@@ -13,9 +13,9 @@ import useModal from '@common/Modal/useModal';
 import DetailContainer from '@components/DetailModal/DetailContainer';
 import useDetailFeed from '@components/Feed/useDetailFeed';
 import Warning from '@common/Indicator/Warning';
-import Loading from '@common/Indicator/Loading';
 import { useScrollState } from '@src/contexts/ScrollContext';
 import Modal from '@common/Modal/Modal';
+import SkeletonFeeds from '@components/Feed/SkeletonFeeds';
 
 const FeedContainerDiv = styled.div<Partial<HabitatInfo>>`
   ${flexBox(null, null, 'column')};
@@ -64,6 +64,8 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
+          {/*<SkeletonFeeds />*/}
+
           {habitatInfo ? (
             feeds.length ? (
               feeds.map((feed) => (
@@ -88,8 +90,9 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
               '첫 피드를 작성해보세요!'
             )
           ) : habitatInfo === undefined ? (
-            <Loading width={'100px'} height={'100px'} />
+            <SkeletonFeeds />
           ) : (
+            // <Loading width={'100px'} height={'100px'} />
             <Warning width={'100px'} height={'100px'} />
           )}
         </ViewPort>

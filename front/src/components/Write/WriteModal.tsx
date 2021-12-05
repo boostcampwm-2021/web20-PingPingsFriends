@@ -213,6 +213,8 @@ const TextIndicatorP = styled.p`
 `;
 
 const ValidInfoP = styled.p<{ isValid: boolean }>`
+  margin-top: 10px;
+  font-size: 15px;
   color: ${(props) => (props.isValid ? 'black' : 'red')};
 `;
 
