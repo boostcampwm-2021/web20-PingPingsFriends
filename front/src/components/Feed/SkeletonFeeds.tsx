@@ -2,27 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 import { flexBox } from '@lib/styles/mixin';
 
+const _ = Array(5).fill(null);
+
 const SkeletonFeeds = () => {
   return (
     <div>
-      <FakeFeed>
-        <Header>
-          <Avatar />
-          <FakeBox />
-        </Header>
-        <ImageBox />
-        <Blank />
-        <FakeContents />
-      </FakeFeed>
-      <FakeFeed>
-        <Header>
-          <Avatar />
-          <FakeBox />
-        </Header>
-        <ImageBox />
-        <Blank />
-        <FakeContents />
-      </FakeFeed>
+      {_.map((v, i) => (
+        <FakeFeed key={i}>
+          <Header>
+            <Avatar />
+            <FakeBox />
+          </Header>
+          <ImageBox />
+          <Blank />
+          <FakeContents />
+        </FakeFeed>
+      ))}
     </div>
   );
 };
