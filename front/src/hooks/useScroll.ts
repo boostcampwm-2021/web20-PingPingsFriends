@@ -3,7 +3,7 @@ import makeThrottle from '@lib/utils/makeThrottle';
 import { fetchPost, useScrollDispatch, useScrollState } from '@src/contexts/ScrollContext';
 import { useUserState } from '@src/contexts/UserContext';
 
-const useScroll: any = (curHabitatId: number) => {
+const useScroll: any = (curHabitatId: number, observerElement: HTMLDivElement) => {
   const dispatch = useScrollDispatch();
   const scrollState = useScrollState();
   const { data: userData } = useUserState();
@@ -22,6 +22,7 @@ const useScroll: any = (curHabitatId: number) => {
       return;
     }
     dispatch({ type: 'RESET_FEEDS' });
+    observerElement.scrollTop = 0;
 
     dispatchPostFetch();
 

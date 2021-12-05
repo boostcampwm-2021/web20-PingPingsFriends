@@ -48,8 +48,9 @@ const callback: IntersectionObserverCallback = (entries, observer) => {
 };
 
 const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
-  const { handleScroll } = useScroll(curHabitatId);
   const [observerElement, observerRef] = useElementRef();
+
+  const { handleScroll } = useScroll(curHabitatId, observerElement);
   const { toggle } = useModal('/detail/:id');
 
   const lazy = useIntersectionObserver(callback, {
@@ -64,8 +65,6 @@ const FeedContainer = ({ habitatInfo, curHabitatId }: FeedScrollBoxProps) => {
     <FeedContainerDiv color={habitatInfo?.habitat.color} onScroll={handleScroll} ref={observerRef}>
       <ScrollContainer height={height}>
         <ViewPort offset={offset}>
-          {/*<SkeletonFeeds />*/}
-
           {habitatInfo ? (
             feeds.length ? (
               feeds.map((feed) => (
